@@ -10,36 +10,39 @@ import {
   PropsWithChildren,
   useCallback,
   useMemo,
-  useRef,
+  // useRef,
   useState,
 } from "react";
-import { useUserListQuery, usersQueryKeys } from "./queries/users-queries";
+import {
+  useUserListQuery,
+  //  usersQueryKeys
+} from "./queries/users-queries";
 import { TableVirtuoso } from "react-virtuoso";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
 import LinearProgress from "@mui/material/LinearProgress";
 import { styled } from "@mui/material/styles";
 import TableComponents from "@/components/table/table-components";
-import ButtonGroup from "@mui/material/ButtonGroup";
+// import ButtonGroup from "@mui/material/ButtonGroup";
 import Button from "@mui/material/Button";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
-import Grow from "@mui/material/Grow";
-import Paper from "@mui/material/Paper";
-import Popper from "@mui/material/Popper";
-import MenuItem from "@mui/material/MenuItem";
-import MenuList from "@mui/material/MenuList";
+// import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+// import ClickAwayListener from "@mui/material/ClickAwayListener";
+// import Grow from "@mui/material/Grow";
+// import Paper from "@mui/material/Paper";
+// import Popper from "@mui/material/Popper";
+// import MenuItem from "@mui/material/MenuItem";
+// import MenuList from "@mui/material/MenuList";
 import { User } from "@/services/api/types/user";
 import Link from "@/components/link";
-import useAuth from "@/services/auth/use-auth";
-import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
-import { useDeleteUsersService } from "@/services/api/services/users";
+// import useAuth from "@/services/auth/use-auth";
+// import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
+// import { useDeleteUsersService } from "@/services/api/services/users";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import { InfiniteData, useQueryClient } from "@tanstack/react-query";
+// import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import UserFilter from "./user-filter";
 import { useRouter, useSearchParams } from "next/navigation";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import { UserFilterType, UserSortType } from "./user-filter-types";
+// import { UserFilterType, UserSortType } from "./user-filter-types";
 import { SortEnum } from "@/services/api/types/sort-type";
 
 type UsersKeys = keyof User;
