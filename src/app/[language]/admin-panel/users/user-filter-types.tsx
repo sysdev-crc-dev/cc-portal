@@ -1,9 +1,9 @@
-import { Role } from "@/services/api/types/role";
+import { RoleEnum } from "@/services/api/types/role";
 import { SortEnum } from "@/services/api/types/sort-type";
 import { User } from "@/services/api/types/user";
 
 export type UserFilterType = {
-  roles?: Role[];
+  roles?: { role?: RoleEnum }[];
 };
 
 export type UserSortType = {

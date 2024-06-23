@@ -4,6 +4,7 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
 import MuiLink from "@mui/material/Link";
+import MuiButton from "@mui/material/Button";
 import { Trans } from "react-i18next/TransWithoutContext";
 
 type Props = {
@@ -12,7 +13,6 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { t } = await getServerTranslation(params.language, "home");
-
   return {
     title: t("title"),
   };
@@ -35,7 +35,7 @@ export default async function Home({ params }: Props) {
           <Typography variant="h3" data-testid="home-title" gutterBottom>
             {t("title")}
           </Typography>
-          <Typography>
+          {/* <Typography>
             <Trans
               i18nKey={`description`}
               t={t}
@@ -50,11 +50,28 @@ export default async function Home({ params }: Props) {
                 </MuiLink>,
               ]}
             />
+          </Typography> */}
+          <Typography>
+            <Trans
+              i18nKey={`description`}
+              t={t}
+              components={[
+                <MuiButton key="0">Text</MuiButton>,
+                <MuiLink
+                  key="1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://www.google.com.mx"
+                >
+                  {}
+                </MuiLink>,
+              ]}
+            />
           </Typography>
         </Grid>
-        <Grid item sx={{ mx: "auto" }}>
+        {/* <Grid item sx={{ mx: "auto" }}>
           <MuiLink href="/privacy-policy">Privacy Policy</MuiLink>
-        </Grid>
+        </Grid> */}
       </Grid>
     </Container>
   );

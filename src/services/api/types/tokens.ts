@@ -1,5 +1,11 @@
 export type Tokens = {
   token: string | null | undefined;
-  refreshToken: string | null | undefined;
-  tokenExpires: number | null | undefined;
+  refreshToken: RefreshToken | null | undefined;
+  tokenExpires: Date | null | undefined;
+};
+
+type RefreshToken = {
+  refreshToken: string;
+  expiry_date: Date;
+  token: string;
 };

@@ -31,7 +31,7 @@ export default function FacebookAuth() {
 
       if (status === HTTP_CODES_ENUM.OK) {
         setTokensInfo({
-          token: data.token,
+          token: data.data.token,
           refreshToken: data.refreshToken,
           tokenExpires: data.tokenExpires,
         });

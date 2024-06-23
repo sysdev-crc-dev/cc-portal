@@ -14,9 +14,7 @@ type OptionsType = {
   roles: RoleEnum[];
 };
 
-const roles = Object.values(RoleEnum).filter(
-  (value) => !Number.isNaN(Number(value))
-) as RoleEnum[];
+const roles = [RoleEnum.Admin, RoleEnum.Staff];
 
 function withPageRequiredAuth(
   Component: FunctionComponent<PropsType>,
@@ -32,9 +30,7 @@ function withPageRequiredAuth(
     useEffect(() => {
       const check = () => {
         if (
-          (user &&
-            user?.role?.id &&
-            optionRoles.includes(Number(user?.role.id))) ||
+          (user && user?.role && optionRoles.includes(user?.role)) ||
           !isLoaded
         )
           return;
@@ -59,9 +55,7 @@ function withPageRequiredAuth(
       check();
     }, [user, isLoaded, router, language]);
 
-    return user &&
-      user?.role?.id &&
-      optionRoles.includes(Number(user?.role.id)) ? (
+    return user && user?.role && optionRoles.includes(user?.role) ? (
       <Component {...props} />
     ) : null;
   };

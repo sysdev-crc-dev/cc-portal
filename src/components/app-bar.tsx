@@ -18,9 +18,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useTranslation } from "@/services/i18n/client";
 import Link from "@/components/link";
 import { RoleEnum } from "@/services/api/types/role";
-import Divider from "@mui/material/Divider";
 import ThemeSwitchButton from "@/components/switch-theme-button";
-import { IS_SIGN_UP_ENABLED } from "@/services/auth/config";
 
 function ResponsiveAppBar() {
   const { t } = useTranslation("common");
@@ -105,7 +103,7 @@ function ResponsiveAppBar() {
               </MenuItem>
 
               {!!user?.role &&
-                [RoleEnum.ADMIN].includes(Number(user?.role?.id)) && [
+                [RoleEnum.Admin].includes(user.role) && [
                   <MenuItem
                     key="users"
                     onClick={handleCloseNavMenu}
@@ -116,32 +114,6 @@ function ResponsiveAppBar() {
                       {t("common:navigation.users")}
                     </Typography>
                   </MenuItem>,
-                ]}
-              {isLoaded &&
-                !user && [
-                  <Divider key="divider" />,
-                  <MenuItem
-                    key="sign-in"
-                    onClick={handleCloseNavMenu}
-                    component={Link}
-                    href="/sign-in"
-                  >
-                    <Typography textAlign="center">
-                      {t("common:navigation.signIn")}
-                    </Typography>
-                  </MenuItem>,
-                  IS_SIGN_UP_ENABLED ? (
-                    <MenuItem
-                      key="sign-up"
-                      onClick={handleCloseNavMenu}
-                      component={Link}
-                      href="/sign-up"
-                    >
-                      <Typography textAlign="center">
-                        {t("common:navigation.signUp")}
-                      </Typography>
-                    </MenuItem>
-                  ) : null,
                 ]}
             </Menu>
           </Box>
@@ -173,17 +145,16 @@ function ResponsiveAppBar() {
               {t("common:navigation.home")}
             </Button>
 
-            {!!user?.role &&
-              [RoleEnum.ADMIN].includes(Number(user?.role?.id)) && (
-                <Button
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: "white", display: "block" }}
-                  component={Link}
-                  href="/admin-panel/users"
-                >
-                  {t("common:navigation.users")}
-                </Button>
-              )}
+            {!!user?.role && [RoleEnum.Admin].includes(user.role) && (
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: "white", display: "block" }}
+                component={Link}
+                href="/admin-panel/users"
+              >
+                {t("common:navigation.users")}
+              </Button>
+            )}
           </Box>
 
           {!isLoaded ? (
@@ -196,10 +167,10 @@ function ResponsiveAppBar() {
                   sx={{ p: 0 }}
                   data-testid="profile-menu-item"
                 >
-                  <Avatar
-                    alt={user?.firstName + " " + user?.lastName}
-                    src={user.photo?.path}
-                  />
+                  <Avatar alt={user?.email}>
+                    {user?.employee?.name[0]}
+                    {user?.employee?.last_name[0]}
+                  </Avatar>
                 </IconButton>
               </Tooltip>
               <Menu
@@ -252,16 +223,6 @@ function ResponsiveAppBar() {
               >
                 {t("common:navigation.signIn")}
               </Button>
-              {IS_SIGN_UP_ENABLED && (
-                <Button
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: "white", display: "block" }}
-                  component={Link}
-                  href="/sign-up"
-                >
-                  {t("common:navigation.signUp")}
-                </Button>
-              )}
             </Box>
           )}
           <Box

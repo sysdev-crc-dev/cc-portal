@@ -18,7 +18,7 @@ import {
 } from "./auth-context";
 import Cookies from "js-cookie";
 import useFetchBase from "@/services/api/use-fetch-base";
-import { AUTH_LOGOUT_URL, AUTH_ME_URL } from "@/services/api/config";
+import { EMPLOYEE_URL, SELF_USER_URL } from "../api/config";
 import HTTP_CODES_ENUM from "../api/types/http-codes";
 
 function AuthProvider(props: PropsWithChildren<{}>) {
@@ -43,7 +43,6 @@ function AuthProvider(props: PropsWithChildren<{}>) {
   const setTokensInfo = useCallback(
     (tokensInfo: TokensInfo) => {
       setTokensInfoRef(tokensInfo);
-
       if (tokensInfo) {
         Cookies.set(AUTH_TOKEN_KEY, JSON.stringify(tokensInfo));
       } else {
@@ -81,7 +80,7 @@ function AuthProvider(props: PropsWithChildren<{}>) {
     try {
       if (tokens?.token) {
         const response = await fetchBase(
-          AUTH_ME_URL,
+          SELF_USER_URL,
           {
             method: "GET",
           },
@@ -98,8 +97,28 @@ function AuthProvider(props: PropsWithChildren<{}>) {
           return;
         }
 
-        const data = await response.json();
-        setUser(data);
+        const res = await response.json();
+
+        const getEmployee = await fetchBase(
+          EMPLOYEE_URL + "/self",
+          {
+            method: "GET",
+          },
+          {
+            token: tokens.token,
+            refreshToken: tokens.refreshToken,
+            tokenExpires: tokens.tokenExpires,
+            setTokensInfo,
+          }
+        );
+
+        const employee = await getEmployee.json();
+
+        const user = {
+          ...res.data,
+          employee: employee.data,
+        };
+        setUser(user);
       }
     } catch {
       logOut();

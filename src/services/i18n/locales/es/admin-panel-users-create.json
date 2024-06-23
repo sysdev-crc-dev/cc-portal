@@ -1,0 +1,48 @@
+{
+  "title": "Crear usuario",
+  "actions": {
+    "submit": "Guardar",
+    "cancel": "Cancelar"
+  },
+  "inputs": {
+    "email": {
+      "label": "Email",
+      "validation": {
+        "invalid": "Email es invalido",
+        "required": "Email es requerido",
+        "server": {
+          "emailAlreadyExists": "Email ya existe"
+        }
+      }
+    },
+    "role": {
+      "label": "Role",
+      "validation": {
+        "required": "Role is Required"
+      },
+      "options": {
+        "1": "Staff",
+        "2": "Operator"
+      }
+    },
+    "password": {
+      "label": "Contraseña",
+      "validation": {
+        "required": "Contraseña es requerida",
+        "min": "Contraseña debe tener al menos 6 caracters"
+      }
+    },
+    "passwordConfirmation": {
+      "label": "Contraseña confirmation",
+      "validation": {
+        "required": "Contraseña confirmation is required",
+        "match": "Las contraseñas deben coincidir"
+      }
+    }
+  },
+  "alerts": {
+    "user": {
+      "success": "El usuario ha sido creado de manera exitosa"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "title": "Inicia Sesión",
+  "actions": {
+    "submit": "Inicia Sesión",
+    "createAccount": "Crear cuenta",
+    "forgotPassword": "Olvide la contraseña"
+  },
+  "inputs": {
+    "email": {
+      "label": "Email",
+      "validation": {
+        "required": "Email es requerido",
+        "invalid": "Email no es valido",
+        "server": {
+          "emailNotExists": "Email no existe"
+        }
+      }
+    },
+    "password": {
+      "label": "Contraseña",
+      "validation": {
+        "required": "Contraseña es required",
+        "min": "Contraseña debe contener al menos 6 caracteres",
+        "server": {
+          "incorrectPassword": "Contraseña no es valido"
+        }
+      }
+    }
+  },
+  "or": "OR"
+}

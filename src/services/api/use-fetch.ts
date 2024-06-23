@@ -14,7 +14,7 @@ function useFetch() {
       return fetchBase(input, init, {
         token: tokensInfoRef.current?.token,
         refreshToken: tokensInfoRef.current?.refreshToken,
-        tokenExpires: tokensInfoRef.current?.tokenExpires,
+        tokenExpires: tokensInfoRef.current?.refreshToken?.expiry_date,
         setTokensInfo,
       });
     },

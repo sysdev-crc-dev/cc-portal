@@ -36,12 +36,16 @@ function useFetchBase() {
         };
       }
 
-      if (tokens?.tokenExpires && tokens.tokenExpires <= Date.now()) {
+      if (
+        tokens?.refreshToken?.expiry_date &&
+        new Date(tokens?.refreshToken.expiry_date).getTime() <=
+          new Date().getTime()
+      ) {
         const newTokens = await fetch(AUTH_REFRESH_URL, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${tokens.refreshToken}`,
+            Authorization: `Bearer ${tokens.refreshToken.token}`,
           },
         }).then((res) => res.json());
 

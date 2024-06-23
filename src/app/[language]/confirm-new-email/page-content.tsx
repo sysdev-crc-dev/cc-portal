@@ -44,10 +44,10 @@ export default function ConfirmNewEmail() {
         });
 
         if (user) {
-          const { data, status: statusGetMe } = await fetchAuthGetMe();
+          const { res, status: statusGetMe } = await fetchAuthGetMe();
 
           if (statusGetMe === HTTP_CODES_ENUM.OK) {
-            setUser(data);
+            setUser(res);
           }
 
           router.replace("/profile");
@@ -71,6 +71,7 @@ export default function ConfirmNewEmail() {
     isLoaded,
     setUser,
     fetchAuthGetMe,
+    user,
   ]);
 
   return (

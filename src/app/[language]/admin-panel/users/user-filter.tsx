@@ -1,7 +1,7 @@
 "use client";
 
 import FormMultipleSelectInput from "@/components/form/multiple-select/form-multiple-select";
-import { Role, RoleEnum } from "@/services/api/types/role";
+import { RoleEnum } from "@/services/api/types/role";
 import { useTranslation } from "@/services/i18n/client";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -41,11 +41,16 @@ function UserFilter() {
   const id = open ? "user-filter-popover" : undefined;
 
   useEffect(() => {
-    const filter = searchParams.get("filter");
+    const filter = searchParams.get("role");
     if (filter) {
       handleClose();
-      const filterParsed = JSON.parse(filter);
-      reset(filterParsed);
+
+      const xd: UserFilterType = {
+        roles: filter.split("|").map((value) => ({
+          role: value as RoleEnum,
+        })),
+      };
+      reset(xd);
     }
   }, [searchParams, reset]);
 
@@ -68,8 +73,18 @@ function UserFilter() {
         >
           <form
             onSubmit={handleSubmit((data) => {
+              console.log(data.roles);
+              let roleFilter = "";
+              if (data.roles) {
+                roleFilter = data.roles?.reduce((prev, curr, index) => {
+                  if (data.roles && index === data.roles?.length - 1) {
+                    return prev + curr.role;
+                  }
+                  return prev + curr.role + "|";
+                }, "");
+              }
               const searchParams = new URLSearchParams(window.location.search);
-              searchParams.set("filter", JSON.stringify(data));
+              searchParams.set("role", roleFilter);
               router.push(
                 window.location.pathname + "?" + searchParams.toString()
               );
@@ -77,31 +92,37 @@ function UserFilter() {
           >
             <Grid container spacing={2} mb={3} mt={3}>
               <Grid item xs={12}>
-                <FormMultipleSelectInput<UserFilterFormData, Pick<Role, "id">>
+                <FormMultipleSelectInput<
+                  UserFilterFormData,
+                  Pick<UserFilterType, "roles">
+                >
                   name="roles"
                   testId="roles"
-                  label={t("admin-panel-users:filter.inputs.role.label")}
+                  label={t("admin-panel-users:filter.role.label")}
                   options={[
                     {
-                      id: RoleEnum.ADMIN,
+                      role: RoleEnum.Admin,
                     },
                     {
-                      id: RoleEnum.USER,
+                      role: RoleEnum.Staff,
+                    },
+                    {
+                      role: RoleEnum.Operator,
                     },
                   ]}
-                  keyValue="id"
-                  renderOption={(option) =>
-                    t(
-                      `admin-panel-users:filter.inputs.role.options.${option.id}`
-                    )
-                  }
+                  keyValue="role"
+                  renderOption={(option) => {
+                    return t(
+                      `admin-panel-users:filter.role.options.${option.role}`
+                    );
+                  }}
                   renderValue={(values) =>
                     values
-                      .map((value) =>
-                        t(
-                          `admin-panel-users:filter.inputs.role.options.${value.id}`
-                        )
-                      )
+                      .map((value) => {
+                        return t(
+                          `admin-panel-users:filter.role.options.${value.role}`
+                        );
+                      })
                       .join(", ")
                   }
                 />

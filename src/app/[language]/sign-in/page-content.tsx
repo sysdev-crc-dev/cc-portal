@@ -1,6 +1,7 @@
 "use client";
 import Button from "@mui/material/Button";
 import LinkItem from "@mui/material/Link";
+import Alert from "@mui/material/Alert";
 import withPageRequiredGuest from "@/services/auth/with-page-required-guest";
 import { useForm, FormProvider, useFormState } from "react-hook-form";
 import { useAuthLoginService } from "@/services/api/services/auth";
@@ -13,15 +14,8 @@ import FormTextInput from "@/components/form/text-input/form-text-input";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import Link from "@/components/link";
-import Box from "@mui/material/Box";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { useTranslation } from "@/services/i18n/client";
-import SocialAuth from "@/services/social-auth/social-auth";
-import Divider from "@mui/material/Divider";
-import Chip from "@mui/material/Chip";
-import { isGoogleAuthEnabled } from "@/services/social-auth/google/google-config";
-import { isFacebookAuthEnabled } from "@/services/social-auth/facebook/facebook-config";
-import { IS_SIGN_UP_ENABLED } from "@/services/auth/config";
 
 type SignInFormData = {
   email: string;
@@ -60,13 +54,28 @@ function FormActions() {
   );
 }
 
+function FormError() {
+  const { errors } = useFormState();
+
+  return (
+    <Grid item xs={12}>
+      {errors.root && (
+        <Alert severity="error">
+          Usuario invalido. <br /> Verifique sus credenciales o intentelo mas
+          tarde
+        </Alert>
+      )}
+    </Grid>
+  );
+}
+
 function Form() {
   const { setUser } = useAuthActions();
   const { setTokensInfo } = useAuthTokens();
   const fetchAuthLogin = useAuthLoginService();
   const { t } = useTranslation("sign-in");
+  //const router = useRouter();
   const validationSchema = useValidationSchema();
-
   const methods = useForm<SignInFormData>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
@@ -78,30 +87,23 @@ function Form() {
   const { handleSubmit, setError } = methods;
 
   const onSubmit = handleSubmit(async (formData) => {
-    const { data, status } = await fetchAuthLogin(formData);
-
-    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-      (Object.keys(data.errors) as Array<keyof SignInFormData>).forEach(
-        (key) => {
-          setError(key, {
-            type: "manual",
-            message: t(
-              `sign-in:inputs.${key}.validation.server.${data.errors[key]}`
-            ),
-          });
-        }
-      );
+    const { res, status } = await fetchAuthLogin(formData);
+    if (
+      status === HTTP_CODES_ENUM.BAD_REQUEST ||
+      status === HTTP_CODES_ENUM.INTERNAL_SERVER_ERROR
+    ) {
+      setError("root.serverError", { type: "400" });
 
       return;
     }
 
     if (status === HTTP_CODES_ENUM.OK) {
       setTokensInfo({
-        token: data.token,
-        refreshToken: data.refreshToken,
-        tokenExpires: data.tokenExpires,
+        token: res.data.token,
+        refreshToken: res.data.refreshToken,
+        tokenExpires: res.data.refreshToken?.expiry_date,
       });
-      setUser(data.user);
+      setUser(res.data.user);
     }
   });
 
@@ -113,6 +115,7 @@ function Form() {
             <Grid item xs={12} mt={3}>
               <Typography variant="h6">{t("sign-in:title")}</Typography>
             </Grid>
+            <FormError />
             <Grid item xs={12}>
               <FormTextInput<SignInFormData>
                 name="email"
@@ -143,31 +146,7 @@ function Form() {
 
             <Grid item xs={12}>
               <FormActions />
-
-              {IS_SIGN_UP_ENABLED && (
-                <Box ml={1} component="span">
-                  <Button
-                    variant="contained"
-                    color="inherit"
-                    LinkComponent={Link}
-                    href="/sign-up"
-                    data-testid="create-account"
-                  >
-                    {t("sign-in:actions.createAccount")}
-                  </Button>
-                </Box>
-              )}
             </Grid>
-
-            {[isGoogleAuthEnabled, isFacebookAuthEnabled].some(Boolean) && (
-              <Grid item xs={12}>
-                <Divider sx={{ mb: 2 }}>
-                  <Chip label={t("sign-in:or")} />
-                </Divider>
-
-                <SocialAuth />
-              </Grid>
-            )}
           </Grid>
         </form>
       </Container>

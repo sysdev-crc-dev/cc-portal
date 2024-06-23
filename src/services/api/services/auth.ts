@@ -12,16 +12,18 @@ export type AuthLoginRequest = {
   password: string;
 };
 
-export type AuthLoginResponse = Tokens & {
-  user: User;
-};
+export interface AuthLoginResponse {
+  data: Tokens & {
+    user: User;
+  };
+}
 
 export function useAuthLoginService() {
   const fetchBase = useFetchBase();
 
   return useCallback(
     (data: AuthLoginRequest) => {
-      return fetchBase(`${API_URL}/v1/auth/email/login`, {
+      return fetchBase(`${API_URL}/v1/auth/login`, {
         method: "POST",
         body: JSON.stringify(data),
       }).then(wrapperFetchJsonResponse<AuthLoginResponse>);
@@ -37,43 +39,6 @@ export type AuthGoogleLoginRequest = {
 export type AuthGoogleLoginResponse = Tokens & {
   user: User;
 };
-
-export function useAuthGoogleLoginService() {
-  const fetchBase = useFetchBase();
-
-  return useCallback(
-    (data: AuthGoogleLoginRequest) => {
-      return fetchBase(`${API_URL}/v1/auth/google/login`, {
-        method: "POST",
-        body: JSON.stringify(data),
-      }).then(wrapperFetchJsonResponse<AuthGoogleLoginResponse>);
-    },
-    [fetchBase]
-  );
-}
-
-export type AuthFacebookLoginRequest = {
-  accessToken: string;
-};
-
-export type AuthFacebookLoginResponse = Tokens & {
-  user: User;
-};
-
-export function useAuthFacebookLoginService() {
-  const fetchBase = useFetchBase();
-
-  return useCallback(
-    (data: AuthFacebookLoginRequest, requestConfig?: RequestConfigType) => {
-      return fetchBase(`${API_URL}/v1/auth/facebook/login`, {
-        method: "POST",
-        body: JSON.stringify(data),
-        ...requestConfig,
-      }).then(wrapperFetchJsonResponse<AuthFacebookLoginResponse>);
-    },
-    [fetchBase]
-  );
-}
 
 export type AuthSignUpRequest = {
   email: string;

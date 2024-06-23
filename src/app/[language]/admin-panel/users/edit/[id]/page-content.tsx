@@ -12,26 +12,22 @@ import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import { useEffect } from "react";
 import { useSnackbar } from "notistack";
 import Link from "@/components/link";
-import FormAvatarInput from "@/components/form/avatar-input/form-avatar-input";
-import { FileEntity } from "@/services/api/types/file-entity";
 import useLeavePage from "@/services/leave-page/use-leave-page";
 import Box from "@mui/material/Box";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { useTranslation } from "@/services/i18n/client";
 import {
+  useEditUserService,
   useGetUserService,
   usePatchUserService,
 } from "@/services/api/services/users";
 import { useParams } from "next/navigation";
-import { Role, RoleEnum } from "@/services/api/types/role";
+import { RoleEnum } from "@/services/api/types/role";
 import FormSelectInput from "@/components/form/select/form-select";
 
 type EditUserFormData = {
   email: string;
-  firstName: string;
-  lastName: string;
-  photo?: FileEntity;
-  role: Role;
+  role: { role?: RoleEnum };
 };
 
 type ChangeUserPasswordFormData = {
@@ -46,26 +42,10 @@ const useValidationEditUserSchema = () => {
     email: yup
       .string()
       .email(t("admin-panel-users-edit:inputs.email.validation.invalid"))
-      .required(
-        t("admin-panel-users-edit:inputs.firstName.validation.required")
-      ),
-    firstName: yup
-      .string()
-      .required(
-        t("admin-panel-users-edit:inputs.firstName.validation.required")
-      ),
-    lastName: yup
-      .string()
-      .required(
-        t("admin-panel-users-edit:inputs.lastName.validation.required")
-      ),
-    role: yup
-      .object()
-      .shape({
-        id: yup.mixed<string | number>().required(),
-        name: yup.string(),
-      })
-      .required(t("admin-panel-users-edit:inputs.role.validation.required")),
+      .required(t("admin-panel-users-edit:inputs.email.validation.required")),
+    // role: yup
+    //   .string()
+    //   .required(t("admin-panel-users-edit:inputs.role.validation.required")),
   });
 };
 
@@ -75,7 +55,7 @@ const useValidationChangePasswordSchema = () => {
   return yup.object().shape({
     password: yup
       .string()
-      .min(6, t("admin-panel-users-edit:inputs.password.validation.min"))
+      .min(3, t("admin-panel-users-edit:inputs.password.validation.min"))
       .required(
         t("admin-panel-users-edit:inputs.password.validation.required")
       ),
@@ -130,45 +110,37 @@ function ChangePasswordUserFormActions() {
 function FormEditUser() {
   const params = useParams();
   const fetchGetUser = useGetUserService();
-  const fetchPatchUser = usePatchUserService();
+  const fetchEditUser = useEditUserService();
   const { t } = useTranslation("admin-panel-users-edit");
   const validationSchema = useValidationEditUserSchema();
-  const userId = Array.isArray(params.id) ? params.id[0] : params.id;
+  const userId = Number(Array.isArray(params.id) ? params.id[0] : params.id);
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<EditUserFormData>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       email: "",
-      firstName: "",
-      lastName: "",
-      role: undefined,
-      photo: undefined,
+      role: {
+        role: RoleEnum.Operator,
+      },
     },
   });
 
   const { handleSubmit, setError, reset } = methods;
 
   const onSubmit = handleSubmit(async (formData) => {
-    const isEmailDirty = methods.getFieldState("email").isDirty;
-    const { data, status } = await fetchPatchUser({
+    const { status } = await fetchEditUser({
       id: userId,
       data: {
-        ...formData,
-        email: isEmailDirty ? formData.email : undefined,
+        email: formData.email,
+        role: formData.role.role,
       },
     });
-    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-      (Object.keys(data.errors) as Array<keyof EditUserFormData>).forEach(
-        (key) => {
-          setError(key, {
-            type: "manual",
-            message: t(
-              `admin-panel-users-edit:inputs.${key}.validation.server.${data.errors[key]}`
-            ),
-          });
-        }
-      );
+    if (status !== HTTP_CODES_ENUM.OK) {
+      setError("root.serverError", { type: "400" });
+      enqueueSnackbar(t("admin-panel-users-edit:alerts.server.error"), {
+        variant: "error",
+      });
       return;
     }
     if (status === HTTP_CODES_ENUM.OK) {
@@ -176,22 +148,21 @@ function FormEditUser() {
       enqueueSnackbar(t("admin-panel-users-edit:alerts.user.success"), {
         variant: "success",
       });
+
+      return;
     }
   });
 
   useEffect(() => {
     const getInitialDataForEdit = async () => {
-      const { status, data: user } = await fetchGetUser({ id: userId });
-
+      const { status, res } = await fetchGetUser({ id: userId });
       if (status === HTTP_CODES_ENUM.OK) {
+        console.log(res.data.role);
         reset({
-          email: user?.email ?? "",
-          firstName: user?.firstName ?? "",
-          lastName: user?.lastName ?? "",
+          email: res.data.email,
           role: {
-            id: Number(user?.role?.id),
+            role: res.data.role,
           },
-          photo: user?.photo,
         });
       }
     };
@@ -209,9 +180,6 @@ function FormEditUser() {
                 {t("admin-panel-users-edit:title1")}
               </Typography>
             </Grid>
-            <Grid item xs={12}>
-              <FormAvatarInput<EditUserFormData> name="photo" testId="photo" />
-            </Grid>
 
             <Grid item xs={12}>
               <FormTextInput<EditUserFormData>
@@ -222,38 +190,28 @@ function FormEditUser() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormTextInput<EditUserFormData>
-                name="firstName"
-                testId="first-name"
-                label={t("admin-panel-users-edit:inputs.firstName.label")}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <FormTextInput<EditUserFormData>
-                name="lastName"
-                testId="last-name"
-                label={t("admin-panel-users-edit:inputs.lastName.label")}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <FormSelectInput<EditUserFormData, Pick<Role, "id">>
+              <FormSelectInput<EditUserFormData, Pick<EditUserFormData, "role">>
                 name="role"
                 testId="role"
                 label={t("admin-panel-users-edit:inputs.role.label")}
                 options={[
                   {
-                    id: RoleEnum.ADMIN,
+                    role: RoleEnum.Admin,
                   },
                   {
-                    id: RoleEnum.USER,
+                    role: RoleEnum.Staff,
+                  },
+                  {
+                    role: RoleEnum.Operator,
                   },
                 ]}
-                keyValue="id"
-                renderOption={(option) =>
-                  t(`admin-panel-users-edit:inputs.role.options.${option.id}`)
-                }
+                keyValue="role"
+                renderOption={(option) => {
+                  // console.log(option.role);
+                  return t(
+                    `admin-panel-users-edit:inputs.role.options.${option.role}`
+                  );
+                }}
               />
             </Grid>
 
@@ -282,7 +240,7 @@ function FormChangePasswordUser() {
   const fetchPatchUser = usePatchUserService();
   const { t } = useTranslation("admin-panel-users-edit");
   const validationSchema = useValidationChangePasswordSchema();
-  const userId = Array.isArray(params.id) ? params.id[0] : params.id;
+  const userId = Number(Array.isArray(params.id) ? params.id[0] : params.id);
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<ChangeUserPasswordFormData>({
@@ -296,24 +254,23 @@ function FormChangePasswordUser() {
   const { handleSubmit, setError, reset } = methods;
 
   const onSubmit = handleSubmit(async (formData) => {
-    const { data, status } = await fetchPatchUser({
+    const { res, status } = await fetchPatchUser({
       id: userId,
-      data: formData,
+      data: {
+        password: formData.password,
+      },
     });
-    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-      (
-        Object.keys(data.errors) as Array<keyof ChangeUserPasswordFormData>
-      ).forEach((key) => {
-        setError(key, {
-          type: "manual",
-          message: t(
-            `admin-panel-users-edit:inputs.${key}.validation.server.${data.errors[key]}`
-          ),
-        });
+
+    if (status !== HTTP_CODES_ENUM.OK) {
+      setError("root.serverError", { type: "400" });
+      enqueueSnackbar(t("admin-panel-users-edit:alerts.server.error"), {
+        variant: "error",
       });
       return;
     }
+
     if (status === HTTP_CODES_ENUM.OK) {
+      console.log(res);
       reset();
       enqueueSnackbar(t("admin-panel-users-edit:alerts.password.success"), {
         variant: "success",

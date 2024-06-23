@@ -114,9 +114,9 @@ function FormCreateUser() {
       lastName: "",
       password: "",
       passwordConfirmation: "",
-      role: {
-        id: RoleEnum.USER,
-      },
+      // role: {
+      //   id: RoleEnum.USER,
+      // },
       photo: undefined,
     },
   });
@@ -216,10 +216,13 @@ function FormCreateUser() {
                 label={t("admin-panel-users-create:inputs.role.label")}
                 options={[
                   {
-                    id: RoleEnum.ADMIN,
+                    id: RoleEnum.Admin,
                   },
                   {
-                    id: RoleEnum.USER,
+                    id: RoleEnum.Staff,
+                  },
+                  {
+                    id: RoleEnum.Operator,
                   },
                 ]}
                 keyValue="id"

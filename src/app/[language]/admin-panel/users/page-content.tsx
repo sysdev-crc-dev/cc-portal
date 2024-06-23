@@ -17,7 +17,6 @@ import { useUserListQuery, usersQueryKeys } from "./queries/users-queries";
 import { TableVirtuoso } from "react-virtuoso";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
-import Avatar from "@mui/material/Avatar";
 import LinearProgress from "@mui/material/LinearProgress";
 import { styled } from "@mui/material/styles";
 import TableComponents from "@/components/table/table-components";
@@ -77,166 +76,166 @@ function TableSortCellWrapper(
   );
 }
 
-function Actions({ user }: { user: User }) {
-  const [open, setOpen] = useState(false);
-  const { user: authUser } = useAuth();
-  const { confirmDialog } = useConfirmDialog();
-  const fetchUserDelete = useDeleteUsersService();
-  const queryClient = useQueryClient();
-  const anchorRef = useRef<HTMLDivElement>(null);
-  const canDelete = user.id !== authUser?.id;
-  const { t: tUsers } = useTranslation("admin-panel-users");
+// function Actions({ user }: { user: User }) {
+//   const [open, setOpen] = useState(false);
+//   const { user: authUser } = useAuth();
+//   const { confirmDialog } = useConfirmDialog();
+//   const fetchUserDelete = useDeleteUsersService();
+//   const queryClient = useQueryClient();
+//   const anchorRef = useRef<HTMLDivElement>(null);
+//   const canDelete = user.id !== authUser?.id;
+//   const { t: tUsers } = useTranslation("admin-panel-users");
 
-  const handleToggle = () => {
-    setOpen((prevOpen) => !prevOpen);
-  };
+//   const handleToggle = () => {
+//     setOpen((prevOpen) => !prevOpen);
+//   };
 
-  const handleClose = (event: Event) => {
-    if (
-      anchorRef.current &&
-      anchorRef.current.contains(event.target as HTMLElement)
-    ) {
-      return;
-    }
+//   const handleClose = (event: Event) => {
+//     if (
+//       anchorRef.current &&
+//       anchorRef.current.contains(event.target as HTMLElement)
+//     ) {
+//       return;
+//     }
 
-    setOpen(false);
-  };
+//     setOpen(false);
+//   };
 
-  const handleDelete = async () => {
-    const isConfirmed = await confirmDialog({
-      title: tUsers("admin-panel-users:confirm.delete.title"),
-      message: tUsers("admin-panel-users:confirm.delete.message"),
-    });
+//   const handleDelete = async () => {
+//     const isConfirmed = await confirmDialog({
+//       title: tUsers("admin-panel-users:confirm.delete.title"),
+//       message: tUsers("admin-panel-users:confirm.delete.message"),
+//     });
 
-    if (isConfirmed) {
-      setOpen(false);
+//     if (isConfirmed) {
+//       setOpen(false);
 
-      const searchParams = new URLSearchParams(window.location.search);
-      const searchParamsFilter = searchParams.get("filter");
-      const searchParamsSort = searchParams.get("sort");
+//       const searchParams = new URLSearchParams(window.location.search);
+//       const searchParamsFilter = searchParams.get("filter");
+//       const searchParamsSort = searchParams.get("sort");
 
-      let filter: UserFilterType | undefined = undefined;
-      let sort: UserSortType | undefined = {
-        order: SortEnum.DESC,
-        orderBy: "id",
-      };
+//       let filter: UserFilterType | undefined = undefined;
+//       let sort: UserSortType | undefined = {
+//         order: SortEnum.DESC,
+//         orderBy: "id",
+//       };
 
-      if (searchParamsFilter) {
-        filter = JSON.parse(searchParamsFilter);
-      }
+//       if (searchParamsFilter) {
+//         filter = JSON.parse(searchParamsFilter);
+//         console.log(filter);
+//       }
 
-      if (searchParamsSort) {
-        sort = JSON.parse(searchParamsSort);
-      }
+//       if (searchParamsSort) {
+//         sort = JSON.parse(searchParamsSort);
+//       }
 
-      const previousData = queryClient.getQueryData<
-        InfiniteData<{ nextPage: number; data: User[] }>
-      >(usersQueryKeys.list().sub.by({ sort, filter }).key);
+//       const previousData = queryClient.getQueryData<
+//         InfiniteData<{ nextPage: number; data: User[] }>
+//       >(usersQueryKeys.list().sub.by({ sort, filter }).key);
 
-      await queryClient.cancelQueries({ queryKey: usersQueryKeys.list().key });
+//       await queryClient.cancelQueries({ queryKey: usersQueryKeys.list().key });
 
-      const newData = {
-        ...previousData,
-        pages: previousData?.pages.map((page) => ({
-          ...page,
-          data: page?.data.filter((item) => item.id !== user.id),
-        })),
-      };
+//       const newData = {
+//         ...previousData,
+//         pages: previousData?.pages.map((page) => ({
+//           ...page,
+//           data: page?.data.filter((item) => item.id !== user.id),
+//         })),
+//       };
 
-      queryClient.setQueryData(
-        usersQueryKeys.list().sub.by({ sort, filter }).key,
-        newData
-      );
+//       queryClient.setQueryData(
+//         usersQueryKeys.list().sub.by({ sort, filter }).key,
+//         newData
+//       );
 
-      await fetchUserDelete({
-        id: user.id,
-      });
-    }
-  };
+//       await fetchUserDelete({
+//         id: user.id,
+//       });
+//     }
+//   };
 
-  const mainButton = (
-    <Button
-      size="small"
-      variant="contained"
-      LinkComponent={Link}
-      href={`/admin-panel/users/edit/${user.id}`}
-    >
-      {tUsers("admin-panel-users:actions.edit")}
-    </Button>
-  );
+//   const mainButton = (
+//     <Button
+//       size="small"
+//       variant="contained"
+//       LinkComponent={Link}
+//       href={`/admin-panel/users/edit/${user.id}`}
+//     >
+//       {tUsers("admin-panel-users:actions.edit")}
+//     </Button>
+//   );
 
-  return (
-    <>
-      {[!canDelete].every(Boolean) ? (
-        mainButton
-      ) : (
-        <ButtonGroup
-          variant="contained"
-          ref={anchorRef}
-          aria-label="split button"
-          size="small"
-        >
-          {mainButton}
+//   return (
+//     <>
+//       {[!canDelete].every(Boolean) ? (
+//         mainButton
+//       ) : (
+//         <ButtonGroup
+//           variant="contained"
+//           ref={anchorRef}
+//           aria-label="split button"
+//           size="small"
+//         >
+//           {mainButton}
 
-          <Button
-            size="small"
-            aria-controls={open ? "split-button-menu" : undefined}
-            aria-expanded={open ? "true" : undefined}
-            aria-label="select merge strategy"
-            aria-haspopup="menu"
-            onClick={handleToggle}
-          >
-            <ArrowDropDownIcon />
-          </Button>
-        </ButtonGroup>
-      )}
-      <Popper
-        sx={{
-          zIndex: 1,
-        }}
-        open={open}
-        anchorEl={anchorRef.current}
-        role={undefined}
-        transition
-        disablePortal
-      >
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin:
-                placement === "bottom" ? "center top" : "center bottom",
-            }}
-          >
-            <Paper>
-              <ClickAwayListener onClickAway={handleClose}>
-                <MenuList id="split-button-menu" autoFocusItem>
-                  {canDelete && (
-                    <MenuItem
-                      sx={{
-                        bgcolor: "error.main",
-                        "&:hover": {
-                          bgcolor: "error.light",
-                        },
-                      }}
-                      onClick={handleDelete}
-                    >
-                      {tUsers("admin-panel-users:actions.delete")}
-                    </MenuItem>
-                  )}
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
-    </>
-  );
-}
+//           <Button
+//             size="small"
+//             aria-controls={open ? "split-button-menu" : undefined}
+//             aria-expanded={open ? "true" : undefined}
+//             aria-label="select merge strategy"
+//             aria-haspopup="menu"
+//             onClick={handleToggle}
+//           >
+//             <ArrowDropDownIcon />
+//           </Button>
+//         </ButtonGroup>
+//       )}
+//       <Popper
+//         sx={{
+//           zIndex: 1,
+//         }}
+//         open={open}
+//         anchorEl={anchorRef.current}
+//         role={undefined}
+//         transition
+//         disablePortal
+//       >
+//         {({ TransitionProps, placement }) => (
+//           <Grow
+//             {...TransitionProps}
+//             style={{
+//               transformOrigin:
+//                 placement === "bottom" ? "center top" : "center bottom",
+//             }}
+//           >
+//             <Paper>
+//               <ClickAwayListener onClickAway={handleClose}>
+//                 <MenuList id="split-button-menu" autoFocusItem>
+//                   {canDelete && (
+//                     <MenuItem
+//                       sx={{
+//                         bgcolor: "error.main",
+//                         "&:hover": {
+//                           bgcolor: "error.light",
+//                         },
+//                       }}
+//                       onClick={handleDelete}
+//                     >
+//                       {tUsers("admin-panel-users:actions.delete")}
+//                     </MenuItem>
+//                   )}
+//                 </MenuList>
+//               </ClickAwayListener>
+//             </Paper>
+//           </Grow>
+//         )}
+//       </Popper>
+//     </>
+//   );
+// }
 
 function Users() {
   const { t: tUsers } = useTranslation("admin-panel-users");
-  const { t: tRoles } = useTranslation("admin-panel-roles");
   const searchParams = useSearchParams();
   const router = useRouter();
   const [{ order, orderBy }, setSort] = useState<{
@@ -245,7 +244,8 @@ function Users() {
   }>(() => {
     const searchParamsSort = searchParams.get("sort");
     if (searchParamsSort) {
-      return JSON.parse(searchParamsSort);
+      console.log(searchParamsSort);
+      // return { order: SortEnum.DESC, orderBy: "id" };
     }
     return { order: SortEnum.DESC, orderBy: "id" };
   });
@@ -258,10 +258,7 @@ function Users() {
     const searchParams = new URLSearchParams(window.location.search);
     const newOrder = isAsc ? SortEnum.DESC : SortEnum.ASC;
     const newOrderBy = property;
-    searchParams.set(
-      "sort",
-      JSON.stringify({ order: newOrder, orderBy: newOrderBy })
-    );
+    searchParams.set("sort", `${newOrder ? "!" : ""}${newOrderBy}`);
     setSort({
       order: newOrder,
       orderBy: newOrderBy,
@@ -270,9 +267,9 @@ function Users() {
   };
 
   const filter = useMemo(() => {
-    const searchParamsFilter = searchParams.get("filter");
+    const searchParamsFilter = searchParams.get("role");
     if (searchParamsFilter) {
-      return JSON.parse(searchParamsFilter) as UserFilterType;
+      return searchParamsFilter;
     }
 
     return undefined;
@@ -289,7 +286,6 @@ function Users() {
   const result = useMemo(() => {
     const result =
       (data?.pages.flatMap((page) => page?.data) as User[]) ?? ([] as User[]);
-
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);
 
@@ -339,13 +335,18 @@ function Users() {
                   >
                     {tUsers("admin-panel-users:table.column1")}
                   </TableSortCellWrapper>
-                  <TableCell style={{ width: 200 }}>
+                  <TableCell
+                    style={{ width: 200 }}
+                    orderBy={orderBy}
+                    order={order}
+                    column="email"
+                  >
                     {tUsers("admin-panel-users:table.column2")}
                   </TableCell>
                   <TableSortCellWrapper
                     orderBy={orderBy}
                     order={order}
-                    column="email"
+                    column="role"
                     handleRequestSort={handleRequestSort}
                   >
                     {tUsers("admin-panel-users:table.column3")}
@@ -354,7 +355,6 @@ function Users() {
                   <TableCell style={{ width: 80 }}>
                     {tUsers("admin-panel-users:table.column4")}
                   </TableCell>
-                  <TableCell style={{ width: 130 }}></TableCell>
                 </TableRow>
                 {isFetchingNextPage && (
                   <TableRow>
@@ -367,22 +367,12 @@ function Users() {
             )}
             itemContent={(index, user) => (
               <>
-                <TableCell style={{ width: 50 }}>
-                  <Avatar
-                    alt={user?.firstName + " " + user?.lastName}
-                    src={user?.photo?.path}
-                  />
-                </TableCell>
+                <TableCell style={{ width: 50 }}></TableCell>
                 <TableCell style={{ width: 100 }}>{user?.id}</TableCell>
-                <TableCell style={{ width: 200 }}>
-                  {user?.firstName} {user?.lastName}
-                </TableCell>
                 <TableCell>{user?.email}</TableCell>
-                <TableCell style={{ width: 80 }}>
-                  {tRoles(`role.${user?.role?.id}`)}
-                </TableCell>
-                <TableCell style={{ width: 130 }}>
-                  {!!user && <Actions user={user} />}
+                <TableCell style={{ width: 80 }}>{user?.role}</TableCell>
+                <TableCell>
+                  {user?.employee && user?.employee.id ? "Si" : "N/A"}
                 </TableCell>
               </>
             )}
@@ -393,4 +383,4 @@ function Users() {
   );
 }
 
-export default withPageRequiredAuth(Users, { roles: [RoleEnum.ADMIN] });
+export default withPageRequiredAuth(Users, { roles: [RoleEnum.Admin] });

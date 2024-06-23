@@ -1,0 +1,30 @@
+{
+  "app-name": "CC",
+  "loading": "Cargando...",
+  "navigation": {
+    "home": "Inicio",
+    "signIn": "Inicia Sesión",
+    "signUp": "Registrate",
+    "profile": "Perfil",
+    "users": "Usuarios",
+    "logout": "Cerrar Sesión"
+  },
+  "formInputs": {
+    "avatarInput": {
+      "dropzoneText": "Drop the image here ...",
+      "dragAndDrop": "Or drag 'n' drop some files here",
+      "selectFile": "Select an image"
+    }
+  },
+  "leavePage": {
+    "title": "Salir de esta pagina?",
+    "message": "Los cambios que has realizado no se guardaran.",
+    "stay": "Quedarme",
+    "leave": "Salir"
+  },
+  "auth": {
+    "facebook": {
+      "action": "Login with Facebook"
+    }
+  }
+}

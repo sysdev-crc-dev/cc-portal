@@ -1,0 +1,56 @@
+{
+  "title1": "Editar Usuario",
+  "title2": "Cambiar Contraseña",
+  "actions": {
+    "submit": "Guardar",
+    "cancel": "Cancelar"
+  },
+  "inputs": {
+    "email": {
+      "label": "Correo",
+      "validation": {
+        "invalid": "Correo es invalido",
+        "required": "Correo es requerido",
+        "server": {
+          "emailAlreadyExists": "Correo ya existe"
+        }
+      }
+    },
+    "role": {
+      "label": "Rol",
+      "validation": {
+        "required": "Rol es requerido"
+      },
+      "options": {
+        "Admin": "Admin",
+        "Staff": "Staff",
+        "Operator": "Operator"
+      }
+    },
+    "password": {
+      "label": "Contraseña",
+      "validation": {
+        "required": "Contraseña es requerida",
+        "min": "Contraseña must be at least 6 characters long"
+      }
+    },
+    "passwordConfirmation": {
+      "label": "Contraseña confirmation",
+      "validation": {
+        "required": "Contraseña confirmation es requerida",
+        "match": "Contraseña confirmation must match password"
+      }
+    }
+  },
+  "alerts": {
+    "password": {
+      "success": "Password has been updated successfully"
+    },
+    "user": {
+      "success": "Usuario ha sido actualizado correctamente"
+    },
+    "server": {
+      "error": "La peticion ha fallado, intentelo mas tarde"
+    }
+  }
+}
