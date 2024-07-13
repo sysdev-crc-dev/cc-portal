@@ -25,7 +25,6 @@ export function useGetUsersService() {
   return useCallback(
     (data: UsersRequest, requestConfig?: RequestConfigType) => {
       const requestUrl = new URL(`${API_URL}/v1/users`);
-      console.log(data);
       requestUrl.searchParams.append("page", data.page.toString());
       requestUrl.searchParams.append("limit", data.limit.toString());
       if (data.filters) {
@@ -69,10 +68,7 @@ export function useGetUserService() {
   );
 }
 
-export type UserPostRequest = Pick<
-  User,
-  "email" | "role" | "employee_id" | "role"
-> & {
+export type UserPostRequest = Pick<User, "email" | "password" | "role"> & {
   password: string;
 };
 

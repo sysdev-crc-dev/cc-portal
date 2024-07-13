@@ -11,25 +11,19 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
 import { useSnackbar } from "notistack";
 import Link from "@/components/link";
-import FormAvatarInput from "@/components/form/avatar-input/form-avatar-input";
-import { FileEntity } from "@/services/api/types/file-entity";
 import useLeavePage from "@/services/leave-page/use-leave-page";
 import Box from "@mui/material/Box";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { useTranslation } from "@/services/i18n/client";
 import { usePostUserService } from "@/services/api/services/users";
-import { useRouter } from "next/navigation";
 import { Role, RoleEnum } from "@/services/api/types/role";
 import FormSelectInput from "@/components/form/select/form-select";
 
 type CreateUserFormData = {
   email: string;
-  firstName: string;
-  lastName: string;
   password: string;
   passwordConfirmation: string;
-  photo?: FileEntity;
-  role: Role;
+  role: { role?: RoleEnum };
 };
 
 const useValidationSchema = () => {
@@ -41,16 +35,6 @@ const useValidationSchema = () => {
       .email(t("admin-panel-users-create:inputs.email.validation.invalid"))
       .required(
         t("admin-panel-users-create:inputs.firstName.validation.required")
-      ),
-    firstName: yup
-      .string()
-      .required(
-        t("admin-panel-users-create:inputs.firstName.validation.required")
-      ),
-    lastName: yup
-      .string()
-      .required(
-        t("admin-panel-users-create:inputs.lastName.validation.required")
       ),
     password: yup
       .string()
@@ -71,13 +55,7 @@ const useValidationSchema = () => {
           "admin-panel-users-create:inputs.passwordConfirmation.validation.required"
         )
       ),
-    role: yup
-      .object()
-      .shape({
-        id: yup.mixed<string | number>().required(),
-        name: yup.string(),
-      })
-      .required(t("admin-panel-users-create:inputs.role.validation.required")),
+    role: yup.object().required(),
   });
 };
 
@@ -99,7 +77,7 @@ function CreateUserFormActions() {
 }
 
 function FormCreateUser() {
-  const router = useRouter();
+  // const router = useRouter();
   const fetchPostUser = usePostUserService();
   const { t } = useTranslation("admin-panel-users-create");
   const validationSchema = useValidationSchema();
@@ -110,39 +88,38 @@ function FormCreateUser() {
     resolver: yupResolver(validationSchema),
     defaultValues: {
       email: "",
-      firstName: "",
-      lastName: "",
       password: "",
       passwordConfirmation: "",
-      // role: {
-      //   id: RoleEnum.USER,
-      // },
-      photo: undefined,
+      role: {
+        role: RoleEnum.Operator,
+      },
     },
   });
 
-  const { handleSubmit, setError } = methods;
+  const { handleSubmit, setError, reset } = methods;
 
   const onSubmit = handleSubmit(async (formData) => {
-    const { data, status } = await fetchPostUser(formData);
-    if (status === HTTP_CODES_ENUM.UNPROCESSABLE_ENTITY) {
-      (Object.keys(data.errors) as Array<keyof CreateUserFormData>).forEach(
-        (key) => {
-          setError(key, {
-            type: "manual",
-            message: t(
-              `admin-panel-users-create:inputs.${key}.validation.server.${data.errors[key]}`
-            ),
-          });
-        }
-      );
+    const { status } = await fetchPostUser({
+      email: formData.email,
+      password: formData.password,
+      role: formData.role.role as RoleEnum,
+    });
+
+    if (status !== HTTP_CODES_ENUM.CREATED) {
+      setError("root.serverError", { type: "400" });
+      enqueueSnackbar(t("admin-panel-users-edit:alerts.server.error"), {
+        variant: "error",
+      });
       return;
     }
+
     if (status === HTTP_CODES_ENUM.CREATED) {
-      enqueueSnackbar(t("admin-panel-users-create:alerts.user.success"), {
+      reset();
+      enqueueSnackbar(t("admin-panel-users-edit:alerts.user.success"), {
         variant: "success",
       });
-      router.push("/admin-panel/users");
+
+      return;
     }
   });
 
@@ -155,12 +132,6 @@ function FormCreateUser() {
               <Typography variant="h6">
                 {t("admin-panel-users-create:title")}
               </Typography>
-            </Grid>
-            <Grid item xs={12}>
-              <FormAvatarInput<CreateUserFormData>
-                name="photo"
-                testId="photo"
-              />
             </Grid>
 
             <Grid item xs={12}>
@@ -194,40 +165,26 @@ function FormCreateUser() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormTextInput<CreateUserFormData>
-                name="firstName"
-                testId="first-name"
-                label={t("admin-panel-users-create:inputs.firstName.label")}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <FormTextInput<CreateUserFormData>
-                name="lastName"
-                testId="last-name"
-                label={t("admin-panel-users-create:inputs.lastName.label")}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
               <FormSelectInput<CreateUserFormData, Pick<Role, "id">>
                 name="role"
                 testId="role"
                 label={t("admin-panel-users-create:inputs.role.label")}
                 options={[
                   {
-                    id: RoleEnum.Admin,
+                    role: RoleEnum.Admin,
                   },
                   {
-                    id: RoleEnum.Staff,
+                    role: RoleEnum.Staff,
                   },
                   {
-                    id: RoleEnum.Operator,
+                    role: RoleEnum.Operator,
                   },
                 ]}
-                keyValue="id"
+                keyValue="role"
                 renderOption={(option) =>
-                  t(`admin-panel-users-create:inputs.role.options.${option.id}`)
+                  t(
+                    `admin-panel-users-create:inputs.role.options.${option.role}`
+                  )
                 }
               />
             </Grid>

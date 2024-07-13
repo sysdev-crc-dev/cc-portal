@@ -43,9 +43,6 @@ const useValidationEditUserSchema = () => {
       .string()
       .email(t("admin-panel-users-edit:inputs.email.validation.invalid"))
       .required(t("admin-panel-users-edit:inputs.email.validation.required")),
-    // role: yup
-    //   .string()
-    //   .required(t("admin-panel-users-edit:inputs.role.validation.required")),
   });
 };
 
@@ -157,7 +154,6 @@ function FormEditUser() {
     const getInitialDataForEdit = async () => {
       const { status, res } = await fetchGetUser({ id: userId });
       if (status === HTTP_CODES_ENUM.OK) {
-        console.log(res.data.role);
         reset({
           email: res.data.email,
           role: {
@@ -207,7 +203,6 @@ function FormEditUser() {
                 ]}
                 keyValue="role"
                 renderOption={(option) => {
-                  // console.log(option.role);
                   return t(
                     `admin-panel-users-edit:inputs.role.options.${option.role}`
                   );
@@ -254,7 +249,7 @@ function FormChangePasswordUser() {
   const { handleSubmit, setError, reset } = methods;
 
   const onSubmit = handleSubmit(async (formData) => {
-    const { res, status } = await fetchPatchUser({
+    const { status } = await fetchPatchUser({
       id: userId,
       data: {
         password: formData.password,
@@ -270,7 +265,6 @@ function FormChangePasswordUser() {
     }
 
     if (status === HTTP_CODES_ENUM.OK) {
-      console.log(res);
       reset();
       enqueueSnackbar(t("admin-panel-users-edit:alerts.password.success"), {
         variant: "success",

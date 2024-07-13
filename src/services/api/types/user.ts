@@ -4,6 +4,7 @@ export type User = {
   role: RoleEnum;
   email: string;
   id: number;
+  password: string;
   employee: Employee;
   employee_id: number;
 };

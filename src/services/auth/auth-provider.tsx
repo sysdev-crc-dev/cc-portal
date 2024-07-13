@@ -18,7 +18,7 @@ import {
 } from "./auth-context";
 import Cookies from "js-cookie";
 import useFetchBase from "@/services/api/use-fetch-base";
-import { EMPLOYEE_URL, SELF_USER_URL } from "../api/config";
+import { EMPLOYEE_URL, SELF_USER_URL, AUTH_LOGOUT_URL } from "../api/config";
 import HTTP_CODES_ENUM from "../api/types/http-codes";
 
 function AuthProvider(props: PropsWithChildren<{}>) {

@@ -73,7 +73,6 @@ function UserFilter() {
         >
           <form
             onSubmit={handleSubmit((data) => {
-              console.log(data.roles);
               let roleFilter = "";
               if (data.roles) {
                 roleFilter = data.roles?.reduce((prev, curr, index) => {

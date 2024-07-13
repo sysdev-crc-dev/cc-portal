@@ -6,23 +6,24 @@
   },
   "inputs": {
     "email": {
-      "label": "Email",
+      "label": "Correo",
       "validation": {
-        "invalid": "Email es invalido",
-        "required": "Email es requerido",
+        "invalid": "Correo es invalido",
+        "required": "Correo es requerido",
         "server": {
-          "emailAlreadyExists": "Email ya existe"
+          "emailAlreadyExists": "Correo ya existe"
         }
       }
     },
     "role": {
-      "label": "Role",
+      "label": "Rol",
       "validation": {
-        "required": "Role is Required"
+        "required": "Rol es requerido"
       },
       "options": {
-        "1": "Staff",
-        "2": "Operator"
+        "Admin": "Admin",
+        "Staff": "Staff",
+        "Operator": "Operator"
       }
     },
     "password": {
@@ -33,9 +34,9 @@
       }
     },
     "passwordConfirmation": {
-      "label": "Contraseña confirmation",
+      "label": "Confirmacion",
       "validation": {
-        "required": "Contraseña confirmation is required",
+        "required": "La confirmacion de contraseña es requerida",
         "match": "Las contraseñas deben coincidir"
       }
     }

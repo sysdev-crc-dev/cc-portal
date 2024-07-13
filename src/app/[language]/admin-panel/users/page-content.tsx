@@ -245,11 +245,6 @@ function Users() {
     order: SortEnum;
     orderBy: UsersKeys;
   }>(() => {
-    const searchParamsSort = searchParams.get("sort");
-    if (searchParamsSort) {
-      console.log(searchParamsSort);
-      // return { order: SortEnum.DESC, orderBy: "id" };
-    }
     return { order: SortEnum.DESC, orderBy: "id" };
   });
 
