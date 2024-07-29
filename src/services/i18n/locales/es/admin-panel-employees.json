@@ -1,0 +1,37 @@
+{
+  "title": "Empleados",
+  "table": {
+    "column1": "ID",
+    "column2": "Nombre",
+    "column3": "Apellido",
+    "column4": "Telefono",
+    "column5": "Celular",
+    "column6": "Usuario"
+  },
+  "actions": {
+    "add": "Añadir",
+    "edit": "Editar",
+    "delete": "Borrar",
+    "create": "Crear Empleado"
+  },
+  "confirm": {
+    "delete": {
+      "title": "Borrar",
+      "message": "Estás seguro de borrar este Empleado?"
+    }
+  },
+  "filter": {
+    "actions": {
+      "filter": "Filtros",
+      "apply": "Filtrar"
+    },
+    "role": {
+      "label": "Rol",
+      "options": {
+        "Admin": "Admin",
+        "Staff": "Staff",
+        "Operator": "Operator"
+      }
+    }
+  }
+}

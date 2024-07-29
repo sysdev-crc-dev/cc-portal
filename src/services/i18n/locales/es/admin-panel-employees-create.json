@@ -1,0 +1,47 @@
+{
+  "title": "Crear empleado",
+  "actions": {
+    "submit": "Guardar",
+    "cancel": "Cancelar"
+  },
+  "inputs": {
+    "name": {
+      "label": "Nombre",
+      "validation": {
+        "invalid": "Nombre invalido",
+        "required": "Nombre requerido"
+      }
+    },
+    "last_name": {
+      "label": "Apellido",
+      "validation": {
+        "invalid": "Apellido invalido",
+        "required": "Apellido requerido"
+      }
+    },
+    "tel": {
+      "label": "Telefono",
+      "validation": {
+        "invalid": "Telefono debe tener 10 caracters"
+      }
+    },
+    "cell_phone": {
+      "label": "Celular",
+      "validation": {
+        "required": "Celular requerida",
+        "invalid": "Celular debe tener 10 caracters"
+      }
+    },
+    "user": {
+      "label": "Usuario",
+      "validation": {
+        "required": "Todo empleado debe tener un usuario"
+      }
+    }
+  },
+  "alerts": {
+    "employee": {
+      "success": "El empleado ha sido creado de manera exitosa"
+    }
+  }
+}

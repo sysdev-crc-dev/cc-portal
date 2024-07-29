@@ -115,6 +115,17 @@ function ResponsiveAppBar() {
                     </Typography>
                   </MenuItem>,
                 ]}
+
+              <MenuItem
+                key="users"
+                onClick={handleCloseNavMenu}
+                component={Link}
+                href="/admin-panel/users"
+              >
+                <Typography textAlign="center">
+                  {t("common:navigation.users")}
+                </Typography>
+              </MenuItem>
             </Menu>
           </Box>
           <Typography
@@ -155,6 +166,15 @@ function ResponsiveAppBar() {
                 {t("common:navigation.users")}
               </Button>
             )}
+
+            <Button
+              onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: "white", display: "block" }}
+              component={Link}
+              href="/admin-panel/employees"
+            >
+              {t("common:navigation.employees")}
+            </Button>
           </Box>
 
           {!isLoaded ? (
