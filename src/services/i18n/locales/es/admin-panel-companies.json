@@ -1,0 +1,35 @@
+{
+  "title": "Compañias",
+  "table": {
+    "column1": "ID",
+    "column2": "Nombre",
+    "column3": "Tipo",
+    "column4": "Activa"
+  },
+  "actions": {
+    "add": "Añadir",
+    "edit": "Editar",
+    "delete": "Borrar",
+    "create": "Crear Compañia"
+  },
+  "confirm": {
+    "delete": {
+      "title": "Borrar",
+      "message": "Estás seguro de borrar esta Compañia?"
+    }
+  },
+  "filter": {
+    "actions": {
+      "filter": "Filtros",
+      "apply": "Filtrar"
+    },
+    "role": {
+      "label": "Rol",
+      "options": {
+        "Admin": "Admin",
+        "Staff": "Staff",
+        "Operator": "Operator"
+      }
+    }
+  }
+}
