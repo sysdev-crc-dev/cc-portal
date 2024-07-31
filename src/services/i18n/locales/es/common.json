@@ -9,6 +9,7 @@
     "users": "Usuarios",
     "employees": "Empleados",
     "companies": "Compañias",
+    "customers": "Clientes",
     "logout": "Cerrar Sesión"
   },
   "formInputs": {

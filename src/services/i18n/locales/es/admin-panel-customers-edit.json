@@ -1,0 +1,70 @@
+{
+  "title": "Editar Cliente",
+  "actions": {
+    "submit": "Guardar",
+    "cancel": "Cancelar"
+  },
+  "inputs": {
+    "name": {
+      "label": "Nombre",
+      "validation": {
+        "invalid": "Nombre invalido",
+        "required": "Nombre requerido"
+      }
+    },
+    "last_name": {
+      "label": "Apellido",
+      "validation": {
+        "invalid": "Apellido invalido",
+        "required": "Apellido requerido"
+      }
+    },
+    "tel": {
+      "label": "Telefono",
+      "validation": {
+        "invalid": "Telefono debe tener 10 caracters"
+      }
+    },
+    "cell_phone": {
+      "label": "Celular",
+      "validation": {
+        "required": "Celular requerida",
+        "invalid": "Celular debe tener 10 caracters"
+      }
+    },
+    "email": {
+      "label": "Correo",
+      "validation": {
+        "invalid": "Correo es invalido",
+        "required": "Correo es requerido",
+        "server": {
+          "emailAlreadyExists": "Correo ya existe"
+        }
+      }
+    },
+    "preferred_form_of_payment": {
+      "label": "Forma de Pago Preferida",
+      "validation": {
+        "required": "Debe seleccionar una forma de pago preferida"
+      }
+    },
+    "company": {
+      "label": "Compañia"
+    }
+  },
+  "preferred_form_of_payment": {
+    "cash": "Efectivo",
+    "bank_transfer": "Transf. Bancaria",
+    "credit_car": "Tarj. de Crédito",
+    "payment_link": "Link de Pago",
+    "in_house_credit": "Crédito´"
+  },
+  "alerts": {
+    "customer": {
+      "success": "Cliente actualizado  correctamente"
+    },
+    "server": {
+      "error": "La peticion ha fallado, intentelo mas tarde"
+    }
+  }
+}

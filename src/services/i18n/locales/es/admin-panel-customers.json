@@ -1,0 +1,39 @@
+{
+  "title": "Clientes",
+  "table": {
+    "column1": "ID",
+    "column2": "Nombre",
+    "column3": "Apellido",
+    "column4": "Correo",
+    "column5": "Telefono",
+    "column6": "Celular",
+    "column7": "Forma de Pago",
+    "column8": "Direcciones",
+    "column9": "Compañia"
+  },
+  "actions": {
+    "add": "Añadir",
+    "edit": "Editar",
+    "delete": "Borrar",
+    "create": "Crear Cliente"
+  },
+  "preferred_form_of_payment": {
+    "cash": "Efectivo",
+    "bank_transfer": "Transf. Bancaria",
+    "credit_car": "Tarj. de Crédito",
+    "payment_link": "Link de Pago",
+    "in_house_credit": "Crédito´"
+  },
+  "confirm": {
+    "delete": {
+      "title": "Borrar",
+      "message": "Estás seguro de borrar este Cliente?"
+    }
+  },
+  "filter": {
+    "actions": {
+      "filter": "Filtros",
+      "apply": "Filtrar"
+    }
+  }
+}
