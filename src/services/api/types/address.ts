@@ -9,7 +9,6 @@ export type Address = {
   postal_code: string;
   town: string;
   state: string;
-  country: string;
   extra_info: string;
   customer_id: number;
   customer?: Pick<Customer, "id">;

@@ -6,7 +6,7 @@ import { Customer } from "../types/customer";
 import { InfinityPaginationType } from "../types/infinity-pagination";
 import { SortEnum } from "../types/sort-type";
 import { RequestConfigType } from "./types/request-config";
-import { CustomerFilterType } from "../../../app/[language]/admin-panel/employees/employee-filter-types";
+import { CustomerFilterType } from "../../../app/[language]/admin-panel/customers/customer-filter-types";
 
 export type CustomersRequest = {
   page: number;
@@ -18,7 +18,7 @@ export type CustomersRequest = {
   }>;
 };
 
-export type CustomersResposne = InfinityPaginationType<Customer>;
+export type CustomersResponse = InfinityPaginationType<Customer>;
 
 export function useGetCustomersService() {
   const fetch = useFetch();
@@ -55,7 +55,7 @@ export function useGetCustomersService() {
       return fetch(requestUrl, {
         method: "GET",
         ...requestConfig,
-      }).then(wrapperFetchJsonResponse<CustomersResposne>);
+      }).then(wrapperFetchJsonResponse<CustomersResponse>);
     },
     [fetch]
   );

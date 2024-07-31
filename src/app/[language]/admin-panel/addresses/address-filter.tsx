@@ -9,19 +9,18 @@ import Popover from "@mui/material/Popover";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { CompanyFilterType } from "./company-filter-types";
+import { AddressFilterType } from "./address-filter-types";
 
-type FilterFormData = CompanyFilterType;
+type FilterFormData = AddressFilterType;
 
-function UserFilter() {
-  const { t } = useTranslation("admin-panel-employees");
+function AddressFilter() {
+  const { t } = useTranslation("admin-panel-addresses");
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const methods = useForm<FilterFormData>({
     defaultValues: {
-      name: "",
-      type: "",
+      customer_id: "",
     },
   });
 
@@ -41,36 +40,23 @@ function UserFilter() {
   const id = open ? "user-filter-popover" : undefined;
 
   const handleReset = () => {
-    reset({ name: "", type: "" });
+    reset({ customer_id: "" });
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.delete("name");
-    searchParams.delete("last_name");
 
     router.push(window.location.pathname);
   };
 
   useEffect(() => {
-    const filterName = searchParams.get("name");
-    const filterType = searchParams.get("type");
-    let filterParsed: CompanyFilterType = {
-      name: "",
-      type: "",
+    const filterCustomerId = searchParams.get("customer_id");
+    let filterParsed: AddressFilterType = {
+      customer_id: "",
     };
-    if (filterName) {
+    if (filterCustomerId) {
       handleClose();
       filterParsed = {
         ...filterParsed,
-        name: filterName,
-      };
-
-      reset(filterParsed);
-    }
-
-    if (filterType) {
-      handleClose();
-      filterParsed = {
-        ...filterParsed,
-        type: filterType,
+        customer_id: filterCustomerId,
       };
 
       reset(filterParsed);
@@ -99,14 +85,9 @@ function UserFilter() {
           <form
             onSubmit={handleSubmit((data) => {
               const searchParams = new URLSearchParams(window.location.search);
-              if (data.name) {
-                const roleFilter = data.name;
-                searchParams.set("name", roleFilter);
-              }
-
-              if (data.type) {
-                const roleFilter = data.type;
-                searchParams.set("type", roleFilter);
+              if (data.customer_id) {
+                const roleFilter = data.customer_id;
+                searchParams.set("customer_id", roleFilter);
               }
 
               router.push(
@@ -116,26 +97,17 @@ function UserFilter() {
           >
             <Grid container spacing={2} mb={3} mt={3}>
               <Grid item xs={12}>
-                <FormTextInput<CompanyFilterType>
-                  name="name"
-                  testId="new-user-password-confirmation"
-                  label={"Nombre"}
-                  type="text"
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <FormTextInput<CompanyFilterType>
-                  name="type"
-                  testId="new-user-password-confirmation"
-                  label={"Apellido"}
+                <FormTextInput<AddressFilterType>
+                  name="customer_id"
+                  testId="customer_id"
+                  label={"Id Cliente"}
                   type="text"
                 />
               </Grid>
 
               <Grid item xs={6}>
                 <Button variant="contained" type="submit">
-                  {t("admin-panel-employees:filter.actions.apply")}
+                  {t("admin-panel-addresses:filter.actions.apply")}
                 </Button>
               </Grid>
               <Grid item xs={6}>
@@ -148,10 +120,10 @@ function UserFilter() {
         </Container>
       </Popover>
       <Button aria-describedby={id} variant="contained" onClick={handleClick}>
-        {t("admin-panel-employees:filter.actions.filter")}
+        {t("admin-panel-addresses:filter.actions.filter")}
       </Button>
     </FormProvider>
   );
 }
 
-export default UserFilter;
+export default AddressFilter;

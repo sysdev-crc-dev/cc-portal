@@ -1,0 +1,32 @@
+{
+  "title": "Direcciones",
+  "table": {
+    "column1": "ID",
+    "column2": "Calle",
+    "column3": "No Ext",
+    "column4": "No Int",
+    "column5": "Colonia",
+    "column6": "C. Postal",
+    "column7": "Municipio",
+    "column8": "Estado",
+    "column9": "Notas"
+  },
+  "actions": {
+    "add": "Añadir",
+    "edit": "Editar",
+    "delete": "Borrar",
+    "create": "Crear Dirección"
+  },
+  "confirm": {
+    "delete": {
+      "title": "Borrar",
+      "message": "Estás seguro de borrar esta Dirección?"
+    }
+  },
+  "filter": {
+    "actions": {
+      "filter": "Filtros",
+      "apply": "Filtrar"
+    }
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "title": "Editar Dirección",
+  "actions": {
+    "submit": "Guardar",
+    "cancel": "Cancelar"
+  },
+  "inputs": {
+    "street": {
+      "label": "Calle",
+      "validation": {
+        "invalid": "Calle invalida",
+        "required": "Calle requerida"
+      }
+    },
+    "neighborhood": {
+      "label": "Colonia",
+      "validation": {
+        "required": "Colonia requerido"
+      }
+    },
+    "no_ext": {
+      "label": "No. ext.",
+      "validation": {
+        "required": "No. ext requerido"
+      }
+    },
+    "no_int": {
+      "label": "No. int."
+    },
+    "postal_code": {
+      "label": "Codigo postal",
+      "validation": {
+        "required": "Codigo Postal requerido",
+        "invalid": "Codigo postal debe ser de 5 digitos"
+      }
+    },
+    "town": {
+      "label": "Ciudad",
+      "validation": {
+        "required": "Ciudad requerido"
+      }
+    },
+    "state": {
+      "label": "Estado",
+      "validation": {
+        "required": "Estado requerido"
+      }
+    },
+    "extra_info": {
+      "label": "Info. extra"
+    },
+    "customer": {
+      "label": "Cliente",
+      "validation": {
+        "required": "La direccion tiene que estar relacionada a un cliente"
+      }
+    }
+  },
+  "alerts": {
+    "address": {
+      "success": "Dirección actualizada correctamente"
+    },
+    "server": {
+      "error": "La peticion ha fallado, intentelo mas tarde"
+    }
+  }
+}

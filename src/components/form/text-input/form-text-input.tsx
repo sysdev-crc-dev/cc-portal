@@ -52,7 +52,7 @@ const TextInput = forwardRef<
     <TextField
       ref={ref}
       name={props.name}
-      value={props.value}
+      value={props.value ?? ""}
       onChange={props.onChange}
       onBlur={props.onBlur}
       label={props.label}

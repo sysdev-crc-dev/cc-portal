@@ -4,7 +4,6 @@ import { Company } from "@/services/api/types/company";
 export type CompanyFilterType = {
   name: string;
   type: string;
-  is_active: boolean;
 };
 
 export type CompanySortType = {

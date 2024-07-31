@@ -10,6 +10,7 @@
     "employees": "Empleados",
     "companies": "Compañias",
     "customers": "Clientes",
+    "addresses": "Direcciones",
     "logout": "Cerrar Sesión"
   },
   "formInputs": {
