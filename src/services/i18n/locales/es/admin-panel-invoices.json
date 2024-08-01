@@ -1,0 +1,30 @@
+{
+  "title": "Datos de Facturación",
+  "table": {
+    "column1": "ID",
+    "column2": "Razón Social",
+    "column3": "RFC",
+    "column4": "C. Postal",
+    "column5": "Email",
+    "column6": "Uso del CFDI",
+    "column7": "Cliente"
+  },
+  "actions": {
+    "add": "Añadir",
+    "edit": "Editar",
+    "delete": "Borrar",
+    "create": "Crear Datos"
+  },
+  "confirm": {
+    "delete": {
+      "title": "Borrar",
+      "message": "Estás seguro de borrar esta información?"
+    }
+  },
+  "filter": {
+    "actions": {
+      "filter": "Filtros",
+      "apply": "Filtrar"
+    }
+  }
+}

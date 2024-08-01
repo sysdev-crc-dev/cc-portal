@@ -1,0 +1,58 @@
+{
+  "title": "Crear datos de facturación",
+  "actions": {
+    "submit": "Guardar",
+    "cancel": "Cancelar"
+  },
+  "inputs": {
+    "name": {
+      "label": "Razón Social",
+      "validation": {
+        "invalid": "Razón Social invalido",
+        "required": "Razón Social requerido"
+      }
+    },
+    "rfc": {
+      "label": "RFC",
+      "validation": {
+        "invalid": "RFC invalido",
+        "required": "RFC requerido"
+      }
+    },
+
+    "postal_code": {
+      "label": "Codigo Postal",
+      "validation": {
+        "required": "Apellido requerido",
+        "invalid": "Codigo Postal debe tener 5 caracteres"
+      }
+    },
+    "email": {
+      "label": "Correo",
+      "validation": {
+        "invalid": "Correo invalido",
+        "required": "Correo requerido"
+      }
+    },
+    "invoice_use": {
+      "label": "Uso del CFDI",
+      "validation": {
+        "required": "Este campo es requerido"
+      }
+    },
+    "customer": {
+      "label": "Cliente",
+      "validation": {
+        "required": "Los datos deben estar ligados a un cliente"
+      }
+    }
+  },
+  "alerts": {
+    "invoice": {
+      "success": "Los datos han sido creados de manera exitosa"
+    },
+    "server": {
+      "error": "La peticion ha fallado, intentelo mas tarde"
+    }
+  }
+}

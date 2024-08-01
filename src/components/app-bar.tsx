@@ -199,6 +199,14 @@ function ResponsiveAppBar() {
             >
               {t("common:navigation.addresses")}
             </Button>
+            <Button
+              onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: "white", display: "block" }}
+              component={Link}
+              href="/admin-panel/addresses"
+            >
+              {t("common:navigation.addresses")}
+            </Button>
           </Box>
 
           {!isLoaded ? (
