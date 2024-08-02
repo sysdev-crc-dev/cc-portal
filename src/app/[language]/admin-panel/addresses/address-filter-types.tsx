@@ -3,6 +3,7 @@ import { Address } from "@/services/api/types/address";
 
 export type AddressFilterType = {
   customer_id: string;
+  provider_id: string;
 };
 
 export type AddressSortType = {

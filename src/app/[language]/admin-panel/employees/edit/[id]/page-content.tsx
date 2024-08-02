@@ -197,7 +197,7 @@ function FormEditUser() {
           <Grid container spacing={2} mb={3} mt={3}>
             <Grid item xs={12}>
               <Typography variant="h6">
-                {t("admin-panel-employees-edit:title1")}
+                {t("admin-panel-employees-edit:title")}
               </Typography>
             </Grid>
 

@@ -18,34 +18,30 @@ import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { useTranslation } from "@/services/i18n/client";
 
 import {
-  useEditCompanyService,
-  useGetCompanyService,
-} from "@/services/api/services/companies";
+  useEditProviderService,
+  useGetProviderService,
+} from "@/services/api/services/providers";
 import { useParams } from "next/navigation";
+import { Provider } from "../../../../../../services/api/types/provider";
 
-type EditCompanyFormData = {
-  name: string;
-  type: string;
-};
+type EditProviderFormData = Pick<Provider, "name" | "tag">;
 
-const useValidationEditUserSchema = () => {
-  const { t } = useTranslation("admin-panel-companies-edit");
+const useValidationEditProvidersSchema = () => {
+  const { t } = useTranslation("admin-panel-providers-edit");
 
   return yup.object().shape({
     name: yup
       .string()
-      .required(t("admin-panel-companies-edit:inputs.name.validation.required"))
-      .min(3, t("admin-panel-companies-edit:inputs.name.validation.invalid")),
-    type: yup
+      .required(t("admin-panel-providers-edit:inputs.name.validation.required"))
+      .min(3, t("admin-panel-providers-edit:inputs.name.validation.invalid")),
+    tag: yup
       .string()
-      .required(
-        t("admin-panel-companies-edit:inputs.type.validation.required")
-      ),
+      .required(t("admin-panel-providers-edit:inputs.tag.validation.required")),
   });
 };
 
-function EditCompanyFormActions() {
-  const { t } = useTranslation("admin-panel-companies-edit");
+function EditProviderFormActions() {
+  const { t } = useTranslation("admin-panel-providers-edit");
   const { isSubmitting, isDirty } = useFormState();
   useLeavePage(isDirty);
 
@@ -56,48 +52,50 @@ function EditCompanyFormActions() {
       type="submit"
       disabled={isSubmitting}
     >
-      {t("admin-panel-companies-edit:actions.submit")}
+      {t("admin-panel-providers-edit:actions.submit")}
     </Button>
   );
 }
 
-function FormEditCompany() {
+function FormEditProvider() {
   const params = useParams();
-  const fetchGetCompany = useGetCompanyService();
-  const fetchEditCompany = useEditCompanyService();
-  const { t } = useTranslation("admin-panel-companies-edit");
-  const validationSchema = useValidationEditUserSchema();
-  const companyId = Number(Array.isArray(params.id) ? params.id[0] : params.id);
+  const fetchGetProvider = useGetProviderService();
+  const fetchEditProvider = useEditProviderService();
+  const { t } = useTranslation("admin-panel-providers-edit");
+  const validationSchema = useValidationEditProvidersSchema();
+  const providerId = Number(
+    Array.isArray(params.id) ? params.id[0] : params.id
+  );
   const { enqueueSnackbar } = useSnackbar();
 
-  const methods = useForm<EditCompanyFormData>({
+  const methods = useForm<EditProviderFormData>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",
-      type: "",
+      tag: "",
     },
   });
 
   const { handleSubmit, setError, reset } = methods;
 
   const onSubmit = handleSubmit(async (formData) => {
-    const { status } = await fetchEditCompany({
-      id: companyId,
+    const { status } = await fetchEditProvider({
+      id: providerId,
       data: {
         name: formData.name,
-        type: formData.type,
+        tag: formData.tag,
       },
     });
     if (status !== HTTP_CODES_ENUM.OK) {
       setError("root.serverError", { type: "400" });
-      enqueueSnackbar(t("admin-panel-companies-edit:alerts.server.error"), {
+      enqueueSnackbar(t("admin-panel-providers-edit:alerts.server.error"), {
         variant: "error",
       });
       return;
     }
     if (status === HTTP_CODES_ENUM.OK) {
       reset(formData);
-      enqueueSnackbar(t("admin-panel-companies-edit:alerts.company.success"), {
+      enqueueSnackbar(t("admin-panel-providers-edit:alerts.provider.success"), {
         variant: "success",
       });
 
@@ -107,17 +105,17 @@ function FormEditCompany() {
 
   useEffect(() => {
     const getInitialDataForEdit = async () => {
-      const { status, res } = await fetchGetCompany({ id: companyId });
+      const { status, res } = await fetchGetProvider({ id: providerId });
       if (status === HTTP_CODES_ENUM.OK) {
         reset({
           name: res.data.name,
-          type: res.data.type,
+          tag: res.data.tag,
         });
       }
     };
 
     getInitialDataForEdit();
-  }, [companyId, reset, fetchGetCompany]);
+  }, [providerId, reset, fetchGetProvider]);
 
   return (
     <FormProvider {...methods}>
@@ -126,38 +124,38 @@ function FormEditCompany() {
           <Grid container spacing={2} mb={3} mt={3}>
             <Grid item xs={12}>
               <Typography variant="h6">
-                {t("admin-panel-companies-edit:title")}
+                {t("admin-panel-providers-edit:title")}
               </Typography>
             </Grid>
 
             <Grid item xs={12}>
-              <FormTextInput<EditCompanyFormData>
+              <FormTextInput<EditProviderFormData>
                 name="name"
                 testId="new-user-email"
                 autoComplete="new-user-email"
-                label={t("admin-panel-companies-edit:inputs.name.label")}
+                label={t("admin-panel-providers-edit:inputs.name.label")}
               />
             </Grid>
 
             <Grid item xs={12}>
-              <FormTextInput<EditCompanyFormData>
-                name="type"
+              <FormTextInput<EditProviderFormData>
+                name="tag"
                 testId="new-user-password"
                 autoComplete="new-user-password"
-                label={t("admin-panel-companies-edit:inputs.type.label")}
+                label={t("admin-panel-providers-edit:inputs.tag.label")}
               />
             </Grid>
 
             <Grid item xs={12}>
-              <EditCompanyFormActions />
+              <EditProviderFormActions />
               <Box ml={1} component="span">
                 <Button
                   variant="contained"
                   color="inherit"
                   LinkComponent={Link}
-                  href="/admin-panel/companies"
+                  href="/admin-panel/providers"
                 >
-                  {t("admin-panel-companies-edit:actions.cancel")}
+                  {t("admin-panel-providers-edit:actions.cancel")}
                 </Button>
               </Box>
             </Grid>
@@ -171,7 +169,7 @@ function FormEditCompany() {
 function EditUser() {
   return (
     <>
-      <FormEditCompany />
+      <FormEditProvider />
     </>
   );
 }

@@ -1,4 +1,5 @@
 import { Customer } from "./customer";
+import { Provider } from "./provider";
 
 export type Address = {
   id: number;
@@ -12,4 +13,6 @@ export type Address = {
   extra_info: string;
   customer_id: number;
   customer?: Pick<Customer, "id">;
+  provider_id?: number;
+  provider?: Pick<Provider, "id">;
 };

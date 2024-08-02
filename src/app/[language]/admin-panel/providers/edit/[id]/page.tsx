@@ -9,7 +9,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { t } = await getServerTranslation(
     params.language,
-    "admin-panel-companies-edit"
+    "admin-panel-providers-edit"
   );
 
   return {

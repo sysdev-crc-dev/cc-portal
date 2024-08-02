@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   );
 
   return {
-    title: t("title1"),
+    title: t("title"),
   };
 }
 

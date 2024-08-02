@@ -35,8 +35,12 @@ export function useGetAddressesService() {
             `${data.filters.customer_id}`
           );
         }
-
-        // Filtrar por Customer ID
+        if (data.filters.provider_id) {
+          requestUrl.searchParams.append(
+            "provider_id",
+            `${data.filters.provider_id}`
+          );
+        }
       }
       if (data.sort) {
         const sortString = data.sort
@@ -87,6 +91,7 @@ export type AddressPostRequest = Pick<
   | "town"
   | "extra_info"
   | "customer_id"
+  | "provider_id"
 >;
 
 export type AddressPostResponse = Address;
@@ -120,6 +125,7 @@ export type AddressEditRequest = {
       | "town"
       | "extra_info"
       | "customer_id"
+      | "provider_id"
     >
   >;
 };

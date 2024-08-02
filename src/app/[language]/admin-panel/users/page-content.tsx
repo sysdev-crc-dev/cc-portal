@@ -136,7 +136,7 @@ function Users() {
         <Grid container item spacing={3} xs={12}>
           <Grid item xs>
             <Typography variant="h3">
-              {tUsers("admin-panel-users:title")}
+              {tUsers("admin-panel-users:title1")}
             </Typography>
           </Grid>
           <Grid container item xs="auto" wrap="nowrap" spacing={2}>

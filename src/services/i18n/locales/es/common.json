@@ -12,6 +12,7 @@
     "customers": "Clientes",
     "addresses": "Direcciones",
     "invoices": "Fiscal",
+    "providers": "Provedores",
     "logout": "Cerrar Sesión"
   },
   "formInputs": {

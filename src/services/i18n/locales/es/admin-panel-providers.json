@@ -1,0 +1,28 @@
+{
+  "title": "Provedores",
+  "table": {
+    "column1": "ID",
+    "column2": "Nombre",
+    "column3": "Identificador",
+    "column4": "Direccion",
+    "column5": "Materiales"
+  },
+  "actions": {
+    "add": "Añadir",
+    "edit": "Editar",
+    "delete": "Borrar",
+    "create": "Crear Provedor"
+  },
+  "confirm": {
+    "delete": {
+      "title": "Borrar",
+      "message": "Estás seguro de borrar este Provedor?"
+    }
+  },
+  "filter": {
+    "actions": {
+      "filter": "Filtros",
+      "apply": "Filtrar"
+    }
+  }
+}

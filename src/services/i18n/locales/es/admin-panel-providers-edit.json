@@ -1,0 +1,29 @@
+{
+  "title": "Editar Provedor",
+  "actions": {
+    "submit": "Guardar",
+    "cancel": "Cancelar"
+  },
+  "inputs": {
+    "name": {
+      "label": "Nombre",
+      "validation": {
+        "required": "Nombre requerido"
+      }
+    },
+    "tag": {
+      "label": "Identificador",
+      "validation": {
+        "required": "Identificador requerido"
+      }
+    }
+  },
+  "alerts": {
+    "provider": {
+      "success": "Provedor actualizado correctamente"
+    },
+    "server": {
+      "error": "La peticion ha fallado, intentelo mas tarde"
+    }
+  }
+}

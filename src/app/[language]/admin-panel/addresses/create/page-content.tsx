@@ -23,6 +23,10 @@ import {
 } from "../../../../../services/api/services/customers";
 import { useEffect, useState } from "react";
 import FormSelectInput from "../../../../../components/form/select/form-select";
+import {
+  ProvidersResponse,
+  useGetProvidersService,
+} from "../../../../../services/api/services/providers";
 type SelectOption = {
   id: number;
   name: string;
@@ -40,6 +44,7 @@ type CreateAddressFormData = Pick<
   | "extra_info"
 > & {
   customer_id: SelectOption;
+  provider_id: SelectOption;
 };
 
 const useValidationSchema = () => {
@@ -95,7 +100,9 @@ function CreateAddressFormActions() {
 function FormCreateAddress() {
   const fetchPostAddress = usePostAddressService();
   const fetchCustomers = useGetCustomersService();
+  const fetchProviders = useGetProvidersService();
   const [customersData, setCustomersData] = useState<SelectOption[]>([]);
+  const [providersData, setProvidersData] = useState<SelectOption[]>([]);
   const { t } = useTranslation("admin-panel-addresses-create");
   const validationSchema = useValidationSchema();
 
@@ -119,6 +126,26 @@ function FormCreateAddress() {
     fetchCustomersInfo();
   }, [fetchCustomers]);
 
+  useEffect(() => {
+    const fetchProvidersInfo = async () => {
+      const { res } = await fetchProviders({
+        page: 1,
+        limit: 100,
+      });
+
+      const data: SelectOption[] = (res as ProvidersResponse).data.map(
+        (value) => ({
+          id: value.id,
+          name: `${value.id} - ${value.name}`,
+        })
+      );
+
+      setProvidersData(data);
+    };
+
+    fetchProvidersInfo();
+  }, [fetchProviders]);
+
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<CreateAddressFormData>({
@@ -131,6 +158,7 @@ function FormCreateAddress() {
       postal_code: "",
       extra_info: "",
       customer_id: undefined,
+      provider_id: undefined,
       town: "",
       state: "QRO",
     },
@@ -149,7 +177,8 @@ function FormCreateAddress() {
         no_int: formData.no_int,
         state: formData.state,
         town: formData.town,
-        customer_id: formData.customer_id.id,
+        customer_id: formData.customer_id?.id ?? null,
+        provider_id: formData.provider_id?.id ?? null,
       });
 
       if (status !== HTTP_CODES_ENUM.CREATED) {
@@ -255,6 +284,19 @@ function FormCreateAddress() {
                 testId="customer_id"
                 label={t("admin-panel-addresses-create:inputs.customer.label")}
                 options={customersData}
+                keyValue="id"
+                renderOption={(option: SelectOption) => {
+                  return option.name;
+                }}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <FormSelectInput<CreateAddressFormData>
+                name="provider_id"
+                helperText="Este campo es opcional"
+                testId="provider_id"
+                label={t("admin-panel-addresses-create:inputs.provider.label")}
+                options={providersData}
                 keyValue="id"
                 renderOption={(option: SelectOption) => {
                   return option.name;

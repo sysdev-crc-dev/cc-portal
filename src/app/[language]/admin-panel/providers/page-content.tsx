@@ -14,9 +14,9 @@ import {
   useState,
 } from "react";
 import {
-  useAddressListQuery,
-  addressesQueryKeys,
-} from "./queries/addresses-queries";
+  useProviderListQuery,
+  providersQueryKeys,
+} from "./queries/providers-queries";
 import { TableVirtuoso } from "react-virtuoso";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
@@ -32,20 +32,20 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
-import { Address } from "@/services/api/types/address";
+import { Provider } from "@/services/api/types/provider";
 import Link from "@/components/link";
 import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
-import CompanyFilter from "./address-filter";
+import UserFilter from "./provider-filter";
 import { useRouter, useSearchParams } from "next/navigation";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import { AddressFilterType, AddressSortType } from "./address-filter-types";
+import { ProviderFilterType, ProviderSortType } from "./provider-filter-types";
 import { SortEnum } from "@/services/api/types/sort-type";
-import { useDeleteAddressService } from "../../../../services/api/services/addresses";
+import { useDeleteProviderService } from "../../../../services/api/services/providers";
 import { isObjectEmpty } from "../../../../utils";
 
-type UsersKeys = keyof Address;
+type UsersKeys = keyof Provider;
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
   padding: 0,
@@ -79,14 +79,14 @@ function TableSortCellWrapper(
   );
 }
 
-function Actions({ entitiy }: { entitiy: Address }) {
+function Actions({ entitiy }: { entitiy: Provider }) {
   const [open, setOpen] = useState(false);
   const { confirmDialog } = useConfirmDialog();
-  const fetchDelete = useDeleteAddressService();
+  const fetchDelete = useDeleteProviderService();
   const queryClient = useQueryClient();
   const anchorRef = useRef<HTMLDivElement>(null);
   const canDelete = true;
-  const { t: tAddresses } = useTranslation("admin-panel-addresses");
+  const { t: tProviders } = useTranslation("admin-panel-providers");
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -105,8 +105,8 @@ function Actions({ entitiy }: { entitiy: Address }) {
 
   const handleDelete = async () => {
     const isConfirmed = await confirmDialog({
-      title: tAddresses("admin-panel-addresses:confirm.delete.title"),
-      message: tAddresses("admin-panel-addresses:confirm.delete.message"),
+      title: tProviders("admin-panel-providers:confirm.delete.title"),
+      message: tProviders("admin-panel-providers:confirm.delete.message"),
     });
 
     if (isConfirmed) {
@@ -116,8 +116,8 @@ function Actions({ entitiy }: { entitiy: Address }) {
       const searchParamsFilter = searchParams.get("filter");
       const searchParamsSort = searchParams.get("sort");
 
-      let filter: AddressFilterType | undefined = undefined;
-      let sort: AddressSortType | undefined = {
+      let filter: ProviderFilterType | undefined = undefined;
+      let sort: ProviderSortType | undefined = {
         order: SortEnum.ASC,
         orderBy: "id",
       };
@@ -131,11 +131,11 @@ function Actions({ entitiy }: { entitiy: Address }) {
       }
 
       const previousData = queryClient.getQueryData<
-        InfiniteData<{ nextPage: number; data: Address[] }>
-      >(addressesQueryKeys.list().sub.by({ sort, filter }).key);
+        InfiniteData<{ nextPage: number; data: Provider[] }>
+      >(providersQueryKeys.list().sub.by({ sort, filter }).key);
 
       await queryClient.cancelQueries({
-        queryKey: addressesQueryKeys.list().key,
+        queryKey: providersQueryKeys.list().key,
       });
 
       const newData = {
@@ -147,7 +147,7 @@ function Actions({ entitiy }: { entitiy: Address }) {
       };
 
       queryClient.setQueryData(
-        addressesQueryKeys.list().sub.by({ sort, filter }).key,
+        providersQueryKeys.list().sub.by({ sort, filter }).key,
         newData
       );
 
@@ -162,9 +162,9 @@ function Actions({ entitiy }: { entitiy: Address }) {
       size="small"
       variant="contained"
       LinkComponent={Link}
-      href={`/admin-panel/addresses/edit/${entitiy.id}`}
+      href={`/admin-panel/providers/edit/${entitiy.id}`}
     >
-      {tAddresses("admin-panel-addresses:actions.edit")}
+      {tProviders("admin-panel-providers:actions.edit")}
     </Button>
   );
 
@@ -226,7 +226,7 @@ function Actions({ entitiy }: { entitiy: Address }) {
                       }}
                       onClick={handleDelete}
                     >
-                      {tAddresses("admin-panel-addresses:actions.delete")}
+                      {tProviders("admin-panel-providers:actions.delete")}
                     </MenuItem>
                   )}
                 </MenuList>
@@ -239,8 +239,8 @@ function Actions({ entitiy }: { entitiy: Address }) {
   );
 }
 
-function Addresses() {
-  const { t: tAddresses } = useTranslation("admin-panel-addresses");
+function Providers() {
+  const { t: tProviders } = useTranslation("admin-panel-providers");
   const searchParams = useSearchParams();
   const router = useRouter();
   const [{ order, orderBy }, setSort] = useState<{
@@ -266,22 +266,36 @@ function Addresses() {
     router.push(window.location.pathname + "?" + searchParams.toString());
   };
 
-  const filter = useMemo<Partial<AddressFilterType | undefined>>(() => {
-    const filterCustomerId = searchParams.get("customer_id");
-    const filterProviderId = searchParams.get("provider_id");
-    const filter: Partial<AddressFilterType> = {};
-    if (filterCustomerId) {
-      filter.customer_id = filterCustomerId;
+  const filter = useMemo<Partial<ProviderFilterType | undefined>>(() => {
+    const filterName = searchParams.get("name");
+    const filterTag = searchParams.get("tag");
+    const filterAddress = searchParams.get("address_id");
+    const filterMaterial = searchParams.get("material_id");
+    const filterId = searchParams.get("id");
+    const filter: Partial<ProviderFilterType> = {};
+    if (filterName) {
+      filter.name = filterName;
     }
-    if (filterProviderId) {
-      filter.provider_id = filterProviderId;
+
+    if (filterTag) {
+      filter.tag = filterTag;
+    }
+
+    if (filterAddress) {
+      filter.address_id = filterAddress;
+    }
+    if (filterMaterial) {
+      filter.material_id = filterMaterial;
+    }
+    if (filterId) {
+      filter.id = filterId;
     }
 
     return isObjectEmpty(filter) ? undefined : filter;
   }, [searchParams]);
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useAddressListQuery({ filter, sort: { order, orderBy } });
+    useProviderListQuery({ filter, sort: { order, orderBy } });
 
   const handleScroll = useCallback(() => {
     if (!hasNextPage || isFetchingNextPage) return;
@@ -290,8 +304,8 @@ function Addresses() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as Address[]) ??
-      ([] as Address[]);
+      (data?.pages.flatMap((page) => page?.data) as Provider[]) ??
+      ([] as Provider[]);
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);
 
@@ -301,21 +315,21 @@ function Addresses() {
         <Grid container item spacing={3} xs={12}>
           <Grid item xs>
             <Typography variant="h3">
-              {tAddresses("admin-panel-addresses:title")}
+              {tProviders("admin-panel-providers:title")}
             </Typography>
           </Grid>
           <Grid container item xs="auto" wrap="nowrap" spacing={2}>
             <Grid item xs="auto">
-              <CompanyFilter />
+              <UserFilter />
             </Grid>
             <Grid item xs="auto">
               <Button
                 variant="contained"
                 LinkComponent={Link}
-                href="/admin-panel/addresses/create"
+                href="/admin-panel/providers/create"
                 color="success"
               >
-                {tAddresses("admin-panel-addresses:actions.create")}
+                {tProviders("admin-panel-providers:actions.create")}
               </Button>
             </Grid>
           </Grid>
@@ -339,32 +353,25 @@ function Addresses() {
                     column="id"
                     handleRequestSort={handleRequestSort}
                   >
-                    {tAddresses("admin-panel-addresses:table.column1")}
+                    {tProviders("admin-panel-providers:table.column1")}
                   </TableSortCellWrapper>
-                  <TableCell style={{ width: 160 }}>
-                    {tAddresses("admin-panel-addresses:table.column2")}
+                  <TableCell style={{ width: 200 }}>
+                    {tProviders("admin-panel-providers:table.column2")}
                   </TableCell>
-                  <TableCell>
-                    {tAddresses("admin-panel-addresses:table.column3")}
-                  </TableCell>
+                  <TableSortCellWrapper
+                    orderBy={orderBy}
+                    order={order}
+                    column="name"
+                    handleRequestSort={handleRequestSort}
+                  >
+                    {tProviders("admin-panel-providers:table.column3")}
+                  </TableSortCellWrapper>
 
-                  <TableCell>
-                    {tAddresses("admin-panel-addresses:table.column4")}
+                  <TableCell style={{ width: 80 }}>
+                    {tProviders("admin-panel-providers:table.column4")}
                   </TableCell>
-                  <TableCell>
-                    {tAddresses("admin-panel-addresses:table.column5")}
-                  </TableCell>
-                  <TableCell>
-                    {tAddresses("admin-panel-addresses:table.column6")}
-                  </TableCell>
-                  <TableCell>
-                    {tAddresses("admin-panel-addresses:table.column7")}
-                  </TableCell>
-                  <TableCell>
-                    {tAddresses("admin-panel-addresses:table.column8")}
-                  </TableCell>
-                  <TableCell>
-                    {tAddresses("admin-panel-addresses:table.column9")}
+                  <TableCell style={{ width: 80 }}>
+                    {tProviders("admin-panel-providers:table.column5")}
                   </TableCell>
 
                   <TableCell style={{ width: 100 }}>Acciones</TableCell>
@@ -381,20 +388,13 @@ function Addresses() {
             itemContent={(index, entity) => (
               <>
                 <TableCell style={{ width: 50 }}></TableCell>
-                <TableCell>{entity?.id}</TableCell>
-                <TableCell>{entity?.street}</TableCell>
-                <TableCell>{entity?.no_ext}</TableCell>
+                <TableCell style={{ width: 100 }}>{entity?.id}</TableCell>
+                <TableCell>{entity?.name}</TableCell>
+                <TableCell style={{ width: 80 }}>{entity?.tag}</TableCell>
+                <TableCell>{entity?.address_id}</TableCell>
                 <TableCell>
-                  {entity?.no_int ? entity?.no_int : "N/A  "}
+                  {entity?.materials.length > 0 ? "Si" : "No"}
                 </TableCell>
-                <TableCell>{entity?.neighborhood}</TableCell>
-                <TableCell>{entity?.postal_code}</TableCell>
-                <TableCell>{entity?.town}</TableCell>
-                <TableCell>{entity?.state}</TableCell>
-                <TableCell>
-                  {entity?.extra_info ? entity?.extra_info : "N/A"}
-                </TableCell>
-
                 <TableCell>
                   <Actions entitiy={entity} />
                 </TableCell>
@@ -407,6 +407,6 @@ function Addresses() {
   );
 }
 
-export default withPageRequiredAuth(Addresses, {
+export default withPageRequiredAuth(Providers, {
   roles: [RoleEnum.Admin, RoleEnum.Staff],
 });

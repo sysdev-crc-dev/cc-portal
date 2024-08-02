@@ -21,6 +21,7 @@ function AddressFilter() {
   const methods = useForm<FilterFormData>({
     defaultValues: {
       customer_id: "",
+      provider_id: "",
     },
   });
 
@@ -40,7 +41,7 @@ function AddressFilter() {
   const id = open ? "user-filter-popover" : undefined;
 
   const handleReset = () => {
-    reset({ customer_id: "" });
+    reset({ customer_id: "", provider_id: "" });
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.delete("name");
 
@@ -49,14 +50,25 @@ function AddressFilter() {
 
   useEffect(() => {
     const filterCustomerId = searchParams.get("customer_id");
+    const filterProviderId = searchParams.get("provider_id");
     let filterParsed: AddressFilterType = {
       customer_id: "",
+      provider_id: "",
     };
     if (filterCustomerId) {
       handleClose();
       filterParsed = {
         ...filterParsed,
         customer_id: filterCustomerId,
+      };
+
+      reset(filterParsed);
+    }
+    if (filterProviderId) {
+      handleClose();
+      filterParsed = {
+        ...filterParsed,
+        provider_id: filterProviderId,
       };
 
       reset(filterParsed);
@@ -89,6 +101,10 @@ function AddressFilter() {
                 const roleFilter = data.customer_id;
                 searchParams.set("customer_id", roleFilter);
               }
+              if (data.provider_id) {
+                const roleFilter = data.provider_id;
+                searchParams.set("provider_id", roleFilter);
+              }
 
               router.push(
                 window.location.pathname + "?" + searchParams.toString()
@@ -101,6 +117,14 @@ function AddressFilter() {
                   name="customer_id"
                   testId="customer_id"
                   label={"Id Cliente"}
+                  type="text"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormTextInput<AddressFilterType>
+                  name="provider_id"
+                  testId="provider_id"
+                  label={"Id Provedor"}
                   type="text"
                 />
               </Grid>

@@ -21,6 +21,7 @@ type SelectInputProps<T extends object> = {
   readOnly?: boolean;
   error?: string;
   testId?: string;
+  helperText?: string;
   keyValue: keyof T;
   options: T[];
   renderOption: (option: T) => React.ReactNode;
@@ -71,6 +72,9 @@ function SelectInputRaw<T extends object>(
           </MenuItem>
         ))}
       </Select>
+      {!!props.helperText && (
+        <FormHelperText variant="outlined">{props.helperText}</FormHelperText>
+      )}
       {!!props.error && (
         <FormHelperText data-testid={`${props.testId}-error`}>
           {props.error}

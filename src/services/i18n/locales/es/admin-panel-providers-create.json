@@ -1,0 +1,29 @@
+{
+  "title": "Crear provedor",
+  "actions": {
+    "submit": "Guardar",
+    "cancel": "Cancelar"
+  },
+  "inputs": {
+    "name": {
+      "label": "Nombre",
+      "validation": {
+        "required": "Nombre requerido"
+      }
+    },
+    "tag": {
+      "label": "Identificador",
+      "validation": {
+        "required": "Identificador requerido"
+      }
+    }
+  },
+  "alerts": {
+    "provider": {
+      "success": "El provedor ha sido creado de manera exitosa"
+    },
+    "server": {
+      "error": "La peticion ha fallado, intentelo mas tarde"
+    }
+  }
+}

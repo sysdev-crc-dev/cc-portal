@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import EditUser from "./page-content";
 import { getServerTranslation } from "@/services/i18n";
+import Companies from "./page-content";
 
 type Props = {
   params: { language: string };
@@ -9,7 +9,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { t } = await getServerTranslation(
     params.language,
-    "admin-panel-companies-edit"
+    "admin-panel-companies"
   );
 
   return {
@@ -17,4 +17,4 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default EditUser;
+export default Companies;

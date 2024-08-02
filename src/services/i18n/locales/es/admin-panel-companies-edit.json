@@ -1,5 +1,5 @@
 {
-  "title1": "Editar Empleado",
+  "title": "Editar Compañia",
   "actions": {
     "submit": "Guardar",
     "cancel": "Cancelar"

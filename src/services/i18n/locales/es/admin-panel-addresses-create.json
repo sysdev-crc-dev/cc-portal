@@ -54,6 +54,12 @@
       "validation": {
         "required": "La direccion tiene que estar relacionada a un cliente"
       }
+    },
+    "provider": {
+      "label": "Provedor",
+      "validation": {
+        "required": "La direccion tiene que estar relacionada a un cliente"
+      }
     }
   },
   "alerts": {
