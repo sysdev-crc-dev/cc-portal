@@ -5,5 +5,6 @@ export type Material = {
   name: string;
   prefix: string;
   stock: number;
-  provider_id: Pick<Provider, "id" | "name">[];
+  provider_id: number;
+  provider: Pick<Provider, "id" | "name">;
 };

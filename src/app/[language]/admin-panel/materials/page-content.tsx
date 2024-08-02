@@ -14,9 +14,9 @@ import {
   useState,
 } from "react";
 import {
-  useProviderListQuery,
-  providersQueryKeys,
-} from "./queries/providers-queries";
+  useMaterialListQuery,
+  materialsQueryKeys,
+} from "./queries/materials-queries";
 import { TableVirtuoso } from "react-virtuoso";
 import TableCell from "@mui/material/TableCell";
 import TableRow from "@mui/material/TableRow";
@@ -32,20 +32,20 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
-import { Provider } from "@/services/api/types/provider";
+import { Material } from "@/services/api/types/material";
 import Link from "@/components/link";
 import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
 import { InfiniteData, useQueryClient } from "@tanstack/react-query";
-import UserFilter from "./provider-filter";
+import UserFilter from "./material-filter";
 import { useRouter, useSearchParams } from "next/navigation";
 import TableSortLabel from "@mui/material/TableSortLabel";
-import { ProviderFilterType, ProviderSortType } from "./provider-filter-types";
+import { MaterialFilterType, MaterialSortType } from "./material-filter-types";
 import { SortEnum } from "@/services/api/types/sort-type";
-import { useDeleteProviderService } from "../../../../services/api/services/providers";
+import { useDeleteMaterialService } from "../../../../services/api/services/materials";
 import { isObjectEmpty } from "../../../../utils";
 
-type UsersKeys = keyof Provider;
+type UsersKeys = keyof Material;
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
   padding: 0,
@@ -79,14 +79,14 @@ function TableSortCellWrapper(
   );
 }
 
-function Actions({ entitiy }: { entitiy: Provider }) {
+function Actions({ entitiy }: { entitiy: Material }) {
   const [open, setOpen] = useState(false);
   const { confirmDialog } = useConfirmDialog();
-  const fetchDelete = useDeleteProviderService();
+  const fetchDelete = useDeleteMaterialService();
   const queryClient = useQueryClient();
   const anchorRef = useRef<HTMLDivElement>(null);
   const canDelete = true;
-  const { t: tProviders } = useTranslation("admin-panel-providers");
+  const { t: tMaterials } = useTranslation("admin-panel-materials");
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -105,8 +105,8 @@ function Actions({ entitiy }: { entitiy: Provider }) {
 
   const handleDelete = async () => {
     const isConfirmed = await confirmDialog({
-      title: tProviders("admin-panel-providers:confirm.delete.title"),
-      message: tProviders("admin-panel-providers:confirm.delete.message"),
+      title: tMaterials("admin-panel-materials:confirm.delete.title"),
+      message: tMaterials("admin-panel-materials:confirm.delete.message"),
     });
 
     if (isConfirmed) {
@@ -116,8 +116,8 @@ function Actions({ entitiy }: { entitiy: Provider }) {
       const searchParamsFilter = searchParams.get("filter");
       const searchParamsSort = searchParams.get("sort");
 
-      let filter: ProviderFilterType | undefined = undefined;
-      let sort: ProviderSortType | undefined = {
+      let filter: MaterialFilterType | undefined = undefined;
+      let sort: MaterialSortType | undefined = {
         order: SortEnum.ASC,
         orderBy: "id",
       };
@@ -131,11 +131,11 @@ function Actions({ entitiy }: { entitiy: Provider }) {
       }
 
       const previousData = queryClient.getQueryData<
-        InfiniteData<{ nextPage: number; data: Provider[] }>
-      >(providersQueryKeys.list().sub.by({ sort, filter }).key);
+        InfiniteData<{ nextPage: number; data: Material[] }>
+      >(materialsQueryKeys.list().sub.by({ sort, filter }).key);
 
       await queryClient.cancelQueries({
-        queryKey: providersQueryKeys.list().key,
+        queryKey: materialsQueryKeys.list().key,
       });
 
       const newData = {
@@ -147,7 +147,7 @@ function Actions({ entitiy }: { entitiy: Provider }) {
       };
 
       queryClient.setQueryData(
-        providersQueryKeys.list().sub.by({ sort, filter }).key,
+        materialsQueryKeys.list().sub.by({ sort, filter }).key,
         newData
       );
 
@@ -162,9 +162,9 @@ function Actions({ entitiy }: { entitiy: Provider }) {
       size="small"
       variant="contained"
       LinkComponent={Link}
-      href={`/admin-panel/providers/edit/${entitiy.id}`}
+      href={`/admin-panel/materials/edit/${entitiy.id}`}
     >
-      {tProviders("admin-panel-providers:actions.edit")}
+      {tMaterials("admin-panel-materials:actions.edit")}
     </Button>
   );
 
@@ -226,7 +226,7 @@ function Actions({ entitiy }: { entitiy: Provider }) {
                       }}
                       onClick={handleDelete}
                     >
-                      {tProviders("admin-panel-providers:actions.delete")}
+                      {tMaterials("admin-panel-materials:actions.delete")}
                     </MenuItem>
                   )}
                 </MenuList>
@@ -239,8 +239,8 @@ function Actions({ entitiy }: { entitiy: Provider }) {
   );
 }
 
-function Providers() {
-  const { t: tProviders } = useTranslation("admin-panel-providers");
+function Materials() {
+  const { t: tMaterials } = useTranslation("admin-panel-materials");
   const searchParams = useSearchParams();
   const router = useRouter();
   const [{ order, orderBy }, setSort] = useState<{
@@ -266,36 +266,33 @@ function Providers() {
     router.push(window.location.pathname + "?" + searchParams.toString());
   };
 
-  const filter = useMemo<Partial<ProviderFilterType | undefined>>(() => {
+  const filter = useMemo<Partial<MaterialFilterType | undefined>>(() => {
     const filterName = searchParams.get("name");
-    const filterTag = searchParams.get("tag");
-    const filterAddress = searchParams.get("address_id");
-    const filterMaterial = searchParams.get("material_id");
+    const filterPrefix = searchParams.get("prefix");
     const filterId = searchParams.get("id");
-    const filter: Partial<ProviderFilterType> = {};
+    const filterProvider = searchParams.get("provider_id");
+    const filter: Partial<MaterialFilterType> = {};
     if (filterName) {
       filter.name = filterName;
     }
 
-    if (filterTag) {
-      filter.tag = filterTag;
+    if (filterPrefix) {
+      filter.prefix = filterPrefix;
     }
 
-    if (filterAddress) {
-      filter.address_id = filterAddress;
-    }
-    if (filterMaterial) {
-      filter.material_id = filterMaterial;
-    }
     if (filterId) {
       filter.id = filterId;
+    }
+
+    if (filterProvider) {
+      filter.provider_id = filterProvider;
     }
 
     return isObjectEmpty(filter) ? undefined : filter;
   }, [searchParams]);
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useProviderListQuery({ filter, sort: { order, orderBy } });
+    useMaterialListQuery({ filter, sort: { order, orderBy } });
 
   const handleScroll = useCallback(() => {
     if (!hasNextPage || isFetchingNextPage) return;
@@ -304,8 +301,8 @@ function Providers() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as Provider[]) ??
-      ([] as Provider[]);
+      (data?.pages.flatMap((page) => page?.data) as Material[]) ??
+      ([] as Material[]);
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);
 
@@ -315,7 +312,7 @@ function Providers() {
         <Grid container item spacing={3} xs={12}>
           <Grid item xs>
             <Typography variant="h3">
-              {tProviders("admin-panel-providers:title")}
+              {tMaterials("admin-panel-materials:title")}
             </Typography>
           </Grid>
           <Grid container item xs="auto" wrap="nowrap" spacing={2}>
@@ -326,10 +323,10 @@ function Providers() {
               <Button
                 variant="contained"
                 LinkComponent={Link}
-                href="/admin-panel/providers/create"
+                href="/admin-panel/materials/create"
                 color="success"
               >
-                {tProviders("admin-panel-providers:actions.create")}
+                {tMaterials("admin-panel-materials:actions.create")}
               </Button>
             </Grid>
           </Grid>
@@ -353,10 +350,10 @@ function Providers() {
                     column="id"
                     handleRequestSort={handleRequestSort}
                   >
-                    {tProviders("admin-panel-providers:table.column1")}
+                    {tMaterials("admin-panel-materials:table.column1")}
                   </TableSortCellWrapper>
                   <TableCell style={{ width: 200 }}>
-                    {tProviders("admin-panel-providers:table.column2")}
+                    {tMaterials("admin-panel-materials:table.column2")}
                   </TableCell>
                   <TableSortCellWrapper
                     orderBy={orderBy}
@@ -364,14 +361,11 @@ function Providers() {
                     column="name"
                     handleRequestSort={handleRequestSort}
                   >
-                    {tProviders("admin-panel-providers:table.column3")}
+                    {tMaterials("admin-panel-materials:table.column3")}
                   </TableSortCellWrapper>
 
                   <TableCell style={{ width: 80 }}>
-                    {tProviders("admin-panel-providers:table.column4")}
-                  </TableCell>
-                  <TableCell style={{ width: 80 }}>
-                    {tProviders("admin-panel-providers:table.column5")}
+                    {tMaterials("admin-panel-materials:table.column4")}
                   </TableCell>
 
                   <TableCell style={{ width: 100 }}>Acciones</TableCell>
@@ -389,34 +383,23 @@ function Providers() {
               <>
                 <TableCell style={{ width: 50 }}></TableCell>
                 <TableCell style={{ width: 100 }}>{entity?.id}</TableCell>
-                <TableCell>{entity?.name}</TableCell>
-                <TableCell style={{ width: 80 }}>{entity?.tag}</TableCell>
                 <TableCell>
-                  {entity?.address?.id ? (
+                  {" "}
+                  {entity?.prefix ? `[${entity.prefix}]` : ""} {entity?.name}
+                </TableCell>
+                <TableCell style={{ width: 80 }}>{entity?.stock}</TableCell>
+                <TableCell>
+                  {entity?.provider_id ? (
                     <Button
                       variant="contained"
                       color="secondary"
                       LinkComponent={Link}
-                      href={`/admin-panel/addresses?provider_id=${entity?.id}`}
+                      href={`/admin-panel/providers?id=${entity?.provider_id}`}
                     >
                       Ver
                     </Button>
                   ) : (
                     "N/A"
-                  )}
-                </TableCell>
-                <TableCell>
-                  {entity?.materials.length > 0 ? (
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      LinkComponent={Link}
-                      href={`/admin-panel/materials?provider_id=${entity?.id}`}
-                    >
-                      Ver
-                    </Button>
-                  ) : (
-                    "No"
                   )}
                 </TableCell>
                 <TableCell>
@@ -431,6 +414,6 @@ function Providers() {
   );
 }
 
-export default withPageRequiredAuth(Providers, {
+export default withPageRequiredAuth(Materials, {
   roles: [RoleEnum.Admin, RoleEnum.Staff],
 });

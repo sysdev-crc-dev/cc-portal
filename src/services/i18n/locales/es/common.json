@@ -13,6 +13,9 @@
     "addresses": "Direcciones",
     "invoices": "Fiscal",
     "providers": "Provedores",
+    "materials": "Materiales",
+    "supplies": "Insumos",
+    "processes": "Procesos",
     "logout": "Cerrar Sesión"
   },
   "formInputs": {

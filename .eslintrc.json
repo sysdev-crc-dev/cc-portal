@@ -39,10 +39,6 @@
         "message": "Do not access any of the properties inside this object directly. It's for internal usage only. More info here: https://react-hook-form.com/docs/useform/control"
       },
       {
-        "selector": "VariableDeclaration[declarations.0.init.callee.name=useForm] ~ VariableDeclaration[declarations.0.init.callee.name=useWatch]",
-        "message": "\"useWatch\" in main form component (which use \"useForm\") will re-render the whole form component. Move your useWatch's logic to separate component."
-      },
-      {
         "selector": "VariableDeclaration[declarations.0.init.callee.name=useForm] ~ VariableDeclaration[declarations.0.init.callee.name=useFieldArray]",
         "message": "\"useFieldArray\" in main form component (which use \"useForm\") will re-render the whole form component. Move your useFieldArray's logic to separate component."
       },

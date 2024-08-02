@@ -9,22 +9,21 @@ import Popover from "@mui/material/Popover";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { ProviderFilterType } from "./provider-filter-types";
+import { MaterialFilterType } from "./material-filter-types";
 
-type FilterFormData = ProviderFilterType;
+type FilterFormData = MaterialFilterType;
 
 function UserFilter() {
-  const { t } = useTranslation("admin-panel-employees");
+  const { t } = useTranslation("admin-panel-materials");
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const methods = useForm<FilterFormData>({
     defaultValues: {
       name: "",
-      tag: "",
-      address_id: "",
-      material_id: "",
+      prefix: "",
       id: "",
+      provider_id: "",
     },
   });
 
@@ -44,35 +43,24 @@ function UserFilter() {
   const id = open ? "user-filter-popover" : undefined;
 
   const handleReset = () => {
-    reset({
-      name: "",
-      tag: "",
-      address_id: "",
-      material_id: "",
-      id: "",
-    });
+    reset({ name: "", prefix: "", id: "", provider_id: "" });
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.delete("name");
-    searchParams.delete("tag");
-    searchParams.delete("address_id");
-    searchParams.delete("material_id");
-    searchParams.delete("id");
+    searchParams.delete("last_name");
 
     router.push(window.location.pathname);
   };
 
   useEffect(() => {
     const filterName = searchParams.get("name");
-    const filterTag = searchParams.get("tag");
-    const filterAddress = searchParams.get("address_id");
-    const filterMaterial = searchParams.get("material_id");
+    const filterPrefix = searchParams.get("prefix");
     const filterId = searchParams.get("id");
-    let filterParsed: ProviderFilterType = {
+    const filterProvider = searchParams.get("provider_id");
+    let filterParsed: MaterialFilterType = {
       name: "",
-      tag: "",
-      address_id: "",
-      material_id: "",
+      prefix: "",
       id: "",
+      provider_id: "",
     };
     if (filterName) {
       handleClose();
@@ -84,11 +72,11 @@ function UserFilter() {
       reset(filterParsed);
     }
 
-    if (filterTag) {
+    if (filterPrefix) {
       handleClose();
       filterParsed = {
         ...filterParsed,
-        tag: filterTag,
+        prefix: filterPrefix,
       };
 
       reset(filterParsed);
@@ -102,20 +90,11 @@ function UserFilter() {
 
       reset(filterParsed);
     }
-    if (filterAddress) {
+    if (filterProvider) {
       handleClose();
       filterParsed = {
         ...filterParsed,
-        tag: filterAddress,
-      };
-
-      reset(filterParsed);
-    }
-    if (filterMaterial) {
-      handleClose();
-      filterParsed = {
-        ...filterParsed,
-        tag: filterMaterial,
+        provider_id: filterProvider,
       };
 
       reset(filterParsed);
@@ -149,21 +128,17 @@ function UserFilter() {
                 searchParams.set("name", roleFilter);
               }
 
-              if (data.tag) {
-                const roleFilter = data.tag;
-                searchParams.set("tag", roleFilter);
+              if (data.prefix) {
+                const roleFilter = data.prefix;
+                searchParams.set("prefix", roleFilter);
+              }
+              if (data.provider_id) {
+                const roleFilter = data.provider_id;
+                searchParams.set("provider_id", roleFilter);
               }
               if (data.id) {
                 const roleFilter = data.id;
                 searchParams.set("id", roleFilter);
-              }
-              if (data.address_id) {
-                const roleFilter = data.address_id;
-                searchParams.set("address_id", roleFilter);
-              }
-              if (data.material_id) {
-                const roleFilter = data.material_id;
-                searchParams.set("material_id", roleFilter);
               }
 
               router.push(
@@ -173,7 +148,7 @@ function UserFilter() {
           >
             <Grid container spacing={2} mb={3} mt={3}>
               <Grid item xs={12}>
-                <FormTextInput<ProviderFilterType>
+                <FormTextInput<MaterialFilterType>
                   name="name"
                   testId="new-user-password-confirmation"
                   label={"Nombre"}
@@ -182,41 +157,33 @@ function UserFilter() {
               </Grid>
 
               <Grid item xs={12}>
-                <FormTextInput<ProviderFilterType>
-                  name="tag"
+                <FormTextInput<MaterialFilterType>
+                  name="prefix"
                   testId="new-user-password-confirmation"
-                  label={"Identificador"}
+                  label={"Prefijo"}
                   type="text"
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormTextInput<ProviderFilterType>
+                <FormTextInput<MaterialFilterType>
                   name="id"
                   testId="new-user-password-confirmation"
-                  label={"Provedor"}
+                  label={"Id Material"}
                   type="text"
                 />
               </Grid>
               <Grid item xs={12}>
-                <FormTextInput<ProviderFilterType>
-                  name="address_id"
+                <FormTextInput<MaterialFilterType>
+                  name="provider_id"
                   testId="new-user-password-confirmation"
-                  label={"Direccion"}
-                  type="text"
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <FormTextInput<ProviderFilterType>
-                  name="material_id"
-                  testId="new-user-password-confirmation"
-                  label={"Material"}
+                  label={"Id Provedor"}
                   type="text"
                 />
               </Grid>
 
               <Grid item xs={6}>
                 <Button variant="contained" type="submit">
-                  {t("admin-panel-employees:filter.actions.apply")}
+                  {t("admin-panel-materials:filter.actions.apply")}
                 </Button>
               </Grid>
               <Grid item xs={6}>
@@ -229,7 +196,7 @@ function UserFilter() {
         </Container>
       </Popover>
       <Button aria-describedby={id} variant="contained" onClick={handleClick}>
-        {t("admin-panel-employees:filter.actions.filter")}
+        {t("admin-panel-materials:filter.actions.filter")}
       </Button>
     </FormProvider>
   );

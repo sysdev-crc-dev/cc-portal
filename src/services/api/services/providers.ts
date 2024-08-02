@@ -32,18 +32,24 @@ export function useGetProvidersService() {
         if (data.filters.name) {
           requestUrl.searchParams.append("name", `~${data.filters.name}`);
         }
-        // if (data.filters.last_name) {
-        //   requestUrl.searchParams.append(
-        //     "last_name",
-        //     `~${data.filters.last_name}`
-        //   );
-        // }
-        // if (data.filters.cell_phone) {
-        //   requestUrl.searchParams.append(
-        //     "cell_phone",
-        //     `~${data.filters.cell_phone}`
-        //   );
-        // }
+        if (data.filters.address_id) {
+          requestUrl.searchParams.append(
+            ".address_id",
+            `${data.filters.address_id}`
+          );
+        }
+        if (data.filters.id) {
+          requestUrl.searchParams.append("id", `${data.filters.id}`);
+        }
+        if (data.filters.tag) {
+          requestUrl.searchParams.append("tag", `~${data.filters.tag}`);
+        }
+        if (data.filters.material_id) {
+          requestUrl.searchParams.append(
+            "ma.material_id",
+            `~{data.filters.material_id}`
+          );
+        }
       }
       if (data.sort) {
         const sortString = data.sort
