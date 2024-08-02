@@ -1,0 +1,26 @@
+{
+  "title": "Insumos",
+  "table": {
+    "column1": "ID",
+    "column2": "Nombre",
+    "column3": "Stock"
+  },
+  "actions": {
+    "add": "Añadir",
+    "edit": "Editar",
+    "delete": "Borrar",
+    "create": "Crear Insumo"
+  },
+  "confirm": {
+    "delete": {
+      "title": "Borrar",
+      "message": "Estás seguro de borrar esta Insumo?"
+    }
+  },
+  "filter": {
+    "actions": {
+      "filter": "Filtros",
+      "apply": "Filtrar"
+    }
+  }
+}

@@ -223,6 +223,14 @@ function ResponsiveAppBar() {
             >
               {t("common:navigation.materials")}
             </Button>
+            <Button
+              onClick={handleCloseNavMenu}
+              sx={{ my: 2, color: "white", display: "block" }}
+              component={Link}
+              href="/admin-panel/supplies"
+            >
+              {t("common:navigation.supplies")}
+            </Button>
           </Box>
 
           {!isLoaded ? (
