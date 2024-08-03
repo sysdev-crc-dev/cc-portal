@@ -1,21 +1,26 @@
 {
-  "title": "Insumos",
+  "title": "Procesos",
   "table": {
     "column1": "ID",
     "column2": "Nombre",
-    "column3": "Stock"
+    "column3": "Archivo",
+    "column4": "Tipo"
   },
   "actions": {
     "add": "Añadir",
     "edit": "Editar",
     "delete": "Borrar",
-    "create": "Crear Insumo"
+    "create": "Crear Proceso"
   },
   "confirm": {
     "delete": {
       "title": "Borrar",
-      "message": "Estás seguro de borrar este Insumo?"
+      "message": "Estás seguro de borrar este Proceso?"
     }
+  },
+  "types": {
+    "internal": "Interno",
+    "external": "Externo"
   },
   "filter": {
     "actions": {
