@@ -180,16 +180,16 @@ function Actions({ entity }: { entity: Project }) {
     }
   };
 
-  const mainButton = (
-    <Button
-      size="small"
-      variant="contained"
-      LinkComponent={Link}
-      href={`/admin-panel/projects/edit/${entity.id}`}
-    >
-      {tProjects("admin-panel-projects:actions.edit")}
-    </Button>
-  );
+  // const mainButton = (
+  //   <Button
+  //     size="small"
+  //     variant="contained"
+  //     LinkComponent={Link}
+  //     href={`/admin-panel/projects/edit/${entity.id}`}
+  //   >
+  //     {tProjects("admin-panel-projects:actions.edit")}
+  //   </Button>
+  // );
 
   return (
     <>
