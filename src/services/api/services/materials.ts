@@ -38,10 +38,16 @@ export function useGetMaterialsService() {
         }
 
         if (data.filters.provider_id) {
-          console.log("aqui", data.filters);
           requestUrl.searchParams.append(
             "provider_id",
             `${data.filters.provider_id}`
+          );
+        }
+
+        if (data.filters.project_id) {
+          requestUrl.searchParams.append(
+            "project_id",
+            `${data.filters.project_id}`
           );
         }
 

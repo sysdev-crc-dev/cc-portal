@@ -269,6 +269,7 @@ function Supplies() {
   const filter = useMemo<Partial<SupplyFilterType | undefined>>(() => {
     const filterName = searchParams.get("name");
     const filterId = searchParams.get("id");
+    const filterProjectId = searchParams.get("project_id");
     const filter: Partial<SupplyFilterType> = {};
     if (filterName) {
       filter.name = filterName;
@@ -276,6 +277,10 @@ function Supplies() {
 
     if (filterId) {
       filter.id = filterId;
+    }
+
+    if (filterProjectId) {
+      filter.project_id = filterProjectId;
     }
 
     return isObjectEmpty(filter) ? undefined : filter;
@@ -297,7 +302,7 @@ function Supplies() {
   }, [data]);
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       <Grid container spacing={3} pt={3}>
         <Grid container item spacing={3} xs={12}>
           <Grid item xs>

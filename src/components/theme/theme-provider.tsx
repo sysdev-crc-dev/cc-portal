@@ -8,7 +8,7 @@ function ThemeProvider(props: PropsWithChildren<{}>) {
   const theme = useMemo(() => extendTheme(), []);
 
   return (
-    <CssVarsProvider theme={theme} defaultMode="system">
+    <CssVarsProvider theme={theme} defaultMode="light">
       {props.children}
     </CssVarsProvider>
   );

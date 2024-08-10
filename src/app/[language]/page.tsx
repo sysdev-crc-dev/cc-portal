@@ -22,7 +22,7 @@ export default async function Home({ params }: Props) {
   const { t } = await getServerTranslation(params.language, "home");
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       <Grid
         container
         spacing={3}

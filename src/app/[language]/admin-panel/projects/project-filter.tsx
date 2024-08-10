@@ -9,22 +9,22 @@ import Popover from "@mui/material/Popover";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { MaterialFilterType } from "./material-filter-types";
+import { ProjectFilterType } from "./project-filter-types";
+import { ProjectStatus } from "../../../../services/api/types/project";
 
-type FilterFormData = MaterialFilterType;
+type FilterFormData = ProjectFilterType;
 
 function UserFilter() {
-  const { t } = useTranslation("admin-panel-materials");
+  const { t } = useTranslation("admin-panel-employees");
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const methods = useForm<FilterFormData>({
     defaultValues: {
       name: "",
-      prefix: "",
-      id: "",
-      provider_id: "",
-      project_id: "",
+      customer_id: "",
+      status: "",
+      estimated_delivery_date: "",
     },
   });
 
@@ -44,7 +44,12 @@ function UserFilter() {
   const id = open ? "user-filter-popover" : undefined;
 
   const handleReset = () => {
-    reset({ name: "", prefix: "", id: "", provider_id: "", project_id: "" });
+    reset({
+      name: "",
+      customer_id: "",
+      status: "",
+      estimated_delivery_date: "",
+    });
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.delete("name");
     searchParams.delete("last_name");
@@ -54,16 +59,14 @@ function UserFilter() {
 
   useEffect(() => {
     const filterName = searchParams.get("name");
-    const filterPrefix = searchParams.get("prefix");
-    const filterId = searchParams.get("id");
-    const filterProvider = searchParams.get("provider_id");
-    const filterProject = searchParams.get("project_id");
-    let filterParsed: MaterialFilterType = {
+    const filterCustomerId = searchParams.get("customer_id");
+    const filterStatus = searchParams.get("status");
+    const filterDeliveryDate = searchParams.get("estimated_delivery_date");
+    let filterParsed: ProjectFilterType = {
       name: "",
-      prefix: "",
-      id: "",
-      provider_id: "",
-      project_id: "",
+      customer_id: "",
+      status: "",
+      estimated_delivery_date: "",
     };
     if (filterName) {
       handleClose();
@@ -75,38 +78,30 @@ function UserFilter() {
       reset(filterParsed);
     }
 
-    if (filterPrefix) {
+    if (filterCustomerId) {
       handleClose();
       filterParsed = {
         ...filterParsed,
-        prefix: filterPrefix,
+        customer_id: filterCustomerId,
       };
 
       reset(filterParsed);
     }
-    if (filterId) {
+
+    if (filterDeliveryDate) {
       handleClose();
       filterParsed = {
         ...filterParsed,
-        id: filterId,
+        estimated_delivery_date: filterDeliveryDate,
       };
 
       reset(filterParsed);
     }
-    if (filterProvider) {
+    if (filterStatus) {
       handleClose();
       filterParsed = {
         ...filterParsed,
-        provider_id: filterProvider,
-      };
-
-      reset(filterParsed);
-    }
-    if (filterProject) {
-      handleClose();
-      filterParsed = {
-        ...filterParsed,
-        project_id: filterProject,
+        status: filterStatus as ProjectStatus,
       };
 
       reset(filterParsed);
@@ -140,21 +135,17 @@ function UserFilter() {
                 searchParams.set("name", roleFilter);
               }
 
-              if (data.prefix) {
-                const roleFilter = data.prefix;
-                searchParams.set("prefix", roleFilter);
+              if (data.status) {
+                const roleFilter = data.status;
+                searchParams.set("status", roleFilter);
               }
-              if (data.provider_id) {
-                const roleFilter = data.provider_id;
-                searchParams.set("provider_id", roleFilter);
+              if (data.customer_id) {
+                const roleFilter = data.customer_id;
+                searchParams.set("type", roleFilter);
               }
-              if (data.id) {
-                const roleFilter = data.id;
-                searchParams.set("id", roleFilter);
-              }
-              if (data.project_id) {
-                const roleFilter = data.project_id;
-                searchParams.set("project_id", roleFilter);
+              if (data.estimated_delivery_date) {
+                const roleFilter = data.estimated_delivery_date;
+                searchParams.set("estimated_delivery_date", roleFilter);
               }
 
               router.push(
@@ -164,7 +155,7 @@ function UserFilter() {
           >
             <Grid container spacing={2} mb={3} mt={3}>
               <Grid item xs={12}>
-                <FormTextInput<MaterialFilterType>
+                <FormTextInput<ProjectFilterType>
                   name="name"
                   testId="new-user-password-confirmation"
                   label={"Nombre"}
@@ -173,33 +164,35 @@ function UserFilter() {
               </Grid>
 
               <Grid item xs={12}>
-                <FormTextInput<MaterialFilterType>
-                  name="prefix"
+                <FormTextInput<ProjectFilterType>
+                  name="customer_id"
                   testId="new-user-password-confirmation"
-                  label={"Prefijo"}
+                  label={"Cliente ID"}
                   type="text"
                 />
               </Grid>
+
               <Grid item xs={12}>
-                <FormTextInput<MaterialFilterType>
-                  name="id"
+                <FormTextInput<ProjectFilterType>
+                  name="status"
                   testId="new-user-password-confirmation"
-                  label={"Id Material"}
+                  label={"Estatus"}
                   type="text"
                 />
               </Grid>
+
               <Grid item xs={12}>
-                <FormTextInput<MaterialFilterType>
-                  name="provider_id"
+                <FormTextInput<ProjectFilterType>
+                  name="estimated_delivery_date"
                   testId="new-user-password-confirmation"
-                  label={"Id Provedor"}
+                  label={"Fech. est. entrega"}
                   type="text"
                 />
               </Grid>
 
               <Grid item xs={6}>
                 <Button variant="contained" type="submit">
-                  {t("admin-panel-materials:filter.actions.apply")}
+                  {t("admin-panel-employees:filter.actions.apply")}
                 </Button>
               </Grid>
               <Grid item xs={6}>
@@ -212,7 +205,7 @@ function UserFilter() {
         </Container>
       </Popover>
       <Button aria-describedby={id} variant="contained" onClick={handleClick}>
-        {t("admin-panel-materials:filter.actions.filter")}
+        {t("admin-panel-employees:filter.actions.filter")}
       </Button>
     </FormProvider>
   );

@@ -29,7 +29,6 @@ export function useGetInvoicesService() {
       requestUrl.searchParams.append("page", data.page.toString());
       requestUrl.searchParams.append("limit", data.limit.toString());
       if (data.filters) {
-        console.log(data.filters);
         if (data.filters.rfc) {
           requestUrl.searchParams.append("rfc", `${data.filters.rfc}`);
         }

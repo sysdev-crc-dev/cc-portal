@@ -36,6 +36,13 @@ export function useGetSuppliesService() {
         if (data.filters.id) {
           requestUrl.searchParams.append("id", `${data.filters.id}`);
         }
+
+        if (data.filters.project_id) {
+          requestUrl.searchParams.append(
+            "project_id",
+            `${data.filters.project_id}`
+          );
+        }
       }
       if (data.sort) {
         const sortString = data.sort

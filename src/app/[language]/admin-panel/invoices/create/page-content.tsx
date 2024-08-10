@@ -261,7 +261,6 @@ function FormCreateInvoice() {
                 options={customersData}
                 keyValue="id"
                 renderOption={(option: SelectOption) => {
-                  console.log(option);
                   return option.name;
                 }}
               />

@@ -1,10 +1,10 @@
-import { useGetInvoicesService } from "@/services/api/services/invoices";
+import { useGetProjectsService } from "@/services/api/services/projects";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { createQueryKeys } from "@/services/react-query/query-key-factory";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { InvoiceFilterType, InvoiceSortType } from "../invoice-filter-types";
+import { ProjectFilterType, ProjectSortType } from "../project-filter-types";
 
-export const invoicesQueryKeys = createQueryKeys(["invoices"], {
+export const projectsQueryKeys = createQueryKeys(["projects"], {
   list: () => ({
     key: [],
     sub: {
@@ -12,8 +12,8 @@ export const invoicesQueryKeys = createQueryKeys(["invoices"], {
         sort,
         filter,
       }: {
-        filter: Partial<InvoiceFilterType> | undefined;
-        sort?: InvoiceSortType | undefined;
+        filter: Partial<ProjectFilterType> | undefined;
+        sort?: ProjectSortType | undefined;
       }) => ({
         key: [sort, filter],
       }),
@@ -21,16 +21,16 @@ export const invoicesQueryKeys = createQueryKeys(["invoices"], {
   }),
 });
 
-export const useInvoiceListQuery = ({
+export const useProjectListQuery = ({
   sort,
   filter,
 }: {
-  filter?: Partial<InvoiceFilterType> | undefined;
-  sort?: InvoiceSortType | undefined;
+  filter?: Partial<ProjectFilterType> | undefined;
+  sort?: ProjectSortType | undefined;
 } = {}) => {
-  const fetch = useGetInvoicesService();
+  const fetch = useGetProjectsService();
   const query = useInfiniteQuery({
-    queryKey: invoicesQueryKeys.list().sub.by({ sort, filter }).key,
+    queryKey: projectsQueryKeys.list().sub.by({ sort, filter }).key,
     initialPageParam: 1,
     queryFn: async ({ pageParam, signal }) => {
       const { status, res } = await fetch(

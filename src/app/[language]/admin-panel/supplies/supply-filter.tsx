@@ -22,6 +22,7 @@ function UserFilter() {
     defaultValues: {
       name: "",
       id: "",
+      project_id: "",
     },
   });
 
@@ -41,10 +42,11 @@ function UserFilter() {
   const id = open ? "user-filter-popover" : undefined;
 
   const handleReset = () => {
-    reset({ name: "", id: "" });
+    reset({ name: "", id: "", project_id: "" });
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.delete("name");
-    searchParams.delete("last_name");
+    searchParams.delete("id");
+    searchParams.delete("project_id");
 
     router.push(window.location.pathname);
   };
@@ -52,9 +54,11 @@ function UserFilter() {
   useEffect(() => {
     const filterName = searchParams.get("name");
     const filterId = searchParams.get("id");
+    const filterProjectId = searchParams.get("project_id");
     let filterParsed: SupplyFilterType = {
       name: "",
       id: "",
+      project_id: "",
     };
     if (filterName) {
       handleClose();
@@ -71,6 +75,15 @@ function UserFilter() {
       filterParsed = {
         ...filterParsed,
         id: filterId,
+      };
+
+      reset(filterParsed);
+    }
+    if (filterProjectId) {
+      handleClose();
+      filterParsed = {
+        ...filterParsed,
+        project_id: filterProjectId,
       };
 
       reset(filterParsed);
@@ -108,6 +121,10 @@ function UserFilter() {
                 const roleFilter = data.id;
                 searchParams.set("id", roleFilter);
               }
+              if (data.project_id) {
+                const roleFilter = data.project_id;
+                searchParams.set("project_id", roleFilter);
+              }
 
               router.push(
                 window.location.pathname + "?" + searchParams.toString()
@@ -129,6 +146,15 @@ function UserFilter() {
                   name="id"
                   testId="new-user-password-confirmation"
                   label={"Id Insumo"}
+                  type="text"
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormTextInput<SupplyFilterType>
+                  name="project_id"
+                  testId="new-user-password-confirmation"
+                  label={"Id Proyecto"}
                   type="text"
                 />
               </Grid>

@@ -4,6 +4,7 @@ import { Supply } from "@/services/api/types/supply";
 export type SupplyFilterType = {
   id: string;
   name: string;
+  project_id: string;
 };
 
 export type SupplySortType = {

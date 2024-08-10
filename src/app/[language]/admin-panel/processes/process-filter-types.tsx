@@ -5,6 +5,7 @@ export type ProcessFilterType = {
   id: string;
   name: string;
   type: string;
+  project_id: string;
 };
 
 export type ProcessSortType = {

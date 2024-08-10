@@ -28,7 +28,6 @@ export function useGetProcessesService() {
       const requestUrl = new URL(`${API_URL}/v1/processes`);
       requestUrl.searchParams.append("page", data.page.toString());
       requestUrl.searchParams.append("limit", data.limit.toString());
-      console.log(data.filters);
       if (data.filters) {
         if (data.filters.name) {
           requestUrl.searchParams.append("name", `~${data.filters.name}`);
@@ -40,6 +39,13 @@ export function useGetProcessesService() {
 
         if (data.filters.type) {
           requestUrl.searchParams.append("type", `${data.filters.type}`);
+        }
+
+        if (data.filters.project_id) {
+          requestUrl.searchParams.append(
+            "project_id",
+            `${data.filters.project_id}`
+          );
         }
       }
       if (data.sort) {

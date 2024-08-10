@@ -22,7 +22,7 @@ async function PrivacyPolicy({ params }: Props) {
   const { t } = await getServerTranslation(params.language, "privacy-policy");
 
   return (
-    <Container maxWidth="md" sx={{ py: 8 }}>
+    <Container maxWidth="lg" sx={{ py: 8 }}>
       <Typography
         variant="h2"
         component="h1"

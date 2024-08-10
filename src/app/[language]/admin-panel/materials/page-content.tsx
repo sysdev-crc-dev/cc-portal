@@ -271,6 +271,7 @@ function Materials() {
     const filterPrefix = searchParams.get("prefix");
     const filterId = searchParams.get("id");
     const filterProvider = searchParams.get("provider_id");
+    const filterProject = searchParams.get("project_id");
     const filter: Partial<MaterialFilterType> = {};
     if (filterName) {
       filter.name = filterName;
@@ -286,6 +287,9 @@ function Materials() {
 
     if (filterProvider) {
       filter.provider_id = filterProvider;
+    }
+    if (filterProject) {
+      filter.project_id = filterProject;
     }
 
     return isObjectEmpty(filter) ? undefined : filter;
@@ -307,7 +311,7 @@ function Materials() {
   }, [data]);
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       <Grid container spacing={3} pt={3}>
         <Grid container item spacing={3} xs={12}>
           <Grid item xs>

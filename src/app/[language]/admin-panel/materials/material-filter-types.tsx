@@ -6,6 +6,7 @@ export type MaterialFilterType = {
   name: string;
   prefix: string;
   provider_id: string;
+  project_id: string;
 };
 
 export type MaterialSortType = {

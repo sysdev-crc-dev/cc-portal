@@ -270,6 +270,7 @@ function Processes() {
     const filterName = searchParams.get("name");
     const filterId = searchParams.get("id");
     const filterType = searchParams.get("type");
+    const filterProjectId = searchParams.get("project_id");
     const filter: Partial<ProcessFilterType> = {};
     if (filterName) {
       filter.name = filterName;
@@ -278,7 +279,9 @@ function Processes() {
     if (filterId) {
       filter.id = filterId;
     }
-    console.log(filterType);
+    if (filterProjectId) {
+      filter.project_id = filterProjectId;
+    }
     if (filterType) {
       filter.type = filterType;
     }
@@ -302,7 +305,7 @@ function Processes() {
   }, [data]);
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       <Grid container spacing={3} pt={3}>
         <Grid container item spacing={3} xs={12}>
           <Grid item xs>

@@ -1,0 +1,90 @@
+{
+  "title": "Proyectos",
+  "table": {
+    "column-id": "ID",
+    "column-name": "Nombre",
+    "column-status": "Status",
+    "column-customer": "Cliente",
+    "column-file": "Archivo",
+    "column-staff": "Encargado",
+    "column-operator": "Operador",
+    "column-est-date": "Fecha estimada",
+    "column-cutting-time": "Tiempo corte",
+    "column-package": "Empaque",
+    "column-delivery-type": "Entrega en",
+    "column-provided-by": "Material de",
+    "column-materials": "Materiales",
+    "column-supplies": "Insumos",
+    "column-processes": "Procesos",
+    "column-notes": "Observaciones"
+  },
+  "actions": {
+    "add": "Añadir",
+    "edit": "Editar",
+    "delete": "Borrar",
+    "create": "Crear Proyecto"
+  },
+  "confirm": {
+    "delete": {
+      "title": "Borrar",
+      "message": "Estás seguro de borrar esta Compañia?"
+    }
+  },
+  "status": {
+    "created": "Creado",
+    "pending_supplies": "Faltan insumos",
+    "pending_processes": "Faltan procesos",
+    "configured": "Configurado",
+    "started": "Anticipo recibido",
+    "ready_for_cutting": "Listo para corte",
+    "in_progress": "Cortando",
+    "qa": "Calidad y Empaquetado",
+    "ready_for_delivery": "Listo para entrega",
+    "completed": "Completado",
+    "canceled": "Cancelado",
+    "waiting_for_material": "Falta material",
+    "external_dependency": "Dependencia externa"
+  },
+  "delivery-type": {
+    "home": "Domicilio",
+    "workshop": "Taller",
+    "instalation": "Instalación"
+  },
+  "package-type": {
+    "basic": "Basico",
+    "custom": "Personalizado"
+  },
+  "provided-by": {
+    "cometa": "Cometa",
+    "customer": "Cliente"
+  },
+  "notes": {
+    "created": "",
+    "pending_supplies": "",
+    "pending_processes": "",
+    "configured": "",
+    "started": "",
+    "ready_for_delivery": "",
+    "completed": "",
+    "external_dependency": "",
+    "canceled": "cancel_reason",
+    "waiting_for_material": "waiting_materials_note",
+    "qa": "quality_assurance_note",
+    "in_progress": "in_processing_note",
+    "ready_for_cutting": "cutting_note"
+  },
+  "filter": {
+    "actions": {
+      "filter": "Filtros",
+      "apply": "Filtrar"
+    },
+    "role": {
+      "label": "Rol",
+      "options": {
+        "Admin": "Admin",
+        "Staff": "Staff",
+        "Operator": "Operator"
+      }
+    }
+  }
+}
