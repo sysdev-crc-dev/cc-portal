@@ -12,10 +12,24 @@ import {
 } from "./confirm-dialog-context";
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "@/services/i18n/client";
+import FormTextInput from "../form/text-input/form-text-input";
+import { FormProvider, useForm } from "react-hook-form";
+import Grid from "@mui/material/Grid";
+
+type FormData = {
+  note: string;
+};
 
 function ConfirmDialogProvider({ children }: { children: React.ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation("confirm-dialog");
+  const methods = useForm<FormData>({
+    defaultValues: {
+      note: "",
+    },
+  });
+
+  const { getValues } = methods;
 
   const defaultConfirmDialogInfo = useMemo<ConfirmDialogOptions>(
     () => ({
@@ -23,13 +37,14 @@ function ConfirmDialogProvider({ children }: { children: React.ReactNode }) {
       message: t("message"),
       successButtonText: t("actions.yes"),
       cancelButtonText: t("actions.no"),
+      showInput: false,
     }),
     [t]
   );
 
   const [confirmDialogInfo, setConfirmDialogInfo] =
     useState<ConfirmDialogOptions>(defaultConfirmDialogInfo);
-  const resolveRef = useRef<(value: boolean) => void>();
+  const resolveRef = useRef<(value: boolean | string) => void>();
 
   const handleClose = () => {
     setIsOpen(false);
@@ -41,13 +56,14 @@ function ConfirmDialogProvider({ children }: { children: React.ReactNode }) {
   };
 
   const onSuccess = () => {
+    const value = getValues("note");
     setIsOpen(false);
-    resolveRef.current?.(true);
+    resolveRef.current?.(value ? value : true);
   };
 
   const confirmDialog = useCallback(
     (options: Partial<ConfirmDialogOptions> = {}) => {
-      return new Promise<boolean>((resolve) => {
+      return new Promise<boolean | string>((resolve) => {
         setConfirmDialogInfo({
           ...defaultConfirmDialogInfo,
           ...options,
@@ -81,9 +97,19 @@ function ConfirmDialogProvider({ children }: { children: React.ReactNode }) {
           {confirmDialogInfo.title}
         </DialogTitle>
         <DialogContent>
-          <DialogContentText id="alert-dialog-description">
+          <DialogContentText
+            style={{ marginBottom: 16 }}
+            id="alert-dialog-description"
+          >
             {confirmDialogInfo.message}
           </DialogContentText>
+          {confirmDialogInfo.showInput && (
+            <FormProvider {...methods}>
+              <Grid item xs={12}>
+                <FormTextInput name="note" label="Observaciones" type="text" />
+              </Grid>
+            </FormProvider>
+          )}
         </DialogContent>
         <DialogActions>
           <Button onClick={onCancel}>

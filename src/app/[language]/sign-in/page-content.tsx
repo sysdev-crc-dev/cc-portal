@@ -74,7 +74,6 @@ function Form() {
   const { setTokensInfo } = useAuthTokens();
   const fetchAuthLogin = useAuthLoginService();
   const { t } = useTranslation("sign-in");
-  //const router = useRouter();
   const validationSchema = useValidationSchema();
   const methods = useForm<SignInFormData>({
     resolver: yupResolver(validationSchema),

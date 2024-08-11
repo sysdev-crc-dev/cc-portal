@@ -17,6 +17,7 @@
     "materials": "Materiales",
     "supplies": "Insumos",
     "processes": "Procesos",
+    "worklist": "Lista de Trabajo",
     "logout": "Cerrar Sesión"
   },
   "formInputs": {

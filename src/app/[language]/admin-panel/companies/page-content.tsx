@@ -154,6 +154,9 @@ function Actions({ entitiy }: { entitiy: Company }) {
       await fetchDelete({
         id: entitiy.id,
       });
+
+      location.reload();
+      history.pushState(null, "", window.location.href);
     }
   };
 

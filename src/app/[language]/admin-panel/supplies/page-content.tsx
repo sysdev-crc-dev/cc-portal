@@ -390,5 +390,5 @@ function Supplies() {
 }
 
 export default withPageRequiredAuth(Supplies, {
-  roles: [RoleEnum.Admin, RoleEnum.Staff],
+  roles: [RoleEnum.Admin, RoleEnum.Staff, RoleEnum.Operator],
 });

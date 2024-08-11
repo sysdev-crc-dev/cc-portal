@@ -7,6 +7,7 @@ export type ConfirmDialogOptions = {
   message: string;
   successButtonText: string;
   cancelButtonText: string;
+  showInput: boolean;
 };
 
 export const ConfirmDialogActionsContext = createContext<{
@@ -15,7 +16,8 @@ export const ConfirmDialogActionsContext = createContext<{
     message,
     successButtonText,
     cancelButtonText,
-  }?: Partial<ConfirmDialogOptions>) => Promise<boolean>;
+    showInput,
+  }?: Partial<ConfirmDialogOptions>) => Promise<boolean | string>;
 }>({
   confirmDialog: () => Promise.resolve(false),
 });

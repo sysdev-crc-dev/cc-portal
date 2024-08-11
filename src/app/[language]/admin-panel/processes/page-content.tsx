@@ -412,5 +412,5 @@ function Processes() {
 }
 
 export default withPageRequiredAuth(Processes, {
-  roles: [RoleEnum.Admin, RoleEnum.Staff],
+  roles: [RoleEnum.Admin, RoleEnum.Staff, RoleEnum.Operator],
 });

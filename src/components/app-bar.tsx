@@ -151,9 +151,9 @@ function ResponsiveAppBar() {
               onClick={handleCloseNavMenu}
               sx={{ my: 2, color: "white", display: "block" }}
               component={Link}
-              href="/"
+              href="/operation-panel/worklist"
             >
-              {t("common:navigation.home")}
+              {t("common:navigation.worklist")}
             </Button>
 
             {!!user?.role && [RoleEnum.Admin].includes(user.role) && (
@@ -167,62 +167,83 @@ function ResponsiveAppBar() {
               </Button>
             )}
 
-            <Button
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
-              component={Link}
-              href="/admin-panel/employees"
-            >
-              {t("common:navigation.employees")}
-            </Button>
-            <Button
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
-              component={Link}
-              href="/admin-panel/projects"
-            >
-              {t("common:navigation.projects")}
-            </Button>
-            <Button
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
-              component={Link}
-              href="/admin-panel/companies"
-            >
-              {t("common:navigation.companies")}
-            </Button>
-            <Button
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
-              component={Link}
-              href="/admin-panel/customers"
-            >
-              {t("common:navigation.customers")}
-            </Button>
-            <Button
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
-              component={Link}
-              href="/admin-panel/addresses"
-            >
-              {t("common:navigation.addresses")}
-            </Button>
-            <Button
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
-              component={Link}
-              href="/admin-panel/invoices"
-            >
-              {t("common:navigation.invoices")}
-            </Button>
-            <Button
-              onClick={handleCloseNavMenu}
-              sx={{ my: 2, color: "white", display: "block" }}
-              component={Link}
-              href="/admin-panel/providers"
-            >
-              {t("common:navigation.providers")}
-            </Button>
+            {!!user?.role && [RoleEnum.Admin].includes(user.role) && (
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: "white", display: "block" }}
+                component={Link}
+                href="/admin-panel/employees"
+              >
+                {t("common:navigation.employees")}
+              </Button>
+            )}
+
+            {!!user?.role &&
+              [RoleEnum.Admin, RoleEnum.Staff].includes(user.role) && (
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                  component={Link}
+                  href="/admin-panel/projects"
+                >
+                  {t("common:navigation.projects")}
+                </Button>
+              )}
+
+            {!!user?.role &&
+              [RoleEnum.Admin, RoleEnum.Staff].includes(user.role) && (
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                  component={Link}
+                  href="/admin-panel/companies"
+                >
+                  {t("common:navigation.companies")}
+                </Button>
+              )}
+
+            {!!user?.role &&
+              [RoleEnum.Admin, RoleEnum.Staff].includes(user.role) && (
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                  component={Link}
+                  href="/admin-panel/customers"
+                >
+                  {t("common:navigation.customers")}
+                </Button>
+              )}
+            {!!user?.role &&
+              [RoleEnum.Admin, RoleEnum.Staff].includes(user.role) && (
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                  component={Link}
+                  href="/admin-panel/addresses"
+                >
+                  {t("common:navigation.addresses")}
+                </Button>
+              )}
+            {!!user?.role && [RoleEnum.Admin].includes(user.role) && (
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: "white", display: "block" }}
+                component={Link}
+                href="/admin-panel/invoices"
+              >
+                {t("common:navigation.invoices")}
+              </Button>
+            )}
+            {!!user?.role && [RoleEnum.Admin].includes(user.role) && (
+              <Button
+                onClick={handleCloseNavMenu}
+                sx={{ my: 2, color: "white", display: "block" }}
+                component={Link}
+                href="/admin-panel/providers"
+              >
+                {t("common:navigation.providers")}
+              </Button>
+            )}
             <Button
               onClick={handleCloseNavMenu}
               sx={{ my: 2, color: "white", display: "block" }}

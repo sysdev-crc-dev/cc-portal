@@ -419,5 +419,5 @@ function Materials() {
 }
 
 export default withPageRequiredAuth(Materials, {
-  roles: [RoleEnum.Admin, RoleEnum.Staff],
+  roles: [RoleEnum.Admin, RoleEnum.Staff, RoleEnum.Operator],
 });

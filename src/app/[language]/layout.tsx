@@ -45,8 +45,8 @@ export default function RootLayout({
   params: { language: string };
 }) {
   return (
-    <html lang={language} dir={dir(language)}>
-      <body>
+    <html data-mui-color-scheme="light" lang={language} dir={dir(language)}>
+      <body data-mui-color-scheme="light">
         <InitColorSchemeScript />
         <QueryClientProvider client={queryClient}>
           <ReactQueryDevtools initialIsOpen={false} />
