@@ -11,11 +11,22 @@ import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { ProjectFilterType } from "./project-filter-types";
 import { ProjectStatus } from "../../../../services/api/types/project";
+import FormSelectInput from "../../../../components/form/select/form-select";
+import FormDatePickerInput from "../../../../components/form/date-pickers/date-picker";
+import { formatDate } from "date-fns";
 
-type FilterFormData = ProjectFilterType;
+type FilterFormData = Pick<
+  ProjectFilterType,
+  "customer_id" | "estimated_delivery_date" | "name"
+> & { status: SelectOption<ProjectStatus> };
+
+type SelectOption<T> = {
+  id: T | "";
+  name: string;
+};
 
 function UserFilter() {
-  const { t } = useTranslation("admin-panel-employees");
+  const { t } = useTranslation("admin-panel-projects");
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -23,7 +34,7 @@ function UserFilter() {
     defaultValues: {
       name: "",
       customer_id: "",
-      status: "",
+      status: undefined,
       estimated_delivery_date: "",
     },
   });
@@ -47,12 +58,14 @@ function UserFilter() {
     reset({
       name: "",
       customer_id: "",
-      status: "",
+      status: undefined,
       estimated_delivery_date: "",
     });
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.delete("name");
-    searchParams.delete("last_name");
+    searchParams.delete("customer_id");
+    searchParams.delete("status");
+    searchParams.delete("estimated_delivery_date");
 
     router.push(window.location.pathname);
   };
@@ -62,10 +75,13 @@ function UserFilter() {
     const filterCustomerId = searchParams.get("customer_id");
     const filterStatus = searchParams.get("status");
     const filterDeliveryDate = searchParams.get("estimated_delivery_date");
-    let filterParsed: ProjectFilterType = {
+    let filterParsed: FilterFormData = {
       name: "",
       customer_id: "",
-      status: "",
+      status: {
+        id: "",
+        name: "",
+      },
       estimated_delivery_date: "",
     };
     if (filterName) {
@@ -92,7 +108,7 @@ function UserFilter() {
       handleClose();
       filterParsed = {
         ...filterParsed,
-        estimated_delivery_date: filterDeliveryDate,
+        estimated_delivery_date: new Date(filterDeliveryDate),
       };
 
       reset(filterParsed);
@@ -101,12 +117,15 @@ function UserFilter() {
       handleClose();
       filterParsed = {
         ...filterParsed,
-        status: filterStatus as ProjectStatus,
+        status: {
+          id: filterStatus as ProjectStatus,
+          name: t(`admin-panel-projects:status.${filterStatus}`),
+        },
       };
 
       reset(filterParsed);
     }
-  }, [searchParams, reset]);
+  }, [searchParams, reset, t]);
 
   return (
     <FormProvider {...methods}>
@@ -128,32 +147,49 @@ function UserFilter() {
           }}
         >
           <form
-            onSubmit={handleSubmit((data) => {
-              const searchParams = new URLSearchParams(window.location.search);
-              if (data.name) {
-                const roleFilter = data.name;
-                searchParams.set("name", roleFilter);
-              }
+            onSubmit={handleSubmit(
+              (data) => {
+                console.log(data);
+                const searchParams = new URLSearchParams(
+                  window.location.search
+                );
+                if (data.name) {
+                  const roleFilter = data.name;
+                  searchParams.set("name", roleFilter);
+                }
 
-              if (data.status) {
-                const roleFilter = data.status;
-                searchParams.set("status", roleFilter);
-              }
-              if (data.customer_id) {
-                const roleFilter = data.customer_id;
-                searchParams.set("type", roleFilter);
-              }
-              if (data.estimated_delivery_date) {
-                const roleFilter = data.estimated_delivery_date;
-                searchParams.set("estimated_delivery_date", roleFilter);
-              }
+                if (data.status) {
+                  const roleFilter = data.status;
+                  searchParams.set("status", roleFilter.id);
+                }
+                if (data.customer_id) {
+                  const roleFilter = data.customer_id;
+                  searchParams.set("customer_id", roleFilter);
+                }
+                if (data.estimated_delivery_date) {
+                  const formattedDate = formatDate(
+                    data.estimated_delivery_date,
+                    "yyyy-MM-dd'T'HH:mm:ssXX"
+                  );
+                  searchParams.set("estimated_delivery_date", formattedDate);
+                }
 
-              router.push(
-                window.location.pathname + "?" + searchParams.toString()
-              );
-            })}
+                router.push(
+                  window.location.pathname + "?" + searchParams.toString()
+                );
+              },
+              (errors) => {
+                console.log(errors);
+              }
+            )}
           >
             <Grid container spacing={2} mb={3} mt={3}>
+              <Grid item xs={12}>
+                <FormDatePickerInput
+                  name="estimated_delivery_date"
+                  label={"Fech. est. entrega"}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <FormTextInput<ProjectFilterType>
                   name="name"
@@ -173,26 +209,86 @@ function UserFilter() {
               </Grid>
 
               <Grid item xs={12}>
-                <FormTextInput<ProjectFilterType>
+                <FormSelectInput<ProjectFilterType, SelectOption<ProjectStatus>>
                   name="status"
-                  testId="new-user-password-confirmation"
-                  label={"Estatus"}
-                  type="text"
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <FormTextInput<ProjectFilterType>
-                  name="estimated_delivery_date"
-                  testId="new-user-password-confirmation"
-                  label={"Fech. est. entrega"}
-                  type="text"
+                  testId="customer_id"
+                  label="Estatus"
+                  options={[
+                    {
+                      id: "",
+                      name: "Quitar",
+                    },
+                    {
+                      id: ProjectStatus.Created,
+                      name: t(
+                        `admin-panel-projects:status.${ProjectStatus.Created}`
+                      ),
+                    },
+                    {
+                      id: ProjectStatus.ReadyForCutting,
+                      name: t(
+                        `admin-panel-projects:status.${ProjectStatus.ReadyForCutting}`
+                      ),
+                    },
+                    {
+                      id: ProjectStatus.ReadyForDelivery,
+                      name: t(
+                        `admin-panel-projects:status.${ProjectStatus.ReadyForDelivery}`
+                      ),
+                    },
+                    {
+                      id: ProjectStatus.InProgress,
+                      name: t(
+                        `admin-panel-projects:status.${ProjectStatus.InProgress}`
+                      ),
+                    },
+                    {
+                      id: ProjectStatus.QA,
+                      name: t(
+                        `admin-panel-projects:status.${ProjectStatus.QA}`
+                      ),
+                    },
+                    {
+                      id: ProjectStatus.Started,
+                      name: t(
+                        `admin-panel-projects:status.${ProjectStatus.Started}`
+                      ),
+                    },
+                    {
+                      id: ProjectStatus.WaitingForMaterial,
+                      name: t(
+                        `admin-panel-projects:status.${ProjectStatus.WaitingForMaterial}`
+                      ),
+                    },
+                    {
+                      id: ProjectStatus.ExternalDependency,
+                      name: t(
+                        `admin-panel-projects:status.${ProjectStatus.ExternalDependency}`
+                      ),
+                    },
+                    {
+                      id: ProjectStatus.Completed,
+                      name: t(
+                        `admin-panel-projects:status.${ProjectStatus.Completed}`
+                      ),
+                    },
+                    {
+                      id: ProjectStatus.Canceled,
+                      name: t(
+                        `admin-panel-projects:status.${ProjectStatus.Canceled}`
+                      ),
+                    },
+                  ]}
+                  keyValue="id"
+                  renderOption={(option: SelectOption<ProjectStatus>) => {
+                    return option.name;
+                  }}
                 />
               </Grid>
 
               <Grid item xs={6}>
                 <Button variant="contained" type="submit">
-                  {t("admin-panel-employees:filter.actions.apply")}
+                  {t("admin-panel-projects:filter.actions.apply")}
                 </Button>
               </Grid>
               <Grid item xs={6}>
@@ -205,7 +301,7 @@ function UserFilter() {
         </Container>
       </Popover>
       <Button aria-describedby={id} variant="contained" onClick={handleClick}>
-        {t("admin-panel-employees:filter.actions.filter")}
+        {t("admin-panel-projects:filter.actions.filter")}
       </Button>
     </FormProvider>
   );

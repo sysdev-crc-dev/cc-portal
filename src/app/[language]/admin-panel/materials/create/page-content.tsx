@@ -81,10 +81,10 @@ function FormCreateMaterial() {
     const fetchProvidersInfo = async () => {
       const { res } = await fetchProviders({
         page: 1,
-        limit: 100,
+        pageSize: 100,
       });
 
-      const data: SelectOption[] = (res as ProvidersResponse).data.map(
+      const data: SelectOption[] = (res as ProvidersResponse).data.items.map(
         (value) => ({
           id: value.id,
           name: `${value.id} - ${value.name}`,

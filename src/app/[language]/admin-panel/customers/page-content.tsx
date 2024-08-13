@@ -296,7 +296,7 @@ function Customers() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as Customer[]) ??
+      (data?.pages.flatMap((page) => page?.data.items) as Customer[]) ??
       ([] as Customer[]);
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);

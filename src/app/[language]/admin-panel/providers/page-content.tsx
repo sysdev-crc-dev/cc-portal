@@ -304,7 +304,7 @@ function Providers() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as Provider[]) ??
+      (data?.pages.flatMap((page) => page?.data.items) as Provider[]) ??
       ([] as Provider[]);
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);

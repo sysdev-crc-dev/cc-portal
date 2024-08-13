@@ -126,11 +126,11 @@ function FormCreateEmployee() {
   useEffect(() => {
     const fetchInitialUsersData = async () => {
       const { res } = await fetchUsers({
-        limit: 100,
+        pageSize: 100,
         page: 1,
       });
 
-      const data = (res as UsersResponse).data
+      const data = (res as UsersResponse).data.items
         .filter((user) => user.employee === null)
         .map((user) => ({
           id: user.id,

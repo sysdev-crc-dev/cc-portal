@@ -117,10 +117,10 @@ function FormEditAddress() {
     const fetchCustomersInfo = async () => {
       const { res } = await fetchCustomers({
         page: 1,
-        limit: 100,
+        pageSize: 100,
       });
 
-      const data: SelectOption[] = (res as CustomersResponse).data.map(
+      const data: SelectOption[] = (res as CustomersResponse).data.items.map(
         (value) => ({
           id: value.id,
           name: `${value.id} - ${value.name} ${value.last_name}`,
@@ -137,10 +137,10 @@ function FormEditAddress() {
     const fetchProvidersInfo = async () => {
       const { res } = await fetchProviders({
         page: 1,
-        limit: 100,
+        pageSize: 100,
       });
 
-      const data: SelectOption[] = (res as ProvidersResponse).data.map(
+      const data: SelectOption[] = (res as ProvidersResponse).data.items.map(
         (value) => ({
           id: value.id,
           name: `${value.id} - ${value.name}`,

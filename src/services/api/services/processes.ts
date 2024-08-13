@@ -10,7 +10,7 @@ import { Process } from "../types/process";
 
 export type ProcessesRequest = {
   page: number;
-  limit: number;
+  pageSize: number;
   filters?: Partial<ProcessFilterType> | undefined;
   sort?: Array<{
     orderBy: keyof Process;
@@ -18,7 +18,9 @@ export type ProcessesRequest = {
   }>;
 };
 
-export type ProcessesResponse = InfinityPaginationType<Process>;
+export type ProcessesResponse = {
+  data: InfinityPaginationType<Process>;
+};
 
 export function useGetProcessesService() {
   const fetch = useFetch();
@@ -27,7 +29,7 @@ export function useGetProcessesService() {
     (data: ProcessesRequest, requestConfig?: RequestConfigType) => {
       const requestUrl = new URL(`${API_URL}/v1/processes`);
       requestUrl.searchParams.append("page", data.page.toString());
-      requestUrl.searchParams.append("limit", data.limit.toString());
+      requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         if (data.filters.name) {
           requestUrl.searchParams.append("name", `~${data.filters.name}`);

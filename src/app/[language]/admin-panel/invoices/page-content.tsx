@@ -286,7 +286,7 @@ function Invoices() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as Invoice[]) ??
+      (data?.pages.flatMap((page) => page?.data.items) as Invoice[]) ??
       ([] as Invoice[]);
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);

@@ -1,9 +1,9 @@
-import { Employee } from "./employee";
+import { Customer } from "./customer";
 
 export type Company = {
   id: number;
   name: string;
   type: string;
   is_active: string;
-  employees: Pick<Employee, "id" | "name">[];
+  customers: Pick<Customer, "id" | "name">[];
 };

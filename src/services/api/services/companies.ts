@@ -10,7 +10,7 @@ import { Company } from "../types/company";
 
 export type CompaniesRequest = {
   page: number;
-  limit: number;
+  pageSize: number;
   filters?: Partial<CompanyFilterType> | undefined;
   sort?: Array<{
     orderBy: keyof Company;
@@ -18,7 +18,9 @@ export type CompaniesRequest = {
   }>;
 };
 
-export type CompaniesResponse = InfinityPaginationType<Company>;
+export type CompaniesResponse = {
+  data: InfinityPaginationType<Company>;
+};
 
 export function useGetCompaniesService() {
   const fetch = useFetch();
@@ -27,7 +29,7 @@ export function useGetCompaniesService() {
     (data: CompaniesRequest, requestConfig?: RequestConfigType) => {
       const requestUrl = new URL(`${API_URL}/v1/companies`);
       requestUrl.searchParams.append("page", data.page.toString());
-      requestUrl.searchParams.append("limit", data.limit.toString());
+      requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         if (data.filters.name) {
           requestUrl.searchParams.append("name", `~${data.filters.name}`);
@@ -83,7 +85,7 @@ export function useGetCompanyService() {
   );
 }
 
-export type CompanyPostRequest = Pick<Company, "name" | "type" | "employees">;
+export type CompanyPostRequest = Pick<Company, "name" | "type" | "customers">;
 
 export type CompanyPostResponse = Company;
 
@@ -104,7 +106,7 @@ export function usePostCompanyService() {
 
 export type CompanyEditRequest = {
   id: Company["id"];
-  data: Partial<Pick<Company, "name" | "type" | "employees">>;
+  data: Partial<Pick<Company, "name" | "type" | "customers">>;
 };
 
 export type CompanyEditResponse = Company;

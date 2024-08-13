@@ -8,7 +8,7 @@ export interface Project {
   id?: number;
   name: string;
   file: string;
-  est_dimensions: number;
+  est_dimensions: string;
   completion_date?: Date;
   est_cutting_time_in_hours: number;
   est_man_hours: number;
@@ -43,9 +43,6 @@ export interface Project {
 
 export enum ProjectStatus {
   Created = "created",
-  PendingSupplies = "pending_supplies",
-  PendingProcesses = "pending_processes",
-  Configured = "configured",
   Started = "started",
   ReadyForCutting = "ready_for_cutting",
   InProgress = "in_progress",

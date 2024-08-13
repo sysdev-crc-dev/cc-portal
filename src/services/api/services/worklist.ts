@@ -6,11 +6,11 @@ import { InfinityPaginationType } from "../types/infinity-pagination";
 import { SortEnum } from "../types/sort-type";
 import { RequestConfigType } from "./types/request-config";
 import { ProjectFilterType } from "../../../app/[language]/admin-panel/projects/project-filter-types";
-import { Project } from "../types/project";
+import { Project, ProjectStatus } from "../types/project";
 
 export type ProjectsRequest = {
   page: number;
-  limit: number;
+  pageSize: number;
   filters?: Partial<ProjectFilterType> | undefined;
   sort?: Array<{
     orderBy: keyof Project;
@@ -18,18 +18,23 @@ export type ProjectsRequest = {
   }>;
 };
 
-export type ProjectsResponse = InfinityPaginationType<Project>;
+export type ProjectsResponse = {
+  data: InfinityPaginationType<Project>;
+};
 
 export function useGetProjectsService() {
   const fetch = useFetch();
 
   return useCallback(
     (data: ProjectsRequest, requestConfig?: RequestConfigType) => {
-      const requestUrl = new URL(
-        `${API_URL}/v1/projects?status=$inready_for_cutting|in_progress`
+      const requestUrl = new URL(`${API_URL}/v1/projects`);
+      requestUrl.searchParams.append(
+        "status",
+        JSON.stringify([
+          ProjectStatus.ReadyForCutting,
+          ProjectStatus.InProgress,
+        ])
       );
-      requestUrl.searchParams.append("page", data.page.toString());
-      requestUrl.searchParams.append("limit", data.limit.toString());
       if (data.filters) {
         if (data.filters.name) {
           requestUrl.searchParams.append("name", `~${data.filters.name}`);
@@ -41,6 +46,9 @@ export function useGetProjectsService() {
           .join("");
         requestUrl.searchParams.append("sort", sortString);
       }
+
+      requestUrl.searchParams.append("page", data.page.toString());
+      requestUrl.searchParams.append("pageSize", data.pageSize.toString());
 
       return fetch(requestUrl, {
         method: "GET",

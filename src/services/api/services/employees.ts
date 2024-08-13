@@ -10,7 +10,7 @@ import { EmployeeFilterType } from "../../../app/[language]/admin-panel/employee
 
 export type EmployeesRequest = {
   page: number;
-  limit: number;
+  pageSize: number;
   filters?: Partial<EmployeeFilterType> | undefined;
   sort?: Array<{
     orderBy: keyof Employee;
@@ -18,7 +18,9 @@ export type EmployeesRequest = {
   }>;
 };
 
-export type EmployeesResponse = InfinityPaginationType<Employee>;
+export type EmployeesResponse = {
+  data: InfinityPaginationType<Employee>;
+};
 
 export function useGetEmployeesService() {
   const fetch = useFetch();
@@ -27,7 +29,7 @@ export function useGetEmployeesService() {
     (data: EmployeesRequest, requestConfig?: RequestConfigType) => {
       const requestUrl = new URL(`${API_URL}/v1/employees`);
       requestUrl.searchParams.append("page", data.page.toString());
-      requestUrl.searchParams.append("limit", data.limit.toString());
+      requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         if (data.filters.name) {
           requestUrl.searchParams.append("name", `~${data.filters.name}`);

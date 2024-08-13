@@ -9,7 +9,7 @@ import { RequestConfigType } from "./types/request-config";
 
 export type UsersRequest = {
   page: number;
-  limit: number;
+  pageSize: number;
   filters?: string | undefined;
   sort?: Array<{
     orderBy: keyof User;
@@ -17,7 +17,9 @@ export type UsersRequest = {
   }>;
 };
 
-export type UsersResponse = InfinityPaginationType<User>;
+export type UsersResponse = {
+  data: InfinityPaginationType<User>;
+};
 
 export function useGetUsersService() {
   const fetch = useFetch();
@@ -26,7 +28,7 @@ export function useGetUsersService() {
     (data: UsersRequest, requestConfig?: RequestConfigType) => {
       const requestUrl = new URL(`${API_URL}/v1/users`);
       requestUrl.searchParams.append("page", data.page.toString());
-      requestUrl.searchParams.append("limit", data.limit.toString());
+      requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         requestUrl.searchParams.append("role", `$in${data.filters}`);
       }

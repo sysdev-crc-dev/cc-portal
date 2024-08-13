@@ -10,7 +10,7 @@ import { Provider } from "../types/provider";
 
 export type ProvidersRequest = {
   page: number;
-  limit: number;
+  pageSize: number;
   filters?: Partial<ProviderFilterType> | undefined;
   sort?: Array<{
     orderBy: keyof Provider;
@@ -18,7 +18,9 @@ export type ProvidersRequest = {
   }>;
 };
 
-export type ProvidersResponse = InfinityPaginationType<Provider>;
+export type ProvidersResponse = {
+  data: InfinityPaginationType<Provider>;
+};
 
 export function useGetProvidersService() {
   const fetch = useFetch();
@@ -27,7 +29,7 @@ export function useGetProvidersService() {
     (data: ProvidersRequest, requestConfig?: RequestConfigType) => {
       const requestUrl = new URL(`${API_URL}/v1/providers`);
       requestUrl.searchParams.append("page", data.page.toString());
-      requestUrl.searchParams.append("limit", data.limit.toString());
+      requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         if (data.filters.name) {
           requestUrl.searchParams.append("name", `~${data.filters.name}`);

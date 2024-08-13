@@ -31,7 +31,7 @@ import Paper from "@mui/material/Paper";
 import Popper from "@mui/material/Popper";
 import MenuItem from "@mui/material/MenuItem";
 import MenuList from "@mui/material/MenuList";
-import { Project } from "@/services/api/types/project";
+import { Project, ProjectStatus } from "@/services/api/types/project";
 import Link from "@/components/link";
 import MuiLink from "@mui/material/Link";
 import useConfirmDialog from "@/components/confirm-dialog/use-confirm-dialog";
@@ -42,10 +42,19 @@ import { useRouter, useSearchParams } from "next/navigation";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { ProjectFilterType, ProjectSortType } from "./project-filter-types";
 import { SortEnum } from "@/services/api/types/sort-type";
-import { useDeleteProjectService } from "../../../../services/api/services/projects";
+import {
+  useCanceledPatchRequest,
+  useCompletedPatchRequest,
+  useExternalDependencyPatchRequest,
+  useMissingMaterialsPatchRequest,
+  useReadyForCuttingPatchRequest,
+  useReadyForDeliveryPatchRequest,
+  useStartedPatchRequest,
+} from "../../../../services/api/services/projects";
 import { isObjectEmpty } from "../../../../utils";
 import { format } from "date-fns";
 import { es } from "date-fns/locale/es";
+import ButtonGroup from "@mui/material/ButtonGroup";
 
 type UsersKeys = keyof Project;
 
@@ -59,7 +68,7 @@ function TableSortCellWrapper(
     orderBy: UsersKeys;
     order: SortEnum;
     column: UsersKeys;
-    style: Object;
+    style?: Object;
     handleRequestSort: (
       event: React.MouseEvent<unknown>,
       property: UsersKeys
@@ -104,12 +113,39 @@ function ProjectNotes({
 
 function Actions({ entity }: { entity: Project }) {
   const [open, setOpen] = useState(false);
+  const searchParams = useSearchParams();
   const { confirmDialog } = useConfirmDialog();
-  const fetchDelete = useDeleteProjectService();
   const queryClient = useQueryClient();
   const anchorRef = useRef<HTMLDivElement>(null);
-  const canDelete = true;
+  const fetchPatchReadyForCutting = useReadyForCuttingPatchRequest();
+  const fetchPatchStarted = useStartedPatchRequest();
+  const fetchReadyForDelivery = useReadyForDeliveryPatchRequest();
+  const fetchPatchCompleted = useCompletedPatchRequest();
+  const fetchPatchCancel = useCanceledPatchRequest();
+  const fetchPatchMissingMaterial = useMissingMaterialsPatchRequest();
+  const fetchPatchExternalDependency = useExternalDependencyPatchRequest();
   const { t: tProjects } = useTranslation("admin-panel-projects");
+  const filter = useMemo<Partial<ProjectFilterType | undefined>>(() => {
+    const filterName = searchParams.get("name");
+    const filterStatus = searchParams.get("status");
+    const filterCustomerId = searchParams.get("customer_id");
+    const filterEstimatedDate = searchParams.get("estimated_delivery_date");
+    const filter: Partial<ProjectFilterType> = {};
+    if (filterName) {
+      filter.name = filterName;
+    }
+    if (filterStatus) {
+      filter.status = filterStatus as ProjectStatus;
+    }
+    if (filterCustomerId) {
+      filter.customer_id = filterCustomerId;
+    }
+    if (filterEstimatedDate) {
+      filter.estimated_delivery_date = new Date(filterEstimatedDate);
+    }
+
+    return isObjectEmpty(filter) ? undefined : filter;
+  }, [searchParams]);
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen);
@@ -126,28 +162,24 @@ function Actions({ entity }: { entity: Project }) {
     setOpen(false);
   };
 
-  const handleDelete = async () => {
+  const handleStarted = async () => {
     const isConfirmed = await confirmDialog({
-      title: tProjects("admin-panel-projects:confirm.delete.title"),
-      message: tProjects("admin-panel-projects:confirm.delete.message"),
+      title: tProjects("admin-panel-projects:confirm.started.title"),
+      message: tProjects("admin-panel-projects:confirm.started.message"),
+      successButtonText: "Si",
+      cancelButtonText: "No",
     });
 
     if (isConfirmed) {
       setOpen(false);
 
       const searchParams = new URLSearchParams(window.location.search);
-      const searchParamsFilter = searchParams.get("filter");
       const searchParamsSort = searchParams.get("sort");
 
-      let filter: ProjectFilterType | undefined = undefined;
       let sort: ProjectSortType | undefined = {
         order: SortEnum.ASC,
-        orderBy: "id",
+        orderBy: "estimated_delivery_date",
       };
-
-      if (searchParamsFilter) {
-        filter = JSON.parse(searchParamsFilter);
-      }
 
       if (searchParamsSort) {
         sort = JSON.parse(searchParamsSort);
@@ -165,7 +197,24 @@ function Actions({ entity }: { entity: Project }) {
         ...previousData,
         pages: previousData?.pages.map((page) => ({
           ...page,
-          data: page?.data.filter((item) => item.id !== entity.id),
+          data: page?.data
+            .map((item) => {
+              if (item.id !== entity.id) return item;
+
+              const newItem: Project = {
+                ...item,
+                status: ProjectStatus.Started,
+              };
+
+              return newItem;
+            })
+            .filter((item) => {
+              if (filter?.status && filter?.status !== item.status) {
+                return false;
+              }
+
+              return true;
+            }),
         })),
       };
 
@@ -174,53 +223,492 @@ function Actions({ entity }: { entity: Project }) {
         newData
       );
 
-      await fetchDelete({
+      await fetchPatchStarted({
+        id: entity.id,
+      });
+    }
+  };
+  const handleReadyForCutting = async () => {
+    const isConfirmed = await confirmDialog({
+      title: tProjects("admin-panel-projects:confirm.ready_for_cutting.title"),
+      message: tProjects(
+        "admin-panel-projects:confirm.ready_for_cutting.message"
+      ),
+      successButtonText: "Si",
+      cancelButtonText: "No",
+      showInput: true,
+    });
+
+    if (isConfirmed) {
+      const value = typeof isConfirmed === "string" ? isConfirmed : "";
+      setOpen(false);
+
+      const searchParams = new URLSearchParams(window.location.search);
+      const searchParamsSort = searchParams.get("sort");
+
+      let sort: ProjectSortType | undefined = {
+        order: SortEnum.ASC,
+        orderBy: "estimated_delivery_date",
+      };
+
+      if (searchParamsSort) {
+        sort = JSON.parse(searchParamsSort);
+      }
+
+      const previousData = queryClient.getQueryData<
+        InfiniteData<{ nextPage: number; data: Project[] }>
+      >(projectsQueryKeys.list().sub.by({ sort, filter }).key);
+
+      await queryClient.cancelQueries({
+        queryKey: projectsQueryKeys.list().key,
+      });
+
+      const newData = {
+        ...previousData,
+        pages: previousData?.pages.map((page) => ({
+          ...page,
+          data: page?.data
+            .map((item) => {
+              if (item.id !== entity.id) return item;
+
+              const newItem: Project = {
+                ...item,
+                status: ProjectStatus.ReadyForCutting,
+              };
+
+              return newItem;
+            })
+            .filter((item) => {
+              if (filter?.status && filter?.status !== item.status) {
+                return false;
+              }
+
+              return true;
+            }),
+        })),
+      };
+
+      queryClient.setQueryData(
+        projectsQueryKeys.list().sub.by({ sort, filter }).key,
+        newData
+      );
+
+      await fetchPatchReadyForCutting({
+        id: entity.id,
+        data: {
+          cutting_note: value,
+        },
+      });
+    }
+  };
+  const handleCanceled = async () => {
+    const isConfirmed = await confirmDialog({
+      title: tProjects("admin-panel-projects:confirm.canceled.title"),
+      message: tProjects("admin-panel-projects:confirm.canceled.message"),
+      successButtonText: "Si",
+      cancelButtonText: "No",
+      showInput: true,
+    });
+
+    if (isConfirmed) {
+      const value = typeof isConfirmed === "string" ? isConfirmed : "";
+      setOpen(false);
+
+      const searchParams = new URLSearchParams(window.location.search);
+      const searchParamsSort = searchParams.get("sort");
+
+      let sort: ProjectSortType | undefined = {
+        order: SortEnum.ASC,
+        orderBy: "estimated_delivery_date",
+      };
+
+      if (searchParamsSort) {
+        sort = JSON.parse(searchParamsSort);
+      }
+
+      const previousData = queryClient.getQueryData<
+        InfiniteData<{ nextPage: number; data: Project[] }>
+      >(projectsQueryKeys.list().sub.by({ sort, filter }).key);
+
+      await queryClient.cancelQueries({
+        queryKey: projectsQueryKeys.list().key,
+      });
+
+      const newData = {
+        ...previousData,
+        pages: previousData?.pages.map((page) => ({
+          ...page,
+          data: page?.data
+            .map((item) => {
+              if (item.id !== entity.id) return item;
+
+              const newItem: Project = {
+                ...item,
+                cancel_reason: value,
+                status: ProjectStatus.Canceled,
+              };
+
+              return newItem;
+            })
+            .filter((item) => {
+              if (filter?.status && filter?.status !== item.status) {
+                return false;
+              }
+
+              return true;
+            }),
+        })),
+      };
+
+      queryClient.setQueryData(
+        projectsQueryKeys.list().sub.by({ sort, filter }).key,
+        newData
+      );
+
+      await fetchPatchCancel({
+        id: entity.id,
+        data: {
+          cancel_reason: value,
+        },
+      });
+    }
+  };
+  const handleReadyForDelivery = async () => {
+    const isConfirmed = await confirmDialog({
+      title: tProjects("admin-panel-projects:confirm.ready_for_delivery.title"),
+      message: tProjects(
+        "admin-panel-projects:confirm.ready_for_delivery.message"
+      ),
+      successButtonText: "Si",
+      cancelButtonText: "No",
+      showInput: false,
+    });
+
+    if (isConfirmed) {
+      setOpen(false);
+
+      const searchParams = new URLSearchParams(window.location.search);
+      const searchParamsSort = searchParams.get("sort");
+
+      let sort: ProjectSortType | undefined = {
+        order: SortEnum.ASC,
+        orderBy: "estimated_delivery_date",
+      };
+
+      if (searchParamsSort) {
+        sort = JSON.parse(searchParamsSort);
+      }
+
+      const previousData = queryClient.getQueryData<
+        InfiniteData<{ nextPage: number; data: Project[] }>
+      >(projectsQueryKeys.list().sub.by({ sort, filter }).key);
+
+      await queryClient.cancelQueries({
+        queryKey: projectsQueryKeys.list().key,
+      });
+
+      const newData = {
+        ...previousData,
+        pages: previousData?.pages.map((page) => ({
+          ...page,
+          data: page?.data
+            .map((item) => {
+              if (item.id !== entity.id) return item;
+
+              const newItem: Project = {
+                ...item,
+                status: ProjectStatus.ReadyForDelivery,
+              };
+
+              return newItem;
+            })
+            .filter((item) => {
+              if (filter?.status && filter?.status !== item.status) {
+                return false;
+              }
+
+              return true;
+            }),
+        })),
+      };
+
+      queryClient.setQueryData(
+        projectsQueryKeys.list().sub.by({ sort, filter }).key,
+        newData
+      );
+
+      await fetchReadyForDelivery({
+        id: entity.id,
+      });
+    }
+  };
+  const handleCompleted = async () => {
+    const isConfirmed = await confirmDialog({
+      title: tProjects("admin-panel-projects:confirm.complete.title"),
+      message: tProjects("admin-panel-projects:confirm.complete.message"),
+      successButtonText: "Si",
+      cancelButtonText: "No",
+      showInput: false,
+    });
+
+    if (isConfirmed) {
+      setOpen(false);
+
+      const searchParams = new URLSearchParams(window.location.search);
+      const searchParamsSort = searchParams.get("sort");
+
+      let sort: ProjectSortType | undefined = {
+        order: SortEnum.ASC,
+        orderBy: "estimated_delivery_date",
+      };
+
+      if (searchParamsSort) {
+        sort = JSON.parse(searchParamsSort);
+      }
+
+      const previousData = queryClient.getQueryData<
+        InfiniteData<{ nextPage: number; data: Project[] }>
+      >(projectsQueryKeys.list().sub.by({ sort, filter }).key);
+
+      await queryClient.cancelQueries({
+        queryKey: projectsQueryKeys.list().key,
+      });
+
+      const newData = {
+        ...previousData,
+        pages: previousData?.pages.map((page) => ({
+          ...page,
+          data: page?.data
+            .map((item) => {
+              if (item.id !== entity.id) return item;
+
+              const newItem: Project = {
+                ...item,
+                status: ProjectStatus.Completed,
+              };
+
+              return newItem;
+            })
+            .filter((item) => {
+              if (filter?.status && filter?.status !== item.status) {
+                return false;
+              }
+
+              return true;
+            }),
+        })),
+      };
+
+      queryClient.setQueryData(
+        projectsQueryKeys.list().sub.by({ sort, filter }).key,
+        newData
+      );
+
+      await fetchPatchCompleted({
         id: entity.id,
       });
     }
   };
 
-  // const mainButton = (
-  //   <Button
-  //     size="small"
-  //     variant="contained"
-  //     LinkComponent={Link}
-  //     href={`/admin-panel/projects/edit/${entity.id}`}
-  //   >
-  //     {tProjects("admin-panel-projects:actions.edit")}
-  //   </Button>
-  // );
+  const handleMissingMaterial = async () => {
+    const isConfirmed = await confirmDialog({
+      title: tProjects(
+        "admin-panel-projects:confirm.waiting_for_materials.title"
+      ),
+      message: tProjects(
+        "admin-panel-projects:confirm.waiting_for_materials.message"
+      ),
+      successButtonText: "Si",
+      cancelButtonText: "No",
+      showInput: true,
+    });
+
+    if (isConfirmed) {
+      const value = typeof isConfirmed === "string" ? isConfirmed : "";
+      setOpen(false);
+
+      const searchParams = new URLSearchParams(window.location.search);
+      const searchParamsSort = searchParams.get("sort");
+
+      let sort: ProjectSortType | undefined = {
+        order: SortEnum.ASC,
+        orderBy: "estimated_delivery_date",
+      };
+
+      if (searchParamsSort) {
+        sort = JSON.parse(searchParamsSort);
+      }
+
+      const previousData = queryClient.getQueryData<
+        InfiniteData<{ nextPage: number; data: Project[] }>
+      >(projectsQueryKeys.list().sub.by({ sort, filter }).key);
+
+      await queryClient.cancelQueries({
+        queryKey: projectsQueryKeys.list().key,
+      });
+
+      const newData = {
+        ...previousData,
+        pages: previousData?.pages.map((page) => ({
+          ...page,
+          data: page?.data
+            .map((item) => {
+              if (item.id !== entity.id) return item;
+
+              const newItem: Project = {
+                ...item,
+                waiting_materials_note: value,
+                status: ProjectStatus.WaitingForMaterial,
+              };
+
+              return newItem;
+            })
+            .filter((item) => {
+              if (filter?.status && filter?.status !== item.status) {
+                return false;
+              }
+
+              return true;
+            }),
+        })),
+      };
+
+      queryClient.setQueryData(
+        projectsQueryKeys.list().sub.by({ sort, filter }).key,
+        newData
+      );
+
+      await fetchPatchMissingMaterial({
+        id: entity.id,
+        data: {
+          waiting_materials_note: value,
+        },
+      });
+    }
+  };
+
+  const handleExternalDependency = async () => {
+    const isConfirmed = await confirmDialog({
+      title: tProjects(
+        "admin-panel-projects:confirm.external_dependency.title"
+      ),
+      message: tProjects(
+        "admin-panel-projects:confirm.external_dependency.message"
+      ),
+      successButtonText: "Si",
+      cancelButtonText: "No",
+      showInput: false,
+    });
+
+    if (isConfirmed) {
+      setOpen(false);
+
+      const searchParams = new URLSearchParams(window.location.search);
+      const searchParamsSort = searchParams.get("sort");
+
+      let sort: ProjectSortType | undefined = {
+        order: SortEnum.ASC,
+        orderBy: "estimated_delivery_date",
+      };
+
+      if (searchParamsSort) {
+        sort = JSON.parse(searchParamsSort);
+      }
+
+      const previousData = queryClient.getQueryData<
+        InfiniteData<{ nextPage: number; data: Project[] }>
+      >(projectsQueryKeys.list().sub.by({ sort, filter }).key);
+
+      await queryClient.cancelQueries({
+        queryKey: projectsQueryKeys.list().key,
+      });
+
+      const newData = {
+        ...previousData,
+        pages: previousData?.pages.map((page) => ({
+          ...page,
+          data: page?.data
+            .map((item) => {
+              if (item.id !== entity.id) return item;
+
+              const newItem: Project = {
+                ...item,
+                status: ProjectStatus.ExternalDependency,
+              };
+
+              return newItem;
+            })
+            .filter((item) => {
+              if (filter?.status && filter?.status !== item.status) {
+                return false;
+              }
+
+              return true;
+            }),
+        })),
+      };
+
+      queryClient.setQueryData(
+        projectsQueryKeys.list().sub.by({ sort, filter }).key,
+        newData
+      );
+
+      await fetchPatchExternalDependency({
+        id: entity.id,
+      });
+    }
+  };
+
+  const mainButton = (
+    <Button
+      size="small"
+      variant="contained"
+      LinkComponent={Link}
+      href={`/admin-panel/projects/edit/${entity.id}`}
+    >
+      {tProjects("admin-panel-projects:actions.edit")}
+    </Button>
+  );
 
   return (
     <>
-      <Button
-        size="small"
-        ref={anchorRef}
-        sx={{
-          maxWidth: 20,
-          padding: 0,
-          border: 0,
-          minWidth: 0,
-        }}
-        aria-controls={open ? "split-button-menu" : undefined}
-        aria-expanded={open ? "true" : undefined}
-        aria-label="select merge strategy"
-        aria-haspopup="menu"
-        onClick={handleToggle}
-      >
-        <ArrowDropDownIcon />
-      </Button>
+      {entity.status !== ProjectStatus.Canceled && (
+        <ButtonGroup
+          variant="contained"
+          ref={anchorRef}
+          aria-label="split button"
+          size="small"
+        >
+          {mainButton}
+          <Button
+            size="small"
+            sx={{
+              maxWidth: 20,
+              padding: 0,
+              border: 0,
+              minWidth: 0,
+            }}
+            aria-controls={open ? "split-button-menu" : undefined}
+            aria-expanded={open ? "true" : undefined}
+            aria-label="select merge strategy"
+            aria-haspopup="menu"
+            onClick={handleToggle}
+          >
+            <ArrowDropDownIcon />
+          </Button>
+        </ButtonGroup>
+      )}
+
       <Popper
         sx={{
-          zIndex: 15,
+          zIndex: 16,
           minWidth: 100,
         }}
         open={open}
         anchorEl={anchorRef.current}
         role={undefined}
         transition
-        disablePortal
-        placement="right"
+        placement="right-start"
       >
         {({ TransitionProps, placement }) => (
           <Grow
@@ -233,7 +721,54 @@ function Actions({ entity }: { entity: Project }) {
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList id="split-button-menu" autoFocusItem>
-                  {canDelete && (
+                  {entity.status === ProjectStatus.Created && (
+                    <MenuItem onClick={handleStarted}>
+                      {tProjects("admin-panel-projects:actions.started")}
+                    </MenuItem>
+                  )}
+                  {entity.status !== ProjectStatus.ExternalDependency &&
+                    entity.status !== ProjectStatus.ReadyForDelivery &&
+                    entity.status !== ProjectStatus.Created && (
+                      <MenuItem onClick={handleExternalDependency}>
+                        {tProjects(
+                          "admin-panel-projects:actions.external_dependency"
+                        )}
+                      </MenuItem>
+                    )}
+                  {entity.status === ProjectStatus.WaitingForMaterial && (
+                    <MenuItem onClick={handleStarted}>
+                      {tProjects("admin-panel-projects:actions.started")}
+                    </MenuItem>
+                  )}
+                  {entity.status === ProjectStatus.Started && (
+                    <MenuItem onClick={handleReadyForCutting}>
+                      {tProjects(
+                        "admin-panel-projects:actions.ready_for_cutting"
+                      )}
+                    </MenuItem>
+                  )}
+                  {entity.status === ProjectStatus.QA && (
+                    <MenuItem onClick={handleReadyForDelivery}>
+                      {tProjects(
+                        "admin-panel-projects:actions.ready_for_delivery"
+                      )}
+                    </MenuItem>
+                  )}
+                  {entity.status === ProjectStatus.ReadyForDelivery && (
+                    <MenuItem onClick={handleCompleted}>
+                      {tProjects("admin-panel-projects:actions.complete")}
+                    </MenuItem>
+                  )}
+                  {entity.status !== ProjectStatus.WaitingForMaterial &&
+                    entity.status !== ProjectStatus.ReadyForDelivery &&
+                    entity.status !== ProjectStatus.Created && (
+                      <MenuItem onClick={handleMissingMaterial}>
+                        {tProjects(
+                          "admin-panel-projects:actions.waiting_for_materials"
+                        )}
+                      </MenuItem>
+                    )}
+                  {entity.status !== ProjectStatus.Canceled && (
                     <MenuItem
                       sx={{
                         bgcolor: "error.main",
@@ -242,9 +777,9 @@ function Actions({ entity }: { entity: Project }) {
                           bgcolor: "error.light",
                         },
                       }}
-                      onClick={handleDelete}
+                      onClick={handleCanceled}
                     >
-                      {tProjects("admin-panel-projects:actions.delete")}
+                      {tProjects("admin-panel-projects:actions.canceled")}
                     </MenuItem>
                   )}
                 </MenuList>
@@ -265,7 +800,7 @@ function Projects() {
     order: SortEnum;
     orderBy: UsersKeys;
   }>(() => {
-    return { order: SortEnum.ASC, orderBy: "id" };
+    return { order: SortEnum.ASC, orderBy: "estimated_delivery_date" };
   });
 
   const handleRequestSort = (
@@ -286,19 +821,21 @@ function Projects() {
 
   const filter = useMemo<Partial<ProjectFilterType | undefined>>(() => {
     const filterName = searchParams.get("name");
-    const filterType = searchParams.get("type");
-    const filterIsActive = searchParams.get("is_active");
+    const filterStatus = searchParams.get("status");
+    const filterCustomerId = searchParams.get("customer_id");
+    const filterEstimatedDate = searchParams.get("estimated_delivery_date");
     const filter: Partial<ProjectFilterType> = {};
     if (filterName) {
       filter.name = filterName;
     }
-
-    if (filterType) {
-      filter.type = filterType;
+    if (filterStatus) {
+      filter.status = filterStatus as ProjectStatus;
     }
-
-    if (filterIsActive) {
-      filter.is_active = filterIsActive === "true";
+    if (filterCustomerId) {
+      filter.customer_id = filterCustomerId;
+    }
+    if (filterEstimatedDate) {
+      filter.estimated_delivery_date = filterEstimatedDate;
     }
 
     return isObjectEmpty(filter) ? undefined : filter;
@@ -355,18 +892,21 @@ function Projects() {
             fixedHeaderContent={() => (
               <>
                 <TableRow>
-                  <TableCell style={{ width: 50 }}></TableCell>
+                  <TableCell
+                    style={{
+                      minWidth: 150,
+                      background: "white",
+                      position: "sticky",
+                      left: 0,
+                      zIndex: 15,
+                    }}
+                  >
+                    Acciones
+                  </TableCell>
                   <TableSortCellWrapper
                     width={100}
                     orderBy={orderBy}
                     order={order}
-                    style={{
-                      width: 150,
-                      background: "white",
-                      position: "sticky",
-                      left: 0,
-                      zIndex: 10,
-                    }}
                     column="id"
                     handleRequestSort={handleRequestSort}
                   >
@@ -378,7 +918,7 @@ function Projects() {
                   <TableSortCellWrapper
                     orderBy={orderBy}
                     order={order}
-                    column="name"
+                    column="status"
                     style={{}}
                     handleRequestSort={handleRequestSort}
                   >
@@ -391,9 +931,15 @@ function Projects() {
                   <TableCell style={{ width: 80 }}>
                     {tProjects("admin-panel-projects:table.column-file")}
                   </TableCell>
-                  <TableCell style={{ width: 160 }}>
+                  <TableSortCellWrapper
+                    orderBy={orderBy}
+                    order={order}
+                    column="estimated_delivery_date"
+                    style={{}}
+                    handleRequestSort={handleRequestSort}
+                  >
                     {tProjects("admin-panel-projects:table.column-est-date")}
-                  </TableCell>
+                  </TableSortCellWrapper>
                   <TableCell style={{ minWidth: 120 }}>
                     {tProjects(
                       "admin-panel-projects:table.column-cutting-time"
@@ -440,18 +986,18 @@ function Projects() {
             )}
             itemContent={(index, entity) => (
               <>
-                <TableCell style={{ width: 50 }}></TableCell>
                 <TableCell
                   style={{
-                    width: 150,
+                    minWidth: 150,
                     left: 0,
                     background: "white",
                     position: "sticky",
-                    zIndex: 999,
+                    textAlign: "left",
                   }}
                 >
-                  <Actions entity={entity} /> {entity?.id}
+                  <Actions entity={entity} />{" "}
                 </TableCell>
+                <TableCell>{entity?.id}</TableCell>
                 <TableCell style={{ minWidth: 200 }}>{entity?.name}</TableCell>
                 <TableCell style={{ minWidth: 100 }}>
                   {tProjects(`admin-panel-projects:status.${entity?.status}`)}

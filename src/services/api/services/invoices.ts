@@ -10,7 +10,7 @@ import { Invoice } from "../types/invoice";
 
 export type InvoicesRequest = {
   page: number;
-  limit: number;
+  pageSize: number;
   filters?: Partial<InvoiceFilterType> | undefined;
   sort?: Array<{
     orderBy: keyof Invoice;
@@ -18,7 +18,9 @@ export type InvoicesRequest = {
   }>;
 };
 
-export type InvoicesResponse = InfinityPaginationType<Invoice>;
+export type InvoicesResponse = {
+  data: InfinityPaginationType<Invoice>;
+};
 
 export function useGetInvoicesService() {
   const fetch = useFetch();
@@ -27,7 +29,7 @@ export function useGetInvoicesService() {
     (data: InvoicesRequest, requestConfig?: RequestConfigType) => {
       const requestUrl = new URL(`${API_URL}/v1/invoices`);
       requestUrl.searchParams.append("page", data.page.toString());
-      requestUrl.searchParams.append("limit", data.limit.toString());
+      requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         if (data.filters.rfc) {
           requestUrl.searchParams.append("rfc", `${data.filters.rfc}`);

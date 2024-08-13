@@ -10,7 +10,7 @@ import { Material } from "../types/material";
 
 export type MaterialsRequest = {
   page: number;
-  limit: number;
+  pageSize: number;
   filters?: Partial<MaterialFilterType> | undefined;
   sort?: Array<{
     orderBy: keyof Material;
@@ -18,7 +18,9 @@ export type MaterialsRequest = {
   }>;
 };
 
-export type MaterialsResponse = InfinityPaginationType<Material>;
+export type MaterialsResponse = {
+  data: InfinityPaginationType<Material>;
+};
 
 export function useGetMaterialsService() {
   const fetch = useFetch();
@@ -27,7 +29,7 @@ export function useGetMaterialsService() {
     (data: MaterialsRequest, requestConfig?: RequestConfigType) => {
       const requestUrl = new URL(`${API_URL}/v1/materials`);
       requestUrl.searchParams.append("page", data.page.toString());
-      requestUrl.searchParams.append("limit", data.limit.toString());
+      requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         if (data.filters.name) {
           requestUrl.searchParams.append("name", `~${data.filters.name}`);

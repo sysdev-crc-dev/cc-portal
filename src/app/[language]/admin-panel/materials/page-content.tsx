@@ -305,7 +305,7 @@ function Materials() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as Material[]) ??
+      (data?.pages.flatMap((page) => page?.data.items) as Material[]) ??
       ([] as Material[]);
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);

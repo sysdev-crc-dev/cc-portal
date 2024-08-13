@@ -10,7 +10,7 @@ import { Address } from "../types/address";
 
 export type AddressesRequest = {
   page: number;
-  limit: number;
+  pageSize: number;
   filters?: Partial<AddressFilterType> | undefined;
   sort?: Array<{
     orderBy: keyof Address;
@@ -18,7 +18,9 @@ export type AddressesRequest = {
   }>;
 };
 
-export type AddressesResponse = InfinityPaginationType<Address>;
+export type AddressesResponse = {
+  data: InfinityPaginationType<Address>;
+};
 
 export function useGetAddressesService() {
   const fetch = useFetch();
@@ -27,7 +29,7 @@ export function useGetAddressesService() {
     (data: AddressesRequest, requestConfig?: RequestConfigType) => {
       const requestUrl = new URL(`${API_URL}/v1/addresses`);
       requestUrl.searchParams.append("page", data.page.toString());
-      requestUrl.searchParams.append("limit", data.limit.toString());
+      requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         if (data.filters.customer_id) {
           requestUrl.searchParams.append(

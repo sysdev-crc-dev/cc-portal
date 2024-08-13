@@ -296,7 +296,7 @@ function Supplies() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as Supply[]) ??
+      (data?.pages.flatMap((page) => page?.data.items) as Supply[]) ??
       ([] as Supply[]);
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);

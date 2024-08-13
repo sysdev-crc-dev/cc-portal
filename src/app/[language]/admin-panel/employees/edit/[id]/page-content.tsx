@@ -177,9 +177,9 @@ function FormEditUser() {
 
   useEffect(() => {
     const getUserData = async () => {
-      const { res } = await fetchUsers({ limit: 100, page: 1 });
+      const { res } = await fetchUsers({ pageSize: 100, page: 1 });
 
-      const data = (res as UsersResponse).data.map((user) => ({
+      const data = (res as UsersResponse).data.items.map((user) => ({
         id: user.id,
         value: user.email,
       }));

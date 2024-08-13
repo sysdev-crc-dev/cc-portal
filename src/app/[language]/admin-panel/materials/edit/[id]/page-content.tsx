@@ -23,7 +23,10 @@ import {
 } from "@/services/api/services/materials";
 import { useParams } from "next/navigation";
 import { Material } from "../../../../../../services/api/types/material";
-import { useGetProvidersService } from "../../../../../../services/api/services/providers";
+import {
+  ProvidersResponse,
+  useGetProvidersService,
+} from "../../../../../../services/api/services/providers";
 import FormSelectInput from "../../../../../../components/form/select/form-select";
 
 type SelectOption = {
@@ -85,10 +88,10 @@ function FormEditMaterial() {
     const fetchProvidersInfo = async () => {
       const { res } = await fetchProviders({
         page: 1,
-        limit: 100,
+        pageSize: 100,
       });
 
-      const data: SelectOption[] = (res as ProvidersResponse).data.map(
+      const data: SelectOption[] = (res as ProvidersResponse).data.items.map(
         (value) => ({
           id: value.id,
           name: `${value.id} - ${value.name}`,

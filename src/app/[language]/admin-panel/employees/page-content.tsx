@@ -296,7 +296,7 @@ function Employees() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as Employee[]) ??
+      (data?.pages.flatMap((page) => page?.data.items) as Employee[]) ??
       ([] as Employee[]);
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);

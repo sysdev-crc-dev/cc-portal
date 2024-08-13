@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import CreateEmployee from "./page-content";
+import CreateProject from "./page-content";
 import { getServerTranslation } from "@/services/i18n";
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { t } = await getServerTranslation(
     params.language,
-    "admin-panel-companies-create"
+    "admin-panel-projects-create"
   );
 
   return {
@@ -17,4 +17,4 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default CreateEmployee;
+export default CreateProject;

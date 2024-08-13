@@ -362,7 +362,7 @@ function Projects() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as Project[]) ??
+      (data?.pages.flatMap((page) => page?.data.items) as Project[]) ??
       ([] as Project[]);
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);

@@ -290,7 +290,7 @@ function Addresses() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as Address[]) ??
+      (data?.pages.flatMap((page) => page?.data.items) as Address[]) ??
       ([] as Address[]);
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);

@@ -299,7 +299,7 @@ function Processes() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as Process[]) ??
+      (data?.pages.flatMap((page) => page?.data.items) as Process[]) ??
       ([] as Process[]);
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);

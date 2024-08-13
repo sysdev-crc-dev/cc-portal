@@ -36,7 +36,7 @@ export const useProjectListQuery = ({
       const { status, res } = await fetch(
         {
           page: pageParam,
-          limit: 10,
+          pageSize: 25,
           filters: filter,
           sort: sort ? [sort] : undefined,
         },
@@ -47,8 +47,8 @@ export const useProjectListQuery = ({
 
       if (status === HTTP_CODES_ENUM.OK) {
         return {
-          data: res.data,
-          //   nextPage: data.hasNextPage ? pageParam + 1 : undefined,
+          data: res.data.items,
+          nextPage: res.data.hasNextPage ? pageParam + 1 : undefined,
         };
       }
     },

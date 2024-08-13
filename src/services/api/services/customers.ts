@@ -10,7 +10,7 @@ import { CustomerFilterType } from "../../../app/[language]/admin-panel/customer
 
 export type CustomersRequest = {
   page: number;
-  limit: number;
+  pageSize: number;
   filters?: Partial<CustomerFilterType> | undefined;
   sort?: Array<{
     orderBy: keyof Customer;
@@ -18,7 +18,9 @@ export type CustomersRequest = {
   }>;
 };
 
-export type CustomersResponse = InfinityPaginationType<Customer>;
+export type CustomersResponse = {
+  data: InfinityPaginationType<Customer>;
+};
 
 export function useGetCustomersService() {
   const fetch = useFetch();
@@ -27,7 +29,7 @@ export function useGetCustomersService() {
     (data: CustomersRequest, requestConfig?: RequestConfigType) => {
       const requestUrl = new URL(`${API_URL}/v1/customers`);
       requestUrl.searchParams.append("page", data.page.toString());
-      requestUrl.searchParams.append("limit", data.limit.toString());
+      requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         if (data.filters.name) {
           requestUrl.searchParams.append("name", `~${data.filters.name}`);

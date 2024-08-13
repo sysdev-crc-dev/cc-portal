@@ -150,11 +150,11 @@ function FormCreateCustomer() {
   useEffect(() => {
     const fetchInitialUsersData = async () => {
       const { res } = await fetchCompanies({
-        limit: 100,
+        pageSize: 100,
         page: 1,
       });
 
-      const data = (res as CompaniesResponse).data.map((company) => ({
+      const data = (res as CompaniesResponse).data.items.map((company) => ({
         id: company.id,
         name: company.name,
       }));

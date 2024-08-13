@@ -10,7 +10,7 @@ import { Supply } from "../types/supply";
 
 export type SuppliesRequest = {
   page: number;
-  limit: number;
+  pageSize: number;
   filters?: Partial<SupplyFilterType> | undefined;
   sort?: Array<{
     orderBy: keyof Supply;
@@ -18,7 +18,9 @@ export type SuppliesRequest = {
   }>;
 };
 
-export type SuppliesResponse = InfinityPaginationType<Supply>;
+export type SuppliesResponse = {
+  data: InfinityPaginationType<Supply>;
+};
 
 export function useGetSuppliesService() {
   const fetch = useFetch();
@@ -27,7 +29,7 @@ export function useGetSuppliesService() {
     (data: SuppliesRequest, requestConfig?: RequestConfigType) => {
       const requestUrl = new URL(`${API_URL}/v1/supplies`);
       requestUrl.searchParams.append("page", data.page.toString());
-      requestUrl.searchParams.append("limit", data.limit.toString());
+      requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         if (data.filters.name) {
           requestUrl.searchParams.append("name", `~${data.filters.name}`);

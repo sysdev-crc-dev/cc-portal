@@ -224,26 +224,28 @@ function ResponsiveAppBar() {
                   {t("common:navigation.addresses")}
                 </Button>
               )}
-            {!!user?.role && [RoleEnum.Admin].includes(user.role) && (
-              <Button
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-                component={Link}
-                href="/admin-panel/invoices"
-              >
-                {t("common:navigation.invoices")}
-              </Button>
-            )}
-            {!!user?.role && [RoleEnum.Admin].includes(user.role) && (
-              <Button
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
-                component={Link}
-                href="/admin-panel/providers"
-              >
-                {t("common:navigation.providers")}
-              </Button>
-            )}
+            {!!user?.role &&
+              [RoleEnum.Admin, RoleEnum.Staff].includes(user.role) && (
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                  component={Link}
+                  href="/admin-panel/invoices"
+                >
+                  {t("common:navigation.invoices")}
+                </Button>
+              )}
+            {!!user?.role &&
+              [RoleEnum.Admin, RoleEnum.Staff].includes(user.role) && (
+                <Button
+                  onClick={handleCloseNavMenu}
+                  sx={{ my: 2, color: "white", display: "block" }}
+                  component={Link}
+                  href="/admin-panel/providers"
+                >
+                  {t("common:navigation.providers")}
+                </Button>
+              )}
             <Button
               onClick={handleCloseNavMenu}
               sx={{ my: 2, color: "white", display: "block" }}

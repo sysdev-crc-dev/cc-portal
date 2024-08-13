@@ -272,7 +272,6 @@ function Companies() {
   const filter = useMemo<Partial<CompanyFilterType | undefined>>(() => {
     const filterName = searchParams.get("name");
     const filterType = searchParams.get("type");
-    const filterIsActive = searchParams.get("is_active");
     const filter: Partial<CompanyFilterType> = {};
     if (filterName) {
       filter.name = filterName;
@@ -280,10 +279,6 @@ function Companies() {
 
     if (filterType) {
       filter.type = filterType;
-    }
-
-    if (filterIsActive) {
-      filter.is_active = filterIsActive === "true";
     }
 
     return isObjectEmpty(filter) ? undefined : filter;
@@ -299,7 +294,7 @@ function Companies() {
 
   const result = useMemo(() => {
     const result =
-      (data?.pages.flatMap((page) => page?.data) as Company[]) ??
+      (data?.pages.flatMap((page) => page?.data.items) as Company[]) ??
       ([] as Company[]);
     return removeDuplicatesFromArrayObjects(result, "id");
   }, [data]);

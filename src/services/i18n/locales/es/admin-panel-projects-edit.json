@@ -1,5 +1,5 @@
 {
-  "title": "Editar Compañia",
+  "title": "Editar proyecto",
   "actions": {
     "submit": "Guardar",
     "cancel": "Cancelar"
@@ -8,26 +8,97 @@
     "name": {
       "label": "Nombre",
       "validation": {
-        "invalid": "Nombre invalido",
         "required": "Nombre requerido"
       }
     },
-    "type": {
-      "label": "Tipo de Compañia",
+    "file": {
+      "label": "Archivo",
       "validation": {
-        "required": "Apellido requerido"
+        "required": "Archivo requerido"
       }
     },
-    "employees": {
-      "label": "Empleado",
+    "employee": {
+      "label": "Empleado encargado",
       "validation": {
-        "required": "Toda compañia debe tener un empleado"
+        "required": "Debes selecionar un encargado"
+      }
+    },
+    "customer": {
+      "label": "Cliente",
+      "validation": {
+        "required": "Debes selecionar un cliente"
+      }
+    },
+    "operator": {
+      "label": "Operador",
+      "validation": {
+        "required": "Debes seleccionar un operador"
+      }
+    },
+    "est_cutting_time_in_hours": {
+      "label": "Tiempo est. de corte en horas",
+      "validation": {
+        "required": "Campo requerido"
+      }
+    },
+    "est_dimensions": {
+      "label": "Tamańo estimado",
+      "validation": {
+        "required": "Campo requerido"
+      }
+    },
+    "material_provided_by": {
+      "label": "Material de",
+      "validation": {
+        "required": "Campo requerido"
+      }
+    },
+    "est_delivery_time_in_days": {
+      "label": "Tiempo estimado de entrega en dias",
+      "validation": {
+        "required": "Campo requerido"
+      }
+    },
+    "package_type": {
+      "label": "Tipo de paquete",
+      "validation": {
+        "required": "Campo requerido"
+      }
+    },
+    "delivery_type": {
+      "label": "Tipo de entrega",
+      "validation": {
+        "required": "Campo requerido"
+      }
+    },
+    "est_man_hours": {
+      "label": "Mano de obra en horas",
+      "validation": {
+        "required": "Campo requerido"
+      }
+    },
+    "materials": {
+      "label": "Materiales",
+      "validation": {
+        "required": "Campo requerido"
+      }
+    },
+    "supplies": {
+      "label": "Insumos",
+      "validation": {
+        "required": "Campo requerido"
+      }
+    },
+    "processes": {
+      "label": "Procesos",
+      "validation": {
+        "required": "Campo requerido"
       }
     }
   },
   "alerts": {
-    "company": {
-      "success": "Compañia actualizada correctamente"
+    "project": {
+      "success": "El proyecto ha sido actualizado de manera exitosa"
     },
     "server": {
       "error": "La peticion ha fallado, intentelo mas tarde"

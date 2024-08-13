@@ -253,9 +253,9 @@ function FormEditCompany() {
 
   useEffect(() => {
     const getCompanyData = async () => {
-      const { res } = await fetchCompanies({ limit: 100, page: 1 });
+      const { res } = await fetchCompanies({ pageSize: 100, page: 1 });
 
-      const data = (res as CompaniesResponse).data.map((user) => ({
+      const data = (res as CompaniesResponse).data.items.map((user) => ({
         id: user.id,
         name: user.name,
       }));

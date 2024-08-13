@@ -144,7 +144,6 @@ function UserFilter() {
         >
           <form
             onSubmit={handleSubmit((data) => {
-              console.log(data);
               const searchParams = new URLSearchParams(window.location.search);
               if (data.name) {
                 const roleFilter = data.name;

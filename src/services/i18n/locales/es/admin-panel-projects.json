@@ -22,12 +22,43 @@
     "add": "Añadir",
     "edit": "Editar",
     "delete": "Borrar",
-    "create": "Crear Proyecto"
+    "create": "Crear Proyecto",
+    "started": "Activar proyecto",
+    "ready_for_cutting": "Listo para corte",
+    "canceled": "Cancelar",
+    "complete": "Completado",
+    "ready_for_delivery": "Listo para entrega",
+    "waiting_for_materials": "Faltan materiales",
+    "external_dependency": "Dependencia externa"
   },
   "confirm": {
-    "delete": {
-      "title": "Borrar",
-      "message": "Estás seguro de borrar esta Compañia?"
+    "started": {
+      "title": "Activar proyecto",
+      "message": "El cliente ha pagado el anticipo o el proyecto ya tiene los materiales necesarios para iniciar"
+    },
+    "ready_for_cutting": {
+      "title": "Listo para corte",
+      "message": "El proyecto esta listo para corte"
+    },
+    "ready_for_delivery": {
+      "title": "Listo para entrega",
+      "message": "El proyecto esta listo para entregar al cliente, favor de verificar que tipo de entrega esta esperando el cliente."
+    },
+    "canceled": {
+      "title": "Cancelar",
+      "message": "El proyecto esta a punto de ser cancelado, esta accion es IRREVERSIBLE."
+    },
+    "complete": {
+      "title": "Proyecto completado",
+      "message": "El proyecto ha sido completado, excelente trabajo."
+    },
+    "waiting_for_materials": {
+      "title": "Faltan materiales",
+      "message": "Faltan uno o mas materiales"
+    },
+    "external_dependency": {
+      "title": "Dependencia externa",
+      "message": "Este proyecto no puede avanzar debido a una dependencia externa a Colectivo Cometa"
     }
   },
   "status": {
@@ -35,7 +66,7 @@
     "pending_supplies": "Faltan insumos",
     "pending_processes": "Faltan procesos",
     "configured": "Configurado",
-    "started": "Anticipo recibido",
+    "started": "Activo",
     "ready_for_cutting": "Listo para corte",
     "in_progress": "Cortando",
     "qa": "Calidad y Empaquetado",
