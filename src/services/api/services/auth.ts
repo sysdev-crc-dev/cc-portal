@@ -147,27 +147,6 @@ export function useAuthResetPasswordService() {
   );
 }
 
-export type AuthPatchMeRequest =
-  | Partial<Pick<User, "firstName" | "lastName" | "email">>
-  | { password: string; oldPassword: string };
-
-export type AuthPatchMeResponse = User;
-
-export function useAuthPatchMeService() {
-  const fetch = useFetch();
-
-  return useCallback(
-    (data: AuthPatchMeRequest, requestConfig?: RequestConfigType) => {
-      return fetch(`${API_URL}/v1/auth/me`, {
-        method: "PATCH",
-        body: JSON.stringify(data),
-        ...requestConfig,
-      }).then(wrapperFetchJsonResponse<AuthPatchMeResponse>);
-    },
-    [fetch]
-  );
-}
-
 export type AuthGetMeResponse = User;
 
 export function useAuthGetMeService() {

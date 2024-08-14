@@ -100,6 +100,7 @@ function FormCreateMaterial() {
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<CreateMaterialFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",
@@ -116,6 +117,7 @@ function FormCreateMaterial() {
   useEffect(() => {
     if (watchProvider && watchProvider.name) {
       const generatePrefix = (value: string) =>
+        // @ts-expect-error ts(2322)
         value?.match(/\b([A-Z])/g).join("");
       setValue("prefix", generatePrefix(watchProvider.name));
     }
@@ -176,7 +178,7 @@ function FormCreateMaterial() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormSelectInput<CreateMaterialFormData>
+              <FormSelectInput<CreateMaterialFormData, SelectOption>
                 name="provider_id"
                 helperText="Este campo es opcional"
                 testId="provider_id"

@@ -71,6 +71,7 @@ const useValidationEditUserSchema = () => {
           t("admin-panel-employees-edit:inputs.cell_phone.validation.invalid")
         ),
       tel: yup.string().when("tel", {
+        // @ts-expect-error ts(2322)
         is: (value) => value,
         then: (rule) =>
           rule.length(
@@ -116,6 +117,7 @@ function FormEditUser() {
   );
 
   const methods = useForm<EditEmployeeFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",
@@ -238,7 +240,10 @@ function FormEditUser() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormSelectInput<EditEmployeeFormData>
+              <FormSelectInput<
+                EditEmployeeFormData,
+                { id: number; value: string }
+              >
                 name="user"
                 testId="role"
                 label={t("admin-panel-employees-edit:inputs.user.label")}

@@ -46,6 +46,7 @@ import {
   useInProgressPatchRequest,
   useQAPatchRequest,
 } from "../../../../services/api/services/worklist";
+import ButtonGroup from "@mui/material/ButtonGroup";
 
 type UsersKeys = keyof Project;
 
@@ -242,23 +243,24 @@ function Actions({ entity }: { entity: Project }) {
 
   return (
     <>
-      <Button
-        size="small"
-        ref={anchorRef}
-        sx={{
-          maxWidth: 20,
-          padding: 0,
-          border: 0,
-          minWidth: 0,
-        }}
-        aria-controls={open ? "split-button-menu" : undefined}
-        aria-expanded={open ? "true" : undefined}
-        aria-label="select merge strategy"
-        aria-haspopup="menu"
-        onClick={handleToggle}
-      >
-        <ArrowDropDownIcon />
-      </Button>
+      <ButtonGroup size="small" ref={anchorRef}>
+        <Button
+          size="small"
+          sx={{
+            maxWidth: 20,
+            padding: 0,
+            border: 0,
+            minWidth: 0,
+          }}
+          aria-controls={open ? "split-button-menu" : undefined}
+          aria-expanded={open ? "true" : undefined}
+          aria-label="select merge strategy"
+          aria-haspopup="menu"
+          onClick={handleToggle}
+        >
+          <ArrowDropDownIcon />
+        </Button>
+      </ButtonGroup>
       <Popper
         sx={{
           zIndex: 15,

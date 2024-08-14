@@ -83,6 +83,7 @@ const useValidationSchema = () => {
           t("admin-panel-customers-create:inputs.cell_phone.validation.invalid")
         ),
       tel: yup.string().when("tel", {
+        // @ts-expect-error ts(2322)
         is: (value) => value,
         then: (rule) =>
           rule.length(
@@ -200,6 +201,7 @@ function FormCreateCustomer() {
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<CreateCustomerFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",
@@ -310,7 +312,7 @@ function FormCreateCustomer() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormSelectInput<CreateCustomerFormData>
+              <FormSelectInput<CreateCustomerFormData, SelectOptionEnum>
                 name="preferred_form_of_payment"
                 testId="preferred_form_of_payment"
                 label={t(
@@ -325,7 +327,7 @@ function FormCreateCustomer() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormSelectInput<CreateCustomerFormData>
+              <FormSelectInput<CreateCustomerFormData, SelectOption>
                 name="company_id"
                 testId="company_id"
                 label={t("admin-panel-customers-create:inputs.company.label")}

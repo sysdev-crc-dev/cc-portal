@@ -32,6 +32,8 @@ import {
   ProvidersResponse,
   useGetProvidersService,
 } from "../../../../../../services/api/services/providers";
+import { Customer } from "../../../../../../services/api/types/customer";
+import { Provider } from "../../../../../../services/api/types/provider";
 
 type SelectOption = {
   id: number;
@@ -154,6 +156,7 @@ function FormEditAddress() {
   }, [fetchProviders]);
 
   const methods = useForm<EditAddressFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       street: "",
@@ -307,7 +310,10 @@ function FormEditAddress() {
               />
             </Grid>
             <Grid item xs={12}>
-              <FormSelectInput<EditAddressFormData>
+              <FormSelectInput<
+                EditAddressFormData,
+                Pick<Customer, "id" | "name">
+              >
                 name="customer_id"
                 testId="customer_id"
                 label={t("admin-panel-addresses-edit:inputs.customer.label")}
@@ -319,7 +325,10 @@ function FormEditAddress() {
               />
             </Grid>
             <Grid item xs={12}>
-              <FormSelectInput<CreateAddressFormData>
+              <FormSelectInput<
+                EditAddressFormData,
+                Pick<Provider, "id" | "name">
+              >
                 name="provider_id"
                 helperText="Este campo es opcional"
                 testId="provider_id"

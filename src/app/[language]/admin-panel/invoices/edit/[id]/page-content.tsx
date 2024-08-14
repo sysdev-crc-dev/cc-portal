@@ -145,7 +145,11 @@ function FormEditInvoice() {
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",
-      type: "",
+      email: "",
+      customer_id: undefined,
+      invoice_use: "",
+      postal_code: "",
+      rfc: "",
     },
   });
 
@@ -256,7 +260,7 @@ function FormEditInvoice() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormSelectInput<EditInvoiceFormData>
+              <FormSelectInput<EditInvoiceFormData, SelectOption>
                 name="customer_id"
                 testId="customer_id"
                 label={t("admin-panel-invoices-edit:inputs.customer.label")}

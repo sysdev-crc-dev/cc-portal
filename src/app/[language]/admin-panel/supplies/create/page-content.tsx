@@ -58,6 +58,7 @@ function FormCreateSupply() {
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<CreateSupplyFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",

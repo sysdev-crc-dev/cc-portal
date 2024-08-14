@@ -329,6 +329,7 @@ function FormCreateEmployee() {
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<CreateProjectFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",

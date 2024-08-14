@@ -84,11 +84,12 @@ function FormCreateProcess() {
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<CreateProcessFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",
       file: "",
-      type: null,
+      type: undefined,
     },
   });
 
@@ -161,13 +162,12 @@ function FormCreateProcess() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormSelectInput<CreateProcessFormData>
+              <FormSelectInput<CreateProcessFormData, SelectOption>
                 name="type"
                 options={typeOptions}
                 label={t("admin-panel-processes-create:inputs.type.label")}
                 keyValue="id"
-                keyExtractor={(option) => option.id.toString()}
-                renderOption={(option) => option.name}
+                renderOption={(option: SelectOption) => option.name}
               />
             </Grid>
 

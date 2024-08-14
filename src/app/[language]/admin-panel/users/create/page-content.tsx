@@ -16,14 +16,19 @@ import Box from "@mui/material/Box";
 import HTTP_CODES_ENUM from "@/services/api/types/http-codes";
 import { useTranslation } from "@/services/i18n/client";
 import { usePostUserService } from "@/services/api/services/users";
-import { Role, RoleEnum } from "@/services/api/types/role";
+import { RoleEnum } from "@/services/api/types/role";
 import FormSelectInput from "@/components/form/select/form-select";
+
+type SelectOption = {
+  id: RoleEnum;
+  name: string;
+};
 
 type CreateUserFormData = {
   email: string;
   password: string;
   passwordConfirmation: string;
-  role: { role?: RoleEnum };
+  role: SelectOption;
 };
 
 const useValidationSchema = () => {
@@ -77,7 +82,6 @@ function CreateUserFormActions() {
 }
 
 function FormCreateUser() {
-  // const router = useRouter();
   const fetchPostUser = usePostUserService();
   const { t } = useTranslation("admin-panel-users-create");
   const validationSchema = useValidationSchema();
@@ -85,14 +89,13 @@ function FormCreateUser() {
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<CreateUserFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       email: "",
       password: "",
       passwordConfirmation: "",
-      role: {
-        role: RoleEnum.Operator,
-      },
+      role: undefined,
     },
   });
 
@@ -102,7 +105,7 @@ function FormCreateUser() {
     const { status } = await fetchPostUser({
       email: formData.email,
       password: formData.password,
-      role: formData.role.role as RoleEnum,
+      role: formData.role.id,
     });
 
     if (status !== HTTP_CODES_ENUM.CREATED) {
@@ -165,27 +168,26 @@ function FormCreateUser() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormSelectInput<CreateUserFormData, Pick<Role, "id">>
+              <FormSelectInput<CreateUserFormData, SelectOption>
                 name="role"
                 testId="role"
                 label={t("admin-panel-users-create:inputs.role.label")}
                 options={[
                   {
-                    role: RoleEnum.Admin,
+                    id: RoleEnum.Admin,
+                    name: "Admin",
                   },
                   {
-                    role: RoleEnum.Staff,
+                    id: RoleEnum.Staff,
+                    name: "Encargado",
                   },
                   {
-                    role: RoleEnum.Operator,
+                    id: RoleEnum.Operator,
+                    name: "Operador",
                   },
                 ]}
-                keyValue="role"
-                renderOption={(option) =>
-                  t(
-                    `admin-panel-users-create:inputs.role.options.${option.role}`
-                  )
-                }
+                keyValue="id"
+                renderOption={(option) => option.name}
               />
             </Grid>
 

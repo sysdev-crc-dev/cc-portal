@@ -5,8 +5,8 @@ export type Address = {
   id: number;
   street: string;
   neighborhood: string;
-  no_ext: number;
-  no_int: number;
+  no_ext: string;
+  no_int: string;
   postal_code: string;
   town: string;
   state: string;

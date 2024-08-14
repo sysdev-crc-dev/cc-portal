@@ -305,16 +305,6 @@ function ResponsiveAppBar() {
                 onClose={handleCloseUserMenu}
               >
                 <MenuItem
-                  onClick={handleCloseUserMenu}
-                  component={Link}
-                  href="/profile"
-                  data-testid="user-profile"
-                >
-                  <Typography textAlign="center">
-                    {t("common:navigation.profile")}
-                  </Typography>
-                </MenuItem>
-                <MenuItem
                   onClick={() => {
                     logOut();
                     handleCloseUserMenu();

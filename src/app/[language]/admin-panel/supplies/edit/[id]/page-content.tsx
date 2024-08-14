@@ -64,6 +64,7 @@ function FormEditSupply() {
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<EditSupplyFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",

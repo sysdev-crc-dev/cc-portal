@@ -447,4 +447,6 @@ function Customers() {
   );
 }
 
-export default withPageRequiredAuth(Customers, { roles: [RoleEnum.Admin] });
+export default withPageRequiredAuth(Customers, {
+  roles: [RoleEnum.Admin, RoleEnum.Staff],
+});

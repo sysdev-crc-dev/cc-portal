@@ -75,6 +75,7 @@ const useValidationSchema = () => {
           t("admin-panel-employees-create:inputs.cell_phone.validation.invalid")
         ),
       tel: yup.string().when("tel", {
+        // @ts-expect-error ts(2322)
         is: (value) => value,
         then: (rule) =>
           rule.length(
@@ -146,6 +147,7 @@ function FormCreateEmployee() {
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<CreateEmployeeFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",
@@ -240,7 +242,10 @@ function FormCreateEmployee() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormSelectInput<CreateEmployeeFormData>
+              <FormSelectInput<
+                CreateEmployeeFormData,
+                { id: number; value: string }
+              >
                 name="user_id"
                 testId="user_id"
                 label={t("admin-panel-employees-create:inputs.user.label")}

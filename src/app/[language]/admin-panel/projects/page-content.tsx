@@ -835,7 +835,7 @@ function Projects() {
       filter.customer_id = filterCustomerId;
     }
     if (filterEstimatedDate) {
-      filter.estimated_delivery_date = filterEstimatedDate;
+      filter.estimated_delivery_date = new Date(filterEstimatedDate);
     }
 
     return isObjectEmpty(filter) ? undefined : filter;

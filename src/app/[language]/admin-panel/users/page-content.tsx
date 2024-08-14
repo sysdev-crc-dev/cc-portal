@@ -18,8 +18,7 @@ import Button from "@mui/material/Button";
 import { User } from "@/services/api/types/user";
 import Link from "@/components/link";
 import removeDuplicatesFromArrayObjects from "@/services/helpers/remove-duplicates-from-array-of-objects";
-import UserFilter from "./user-filter";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { SortEnum } from "@/services/api/types/sort-type";
 
@@ -59,7 +58,6 @@ function TableSortCellWrapper(
 
 function Users() {
   const { t: tUsers } = useTranslation("admin-panel-users");
-  const searchParams = useSearchParams();
   const router = useRouter();
   const [{ order, orderBy }, setSort] = useState<{
     order: SortEnum;
@@ -84,17 +82,8 @@ function Users() {
     router.push(window.location.pathname + "?" + searchParams.toString());
   };
 
-  const filter = useMemo(() => {
-    const searchParamsFilter = searchParams.get("role");
-    if (searchParamsFilter) {
-      return searchParamsFilter;
-    }
-
-    return undefined;
-  }, [searchParams]);
-
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
-    useUserListQuery({ filter, sort: { order, orderBy } });
+    useUserListQuery({});
 
   const handleScroll = useCallback(() => {
     if (!hasNextPage || isFetchingNextPage) return;
@@ -118,9 +107,6 @@ function Users() {
             </Typography>
           </Grid>
           <Grid container item xs="auto" wrap="nowrap" spacing={2}>
-            <Grid item xs="auto">
-              <UserFilter />
-            </Grid>
             <Grid item xs="auto">
               <Button
                 variant="contained"
@@ -154,12 +140,7 @@ function Users() {
                   >
                     {tUsers("admin-panel-users:table.column1")}
                   </TableSortCellWrapper>
-                  <TableCell
-                    style={{ width: 200 }}
-                    orderBy={orderBy}
-                    order={order}
-                    column="email"
-                  >
+                  <TableCell style={{ width: 200 }}>
                     {tUsers("admin-panel-users:table.column2")}
                   </TableCell>
                   <TableSortCellWrapper

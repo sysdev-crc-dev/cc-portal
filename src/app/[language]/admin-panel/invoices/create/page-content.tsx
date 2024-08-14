@@ -254,7 +254,7 @@ function FormCreateInvoice() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormSelectInput<CreateInvoiceFormData>
+              <FormSelectInput<CreateInvoiceFormData, SelectOption>
                 name="customer_id"
                 testId="customer_id"
                 label={t("admin-panel-invoices-create:inputs.customer.label")}

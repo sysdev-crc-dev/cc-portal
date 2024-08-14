@@ -27,6 +27,8 @@ import {
   ProvidersResponse,
   useGetProvidersService,
 } from "../../../../../services/api/services/providers";
+import { Customer } from "../../../../../services/api/types/customer";
+import { Provider } from "../../../../../services/api/types/provider";
 type SelectOption = {
   id: number;
   name: string;
@@ -149,11 +151,12 @@ function FormCreateAddress() {
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<CreateAddressFormData>({
-    resolver: yupResolver(validationSchema),
+    // @ts-expect-error ts(2322)
+    resolver: yupResolver<CreateAddressFormData>(validationSchema),
     defaultValues: {
       street: "",
-      no_ext: undefined,
-      no_int: undefined,
+      no_ext: "",
+      no_int: "",
       neighborhood: "",
       postal_code: "",
       extra_info: "",
@@ -279,7 +282,10 @@ function FormCreateAddress() {
               />
             </Grid>
             <Grid item xs={12}>
-              <FormSelectInput<CreateAddressFormData>
+              <FormSelectInput<
+                CreateAddressFormData,
+                Pick<Customer, "id" | "name">
+              >
                 name="customer_id"
                 testId="customer_id"
                 label={t("admin-panel-addresses-create:inputs.customer.label")}
@@ -291,7 +297,10 @@ function FormCreateAddress() {
               />
             </Grid>
             <Grid item xs={12}>
-              <FormSelectInput<CreateAddressFormData>
+              <FormSelectInput<
+                CreateAddressFormData,
+                Pick<Provider, "id" | "name">
+              >
                 name="provider_id"
                 helperText="Este campo es opcional"
                 testId="provider_id"

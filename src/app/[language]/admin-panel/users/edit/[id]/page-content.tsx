@@ -25,9 +25,14 @@ import { useParams } from "next/navigation";
 import { RoleEnum } from "@/services/api/types/role";
 import FormSelectInput from "@/components/form/select/form-select";
 
+type SelectOption = {
+  id: RoleEnum;
+  name: string;
+};
+
 type EditUserFormData = {
   email: string;
-  role: { role?: RoleEnum };
+  role: SelectOption;
 };
 
 type ChangeUserPasswordFormData = {
@@ -114,11 +119,13 @@ function FormEditUser() {
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<EditUserFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       email: "",
       role: {
-        role: RoleEnum.Operator,
+        id: RoleEnum.Operator,
+        name: "Operador",
       },
     },
   });
@@ -130,7 +137,7 @@ function FormEditUser() {
       id: userId,
       data: {
         email: formData.email,
-        role: formData.role.role,
+        role: formData.role.id,
       },
     });
     if (status !== HTTP_CODES_ENUM.OK) {
@@ -157,7 +164,8 @@ function FormEditUser() {
         reset({
           email: res.data.email,
           role: {
-            role: res.data.role,
+            id: res.data.role,
+            name: res.data.role,
           },
         });
       }
@@ -186,26 +194,27 @@ function FormEditUser() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormSelectInput<EditUserFormData, Pick<EditUserFormData, "role">>
+              <FormSelectInput<EditUserFormData, SelectOption>
                 name="role"
                 testId="role"
                 label={t("admin-panel-users-edit:inputs.role.label")}
                 options={[
                   {
-                    role: RoleEnum.Admin,
+                    id: RoleEnum.Admin,
+                    name: "Admin",
                   },
                   {
-                    role: RoleEnum.Staff,
+                    id: RoleEnum.Staff,
+                    name: "Encargado",
                   },
                   {
-                    role: RoleEnum.Operator,
+                    id: RoleEnum.Operator,
+                    name: "Operador",
                   },
                 ]}
-                keyValue="role"
+                keyValue="id"
                 renderOption={(option) => {
-                  return t(
-                    `admin-panel-users-edit:inputs.role.options.${option.role}`
-                  );
+                  return option.name;
                 }}
               />
             </Grid>

@@ -107,6 +107,7 @@ function FormEditMaterial() {
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<EditMaterialFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",
@@ -187,7 +188,7 @@ function FormEditMaterial() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormSelectInput<EditMaterialFormData>
+              <FormSelectInput<EditMaterialFormData, SelectOption>
                 name="provider_id"
                 helperText="Este campo es opcional"
                 testId="provider_id"

@@ -26,7 +26,7 @@ type CreateCompanyFormData = {
   name: string;
   type: string;
   is_active: boolean;
-  employees: SelectOption[];
+  customers: SelectOption[];
 };
 
 const useValidationSchema = () => {
@@ -78,11 +78,12 @@ function FormCreateEmployee() {
   const { enqueueSnackbar } = useSnackbar();
 
   const methods = useForm<CreateCompanyFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",
       type: "",
-      employees: [],
+      customers: [],
     },
   });
 
@@ -93,7 +94,7 @@ function FormCreateEmployee() {
       const { status } = await fetchPostCompany({
         name: formData.name,
         type: formData.type,
-        employees: formData.employees,
+        customers: formData.customers,
       });
 
       if (status !== HTTP_CODES_ENUM.CREATED) {

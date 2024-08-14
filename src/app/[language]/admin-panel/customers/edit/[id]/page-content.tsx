@@ -82,6 +82,7 @@ const useValidationSchema = () => {
           t("admin-panel-customers-edit:inputs.cell_phone.validation.invalid")
         ),
       tel: yup.string().when("tel", {
+        // @ts-expect-error ts(2322)
         is: (value) => value,
         then: (rule) =>
           rule.length(
@@ -183,6 +184,7 @@ function FormEditCompany() {
   const [companiesData, setCompanies] = useState<SelectOption[]>([]);
 
   const methods = useForm<EditCustomerFormData>({
+    // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
       name: "",
@@ -323,7 +325,7 @@ function FormEditCompany() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormSelectInput<EditCustomerFormData>
+              <FormSelectInput<EditCustomerFormData, SelectOptionEnum>
                 name="preferred_form_of_payment"
                 testId="preferred_form_of_payment"
                 label={t(
@@ -338,7 +340,7 @@ function FormEditCompany() {
             </Grid>
 
             <Grid item xs={12}>
-              <FormSelectInput<EditCustomerFormData>
+              <FormSelectInput<EditCustomerFormData, SelectOption>
                 name="company_id"
                 testId="company_id"
                 label={t("admin-panel-customers-edit:inputs.company.label")}
