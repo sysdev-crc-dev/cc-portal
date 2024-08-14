@@ -44,6 +44,7 @@ import { SupplyFilterType, SupplySortType } from "./supply-filter-types";
 import { SortEnum } from "@/services/api/types/sort-type";
 import { useDeleteSupplyService } from "../../../../services/api/services/supplies";
 import { isObjectEmpty } from "../../../../utils";
+import useAuth from "../../../../services/auth/use-auth";
 
 type UsersKeys = keyof Supply;
 
@@ -240,6 +241,7 @@ function Actions({ entitiy }: { entitiy: Supply }) {
 }
 
 function Supplies() {
+  const { user } = useAuth();
   const { t: tSupplies } = useTranslation("admin-panel-supplies");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -310,21 +312,23 @@ function Supplies() {
               {tSupplies("admin-panel-supplies:title")}
             </Typography>
           </Grid>
-          <Grid container item xs="auto" wrap="nowrap" spacing={2}>
-            <Grid item xs="auto">
-              <UserFilter />
+          {user?.role !== RoleEnum.Operator && (
+            <Grid container item xs="auto" wrap="nowrap" spacing={2}>
+              <Grid item xs="auto">
+                <UserFilter />
+              </Grid>
+              <Grid item xs="auto">
+                <Button
+                  variant="contained"
+                  LinkComponent={Link}
+                  href="/admin-panel/supplies/create"
+                  color="success"
+                >
+                  {tSupplies("admin-panel-supplies:actions.create")}
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs="auto">
-              <Button
-                variant="contained"
-                LinkComponent={Link}
-                href="/admin-panel/supplies/create"
-                color="success"
-              >
-                {tSupplies("admin-panel-supplies:actions.create")}
-              </Button>
-            </Grid>
-          </Grid>
+          )}
         </Grid>
 
         <Grid item xs={12} mb={2}>
@@ -378,7 +382,9 @@ function Supplies() {
                 <TableCell style={{ width: 80 }}>{entity?.stock}</TableCell>
 
                 <TableCell>
-                  <Actions entitiy={entity} />
+                  {user?.role !== RoleEnum.Operator && (
+                    <Actions entitiy={entity} />
+                  )}
                 </TableCell>
               </>
             )}

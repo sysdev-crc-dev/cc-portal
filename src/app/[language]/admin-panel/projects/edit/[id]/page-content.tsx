@@ -88,7 +88,7 @@ const useValidationSchema = () => {
       .required(t("admin-panel-projects-edit:inputs.name.validation.required")),
     file: yup
       .string()
-      .url("Archivo debe ser una URL valida")
+      .url(t("admin-panel-projects-create:inputs.file.validation.invalid"))
       .required(t("admin-panel-projects-edit:inputs.file.validation.required")),
     est_man_hours: yup
       .number()

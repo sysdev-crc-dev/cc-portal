@@ -44,6 +44,7 @@ import { ProcessFilterType, ProcessSortType } from "./process-filter-types";
 import { SortEnum } from "@/services/api/types/sort-type";
 import { useDeleteProcessService } from "../../../../services/api/services/processes";
 import { isObjectEmpty } from "../../../../utils";
+import useAuth from "../../../../services/auth/use-auth";
 
 type UsersKeys = keyof Process;
 
@@ -241,6 +242,7 @@ function Actions({ entitiy }: { entitiy: Process }) {
 
 function Processes() {
   const { t: tProcesses } = useTranslation("admin-panel-processes");
+  const { user } = useAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
   const [{ order, orderBy }, setSort] = useState<{
@@ -313,21 +315,23 @@ function Processes() {
               {tProcesses("admin-panel-processes:title")}
             </Typography>
           </Grid>
-          <Grid container item xs="auto" wrap="nowrap" spacing={2}>
-            <Grid item xs="auto">
-              <UserFilter />
+          {user?.role !== RoleEnum.Operator && (
+            <Grid container item xs="auto" wrap="nowrap" spacing={2}>
+              <Grid item xs="auto">
+                <UserFilter />
+              </Grid>
+              <Grid item xs="auto">
+                <Button
+                  variant="contained"
+                  LinkComponent={Link}
+                  href="/admin-panel/processes/create"
+                  color="success"
+                >
+                  {tProcesses("admin-panel-processes:actions.create")}
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs="auto">
-              <Button
-                variant="contained"
-                LinkComponent={Link}
-                href="/admin-panel/processes/create"
-                color="success"
-              >
-                {tProcesses("admin-panel-processes:actions.create")}
-              </Button>
-            </Grid>
-          </Grid>
+          )}
         </Grid>
 
         <Grid item xs={12} mb={2}>
@@ -400,7 +404,9 @@ function Processes() {
                 </TableCell>
 
                 <TableCell>
-                  <Actions entitiy={entity} />
+                  {user?.role !== RoleEnum.Operator && (
+                    <Actions entitiy={entity} />
+                  )}
                 </TableCell>
               </>
             )}

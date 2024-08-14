@@ -85,6 +85,7 @@ const useValidationSchema = () => {
       ),
     file: yup
       .string()
+      .url(t("admin-panel-projects-create:inputs.file.validation.invalid"))
       .required(
         t("admin-panel-projects-create:inputs.file.validation.required")
       ),
@@ -472,17 +473,6 @@ function FormCreateEmployee() {
                 autoComplete="new-user-email"
                 label={t(
                   "admin-panel-projects-create:inputs.est_delivery_time_in_days.label"
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FormTextInput<CreateProjectFormData>
-                name="est_man_hours"
-                type="number"
-                testId="new-user-email"
-                autoComplete="new-user-email"
-                label={t(
-                  "admin-panel-projects-create:inputs.est_man_hours.label"
                 )}
               />
             </Grid>

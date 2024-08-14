@@ -44,6 +44,7 @@ import { MaterialFilterType, MaterialSortType } from "./material-filter-types";
 import { SortEnum } from "@/services/api/types/sort-type";
 import { useDeleteMaterialService } from "../../../../services/api/services/materials";
 import { isObjectEmpty } from "../../../../utils";
+import useAuth from "../../../../services/auth/use-auth";
 
 type UsersKeys = keyof Material;
 
@@ -240,6 +241,7 @@ function Actions({ entitiy }: { entitiy: Material }) {
 }
 
 function Materials() {
+  const { user } = useAuth();
   const { t: tMaterials } = useTranslation("admin-panel-materials");
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -319,21 +321,23 @@ function Materials() {
               {tMaterials("admin-panel-materials:title")}
             </Typography>
           </Grid>
-          <Grid container item xs="auto" wrap="nowrap" spacing={2}>
-            <Grid item xs="auto">
-              <UserFilter />
+          {user?.role !== RoleEnum.Operator && (
+            <Grid container item xs="auto" wrap="nowrap" spacing={2}>
+              <Grid item xs="auto">
+                <UserFilter />
+              </Grid>
+              <Grid item xs="auto">
+                <Button
+                  variant="contained"
+                  LinkComponent={Link}
+                  href="/admin-panel/materials/create"
+                  color="success"
+                >
+                  {tMaterials("admin-panel-materials:actions.create")}
+                </Button>
+              </Grid>
             </Grid>
-            <Grid item xs="auto">
-              <Button
-                variant="contained"
-                LinkComponent={Link}
-                href="/admin-panel/materials/create"
-                color="success"
-              >
-                {tMaterials("admin-panel-materials:actions.create")}
-              </Button>
-            </Grid>
-          </Grid>
+          )}
         </Grid>
 
         <Grid item xs={12} mb={2}>
@@ -407,7 +411,9 @@ function Materials() {
                   )}
                 </TableCell>
                 <TableCell>
-                  <Actions entitiy={entity} />
+                  {user?.role !== RoleEnum.Operator && (
+                    <Actions entitiy={entity} />
+                  )}
                 </TableCell>
               </>
             )}

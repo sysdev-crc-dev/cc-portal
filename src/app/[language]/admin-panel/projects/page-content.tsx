@@ -721,11 +721,6 @@ function Actions({ entity }: { entity: Project }) {
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList id="split-button-menu" autoFocusItem>
-                  {entity.status === ProjectStatus.Created && (
-                    <MenuItem onClick={handleStarted}>
-                      {tProjects("admin-panel-projects:actions.started")}
-                    </MenuItem>
-                  )}
                   {entity.status !== ProjectStatus.ExternalDependency &&
                     entity.status !== ProjectStatus.ReadyForDelivery &&
                     entity.status !== ProjectStatus.Created && (
@@ -735,7 +730,9 @@ function Actions({ entity }: { entity: Project }) {
                         )}
                       </MenuItem>
                     )}
-                  {entity.status === ProjectStatus.WaitingForMaterial && (
+                  {(entity.status === ProjectStatus.ExternalDependency ||
+                    entity.status === ProjectStatus.WaitingForMaterial ||
+                    entity.status === ProjectStatus.Created) && (
                     <MenuItem onClick={handleStarted}>
                       {tProjects("admin-panel-projects:actions.started")}
                     </MenuItem>

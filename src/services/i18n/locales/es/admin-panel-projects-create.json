@@ -14,7 +14,8 @@
     "file": {
       "label": "Archivo",
       "validation": {
-        "required": "Archivo requerido"
+        "required": "Archivo requerido",
+        "invalid": "Archivo debe ser una liga por ej a Google Drive"
       }
     },
     "employee": {

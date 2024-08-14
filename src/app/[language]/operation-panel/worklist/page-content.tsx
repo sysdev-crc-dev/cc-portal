@@ -47,6 +47,7 @@ import {
   useQAPatchRequest,
 } from "../../../../services/api/services/worklist";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import { InfinityPaginationType } from "../../../../services/api/types/infinity-pagination";
 
 type UsersKeys = keyof Project;
 
@@ -153,7 +154,10 @@ function Actions({ entity }: { entity: Project }) {
       }
 
       const previousData = queryClient.getQueryData<
-        InfiniteData<{ nextPage: number; data: Project[] }>
+        InfiniteData<{
+          nextPage: number;
+          data: InfinityPaginationType<Project>;
+        }>
       >(projectsQueryKeys.list().sub.by({ sort }).key);
 
       await queryClient.cancelQueries({
@@ -164,15 +168,18 @@ function Actions({ entity }: { entity: Project }) {
         ...previousData,
         pages: previousData?.pages.map((page) => ({
           ...page,
-          data: page?.data.map((item) => {
-            if (item.id !== entity.id) return item;
+          data: {
+            ...page.data,
+            items: page?.data.items.map((item) => {
+              if (item.id !== entity.id) return item;
 
-            const newItem: Project = {
-              ...item,
-              status: ProjectStatus.InProgress,
-            };
-            return newItem;
-          }),
+              const newItem: Project = {
+                ...item,
+                status: ProjectStatus.InProgress,
+              };
+              return newItem;
+            }),
+          },
         })),
       };
 
@@ -212,7 +219,10 @@ function Actions({ entity }: { entity: Project }) {
       }
 
       const previousData = queryClient.getQueryData<
-        InfiniteData<{ nextPage: number; data: Project[] }>
+        InfiniteData<{
+          nextPage: number;
+          data: InfinityPaginationType<Project>;
+        }>
       >(projectsQueryKeys.list().sub.by({ sort }).key);
 
       await queryClient.cancelQueries({
@@ -223,7 +233,10 @@ function Actions({ entity }: { entity: Project }) {
         ...previousData,
         pages: previousData?.pages.map((page) => ({
           ...page,
-          data: page?.data.filter((item) => item.id !== entity.id),
+          data: {
+            ...page.data,
+            items: page?.data.items.filter((item) => item.id !== entity.id),
+          },
         })),
       };
 
