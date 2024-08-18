@@ -99,8 +99,8 @@ export type ProjectPostRequest = Pick<
   | "employee_in_charge_id"
   | "operator_id"
   | "est_cutting_time_in_hours"
-  | "est_delivery_time_in_days"
   | "est_man_hours"
+  | "estimated_delivery_date"
   | "est_dimensions"
   | "package_type"
   | "material_provided_by"
@@ -139,12 +139,12 @@ export type ProjectEditRequest = {
       | "employee_in_charge_id"
       | "operator_id"
       | "est_cutting_time_in_hours"
-      | "est_delivery_time_in_days"
       | "est_man_hours"
       | "est_dimensions"
       | "package_type"
       | "material_provided_by"
       | "delivery_type"
+      | "estimated_delivery_date"
     > & {
       materials: number[];
       supplies: number[];

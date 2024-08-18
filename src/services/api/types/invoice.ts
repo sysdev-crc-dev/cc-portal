@@ -7,6 +7,7 @@ export type Invoice = {
   email: string;
   invoice_use: string;
   postal_code: string;
+  fiscal_regimen: string;
   customer_id: number;
   customer: Pick<Customer, "id" | "name">;
 };

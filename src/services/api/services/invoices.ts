@@ -75,7 +75,13 @@ export function useGetInvoiceService() {
 
 export type InvoicePostRequest = Pick<
   Invoice,
-  "name" | "rfc" | "postal_code" | "customer_id" | "email" | "invoice_use"
+  | "name"
+  | "rfc"
+  | "postal_code"
+  | "customer_id"
+  | "email"
+  | "invoice_use"
+  | "fiscal_regimen"
 >;
 
 export type InvoicePostResponse = Invoice;

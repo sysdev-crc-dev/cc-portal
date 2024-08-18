@@ -12,8 +12,7 @@ import {
 } from "react-hook-form";
 import { ForwardedRef, forwardRef } from "react";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFnsV3";
-import useLanguage from "@/services/i18n/use-language";
-import { getValueByKey } from "@/components/form/date-pickers/helper";
+import { es } from "date-fns/locale/es";
 
 type ValueDateType = Date | null | undefined;
 type DateTimePickerFieldProps = {
@@ -47,14 +46,12 @@ function DateTimePickerInputRaw(
   },
   ref?: ForwardedRef<HTMLDivElement | null>
 ) {
-  const language = useLanguage();
-
   return (
-    <LocalizationProvider
-      dateAdapter={AdapterDateFns}
-      adapterLocale={getValueByKey(language)}
-    >
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={es}>
       <DateTimePicker
+        sx={{
+          width: "100%",
+        }}
         ref={ref}
         name={props.name}
         label={props.label}

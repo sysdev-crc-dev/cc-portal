@@ -18,6 +18,7 @@ import Grid from "@mui/material/Grid";
 
 type FormData = {
   note: string;
+  actual_cutting_time?: number;
 };
 
 function ConfirmDialogProvider({ children }: { children: React.ReactNode }) {
@@ -26,6 +27,7 @@ function ConfirmDialogProvider({ children }: { children: React.ReactNode }) {
   const methods = useForm<FormData>({
     defaultValues: {
       note: "",
+      actual_cutting_time: undefined,
     },
   });
 
@@ -38,6 +40,7 @@ function ConfirmDialogProvider({ children }: { children: React.ReactNode }) {
       successButtonText: t("actions.yes"),
       cancelButtonText: t("actions.no"),
       showInput: false,
+      showCuttingTime: false,
     }),
     [t]
   );
@@ -55,9 +58,15 @@ function ConfirmDialogProvider({ children }: { children: React.ReactNode }) {
     resolveRef.current?.(false);
   };
 
-  const onSuccess = () => {
+  const onSuccess = (cuttingTime: boolean) => {
     const value = getValues("note");
+    const cutting_time = getValues("actual_cutting_time");
     setIsOpen(false);
+    if (cuttingTime) {
+      const res = `${cutting_time}|${value}`;
+      resolveRef.current?.(res);
+      return;
+    }
     resolveRef.current?.(value ? value : true);
   };
 
@@ -105,9 +114,18 @@ function ConfirmDialogProvider({ children }: { children: React.ReactNode }) {
           </DialogContentText>
           {confirmDialogInfo.showInput && (
             <FormProvider {...methods}>
-              <Grid item xs={12}>
+              <Grid item xs={12} mb={2}>
                 <FormTextInput name="note" label="Observaciones" type="text" />
               </Grid>
+              {confirmDialogInfo.showCuttingTime && (
+                <Grid item xs={12}>
+                  <FormTextInput
+                    name="actual_cutting_time"
+                    label="Tiempo real de corte"
+                    type="text"
+                  />
+                </Grid>
+              )}
             </FormProvider>
           )}
         </DialogContent>
@@ -115,7 +133,15 @@ function ConfirmDialogProvider({ children }: { children: React.ReactNode }) {
           <Button onClick={onCancel}>
             {confirmDialogInfo.cancelButtonText}
           </Button>
-          <Button onClick={onSuccess} autoFocus>
+          <Button
+            onClick={() => onSuccess(confirmDialogInfo.showCuttingTime)}
+            disabled={
+              confirmDialogInfo.showCuttingTime
+                ? !methods.formState.touchedFields.actual_cutting_time
+                : false
+            }
+            autoFocus
+          >
             {confirmDialogInfo.successButtonText}
           </Button>
         </DialogActions>

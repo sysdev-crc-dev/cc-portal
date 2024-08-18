@@ -39,7 +39,7 @@ import { InfiniteData, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { SortEnum } from "@/services/api/types/sort-type";
-import { format, isPast, isToday } from "date-fns";
+import { format, isPast, isToday, parseISO } from "date-fns";
 import { es } from "date-fns/locale/es";
 import { ProjectSortType } from "../../admin-panel/projects/project-filter-types";
 import {
@@ -48,6 +48,7 @@ import {
 } from "../../../../services/api/services/worklist";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import { InfinityPaginationType } from "../../../../services/api/types/infinity-pagination";
+import { toZonedTime } from "date-fns-tz";
 
 type UsersKeys = keyof Project;
 
@@ -200,10 +201,14 @@ function Actions({ entity }: { entity: Project }) {
       successButtonText: "Si",
       cancelButtonText: "No",
       showInput: true,
+      showCuttingTime: true,
     });
 
     if (isConfirmed) {
       const value = typeof isConfirmed === "string" ? isConfirmed : "";
+      const splitArray = value.split("|");
+      const cuttingTime = Number(splitArray[0]);
+      const note = splitArray[1];
       setOpen(false);
 
       const searchParams = new URLSearchParams(window.location.search);
@@ -248,7 +253,8 @@ function Actions({ entity }: { entity: Project }) {
       await fetchPatchQA({
         id: entity.id,
         data: {
-          quality_assurance_note: value,
+          quality_assurance_note: note,
+          actual_cutting_time: cuttingTime,
         },
       });
     }
@@ -581,8 +587,11 @@ function Projects() {
                 >
                   {entity?.estimated_delivery_date
                     ? format(
-                        entity?.estimated_delivery_date,
-                        "EEEE dd 'de' MMMM 'del' yyyy",
+                        toZonedTime(
+                          parseISO(entity?.estimated_delivery_date),
+                          "UTC"
+                        ),
+                        "HH:mm, EEEE dd 'de' MMMM 'del' yyyy",
                         {
                           locale: es,
                         }
@@ -595,7 +604,7 @@ function Projects() {
                     ...colorByDate(entity.estimated_delivery_date),
                   }}
                 >
-                  {entity?.est_cutting_time_in_hours} hora(s)
+                  {entity?.est_cutting_time_in_hours} minuto(s)
                 </TableCell>
                 <TableCell
                   style={{

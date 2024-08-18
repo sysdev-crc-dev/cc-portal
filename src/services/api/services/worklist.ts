@@ -83,6 +83,7 @@ export type QAPatchRequest = {
   id: Project["id"];
   data: {
     quality_assurance_note?: string;
+    actual_cutting_time: number;
   };
 };
 

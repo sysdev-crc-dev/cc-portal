@@ -7,13 +7,29 @@
     "column4": "C. Postal",
     "column5": "Email",
     "column6": "Uso del CFDI",
-    "column7": "Cliente"
+    "column7": "Regimen Fiscal",
+    "column8": "Cliente"
   },
   "actions": {
     "add": "Añadir",
     "edit": "Editar",
     "delete": "Borrar",
     "create": "Crear Datos"
+  },
+  "fiscal_regimen": {
+    "605": "Sueldos y Salarios e Ingresos Asimilados a Salarios",
+    "606": "Arrendamiento",
+    "607": "Regimen de Enajenacion o Adquisicion de Bienes",
+    "608": "Demás ingreso",
+    "610": "Residentes en el Extranjero sin Establecimiento Permanente en México",
+    "611": "Ingresos por Dividendos (socios y accionistas)",
+    "612": "Personas Físicas con Actividades Empresariales y Profesionales",
+    "614": "Ingresos por intereses",
+    "615": "Régimen de los ingresos por obtención de premios",
+    "616": "Sin obligaciones fiscales",
+    "621": "Incorporación Fiscal",
+    "625": "Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas",
+    "626": "Régimen Simplificado de Confiaza"
   },
   "confirm": {
     "delete": {

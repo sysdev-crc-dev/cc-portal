@@ -50,6 +50,7 @@ import {
 } from "../../../../../services/api/services/processes";
 import { Process } from "../../../../../services/api/types/process";
 import { SortEnum } from "../../../../../services/api/types/sort-type";
+import FormDateTimePickerInput from "../../../../../components/form/date-pickers/date-time-picker";
 
 type SelectOption<T> = {
   id: T;
@@ -59,9 +60,9 @@ type SelectOption<T> = {
 type CreateProjectFormData = {
   name: string;
   file: string;
-  est_cutting_time_in_hours: number;
+  est_cutting_time_in_hours: string;
   est_dimensions: string;
-  est_delivery_time_in_days: number;
+  estimated_delivery_date: Date | null;
   est_man_hours: number;
   customer: SelectOption<number>;
   employee: SelectOption<number>;
@@ -97,7 +98,7 @@ const useValidationSchema = () => {
         )
       ),
     est_cutting_time_in_hours: yup
-      .number()
+      .string()
       .required(
         t(
           "admin-panel-projects-create:inputs.est_cutting_time_in_hours.validation.required"
@@ -108,13 +109,6 @@ const useValidationSchema = () => {
       .required(
         t(
           "admin-panel-projects-create:inputs.est_dimensions.validation.required"
-        )
-      ),
-    est_delivery_time_in_days: yup
-      .number()
-      .required(
-        t(
-          "admin-panel-projects-create:inputs.est_delivery_time_in_days.validation.required"
         )
       ),
     customer: yup
@@ -335,9 +329,9 @@ function FormCreateEmployee() {
     defaultValues: {
       name: "",
       file: "",
-      est_cutting_time_in_hours: 1,
-      est_delivery_time_in_days: 1,
+      est_cutting_time_in_hours: "0",
       est_dimensions: "",
+      estimated_delivery_date: null,
       material_provided_by: {
         id: ProjectMaterialProvidedBy.Cometa,
         name: "Cometa",
@@ -370,11 +364,13 @@ function FormCreateEmployee() {
         customer_id: formData.customer.id,
         employee_in_charge_id: formData.employee.id,
         operator_id: formData.operator.id,
-        est_cutting_time_in_hours: formData.est_cutting_time_in_hours,
-        est_delivery_time_in_days: formData.est_delivery_time_in_days,
+        est_cutting_time_in_hours: Number(formData.est_cutting_time_in_hours),
         est_dimensions: formData.est_dimensions,
         est_man_hours: formData.est_man_hours,
         material_provided_by: formData.material_provided_by.id,
+        estimated_delivery_date: formData.estimated_delivery_date
+          ? formData.estimated_delivery_date.toLocaleString("MX")
+          : "",
         package_type: formData.package_type.id,
         delivery_type: formData.delivery_type.id,
         materials: formData.materials.map((material) => material.id),
@@ -436,6 +432,14 @@ function FormCreateEmployee() {
             </Grid>
 
             <Grid item xs={12} md={4}>
+              <FormDateTimePickerInput<CreateProjectFormData>
+                name="estimated_delivery_date"
+                testId="new-user-email"
+                label="Fecha de Entrega Estimado"
+              />
+            </Grid>
+
+            <Grid item xs={12} md={4}>
               <FormTextInput<CreateProjectFormData>
                 name="file"
                 testId="new-user-email"
@@ -446,7 +450,7 @@ function FormCreateEmployee() {
             <Grid item xs={12} md={4}>
               <FormTextInput<CreateProjectFormData>
                 name="est_cutting_time_in_hours"
-                type="number"
+                type="tel"
                 testId="new-user-email"
                 autoComplete="new-user-email"
                 label={t(
@@ -462,17 +466,6 @@ function FormCreateEmployee() {
                 autoComplete="new-user-email"
                 label={t(
                   "admin-panel-projects-create:inputs.est_man_hours.label"
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} md={4}>
-              <FormTextInput<CreateProjectFormData>
-                name="est_delivery_time_in_days"
-                type="number"
-                testId="new-user-email"
-                autoComplete="new-user-email"
-                label={t(
-                  "admin-panel-projects-create:inputs.est_delivery_time_in_days.label"
                 )}
               />
             </Grid>

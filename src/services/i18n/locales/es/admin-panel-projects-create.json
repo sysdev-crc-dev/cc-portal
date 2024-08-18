@@ -37,7 +37,13 @@
       }
     },
     "est_cutting_time_in_hours": {
-      "label": "Tiempo est. de corte en horas",
+      "label": "Tiempo est. de corte en minutos",
+      "validation": {
+        "required": "Campo requerido"
+      }
+    },
+    "est_delivery_hour": {
+      "label": "Hora de entrega estimada",
       "validation": {
         "required": "Campo requerido"
       }

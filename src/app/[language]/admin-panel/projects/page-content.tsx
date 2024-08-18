@@ -52,7 +52,8 @@ import {
   useStartedPatchRequest,
 } from "../../../../services/api/services/projects";
 import { isObjectEmpty } from "../../../../utils";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 import { es } from "date-fns/locale/es";
 import ButtonGroup from "@mui/material/ButtonGroup";
 
@@ -141,7 +142,7 @@ function Actions({ entity }: { entity: Project }) {
       filter.customer_id = filterCustomerId;
     }
     if (filterEstimatedDate) {
-      filter.estimated_delivery_date = new Date(filterEstimatedDate);
+      filter.estimated_delivery_date = filterEstimatedDate;
     }
 
     return isObjectEmpty(filter) ? undefined : filter;
@@ -832,7 +833,7 @@ function Projects() {
       filter.customer_id = filterCustomerId;
     }
     if (filterEstimatedDate) {
-      filter.estimated_delivery_date = new Date(filterEstimatedDate);
+      filter.estimated_delivery_date = filterEstimatedDate;
     }
 
     return isObjectEmpty(filter) ? undefined : filter;
@@ -1031,8 +1032,11 @@ function Projects() {
                 <TableCell style={{ minWidth: 160 }}>
                   {entity?.estimated_delivery_date
                     ? format(
-                        entity?.estimated_delivery_date,
-                        "EEEE dd 'de' MMMM 'del' yyyy",
+                        toZonedTime(
+                          parseISO(entity?.estimated_delivery_date),
+                          "UTC"
+                        ),
+                        "HH:mm, EEEE dd 'de' MMMM 'del' yyyy",
                         {
                           locale: es,
                         }
@@ -1041,10 +1045,19 @@ function Projects() {
                 </TableCell>
                 <TableCell
                   style={{
-                    minWidth: 100,
+                    minWidth: 200,
                   }}
                 >
-                  {entity?.est_cutting_time_in_hours} hora(s)
+                  {`${entity?.est_cutting_time_in_hours} minuto(s) est.`} <br />
+                  <span
+                    style={{
+                      color: "purple",
+                    }}
+                  >
+                    {entity?.actual_cutting_time
+                      ? `${entity?.actual_cutting_time} minuto(s) reales`
+                      : ""}
+                  </span>
                 </TableCell>
                 <TableCell style={{ width: 80 }}>
                   {`${entity?.operator?.name} ${entity?.operator?.last_name}`}

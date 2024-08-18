@@ -384,6 +384,11 @@ function Invoices() {
                 <TableCell style={{ width: 80 }}>
                   {entity?.invoice_use}
                 </TableCell>
+                <TableCell style={{ minWidth: 200 }}>
+                  {`${entity?.fiscal_regimen} - ${tInvoices(
+                    `admin-panel-invoices:fiscal_regimen.${entity?.fiscal_regimen}`
+                  )}`}
+                </TableCell>
                 <TableCell>
                   {entity?.customer_id ? (
                     <Button

@@ -14,12 +14,10 @@ export interface Project {
   est_man_hours: number;
   material_provided_by: ProjectMaterialProvidedBy;
   started_date?: Date;
-  est_delivery_time_in_days: number;
   delivery_type: ProjectDeliveryType;
   package_type: ProjectPackageType;
   estimated_delivery_date: string;
-  est_delivery_date?: Date;
-  est_delivery_hour?: string;
+  actual_cutting_time: number;
   status: ProjectStatus;
   customer_id: number;
   customer?: Customer;

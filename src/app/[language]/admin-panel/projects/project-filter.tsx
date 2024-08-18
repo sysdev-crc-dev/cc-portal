@@ -12,8 +12,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import { ProjectFilterType } from "./project-filter-types";
 import { ProjectStatus } from "../../../../services/api/types/project";
 import FormSelectInput from "../../../../components/form/select/form-select";
-import FormDatePickerInput from "../../../../components/form/date-pickers/date-picker";
-import { formatDate } from "date-fns";
+import { formatISO, parseISO } from "date-fns";
+import FormDateTimePickerInput from "../../../../components/form/date-pickers/date-time-picker";
 
 type FilterFormData = Pick<
   ProjectFilterType,
@@ -35,7 +35,7 @@ function UserFilter() {
       name: "",
       customer_id: "",
       status: undefined,
-      estimated_delivery_date: "",
+      estimated_delivery_date: null,
     },
   });
 
@@ -59,7 +59,7 @@ function UserFilter() {
       name: "",
       customer_id: "",
       status: undefined,
-      estimated_delivery_date: "",
+      estimated_delivery_date: null,
     });
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.delete("name");
@@ -82,7 +82,7 @@ function UserFilter() {
         id: "",
         name: "",
       },
-      estimated_delivery_date: "",
+      estimated_delivery_date: null,
     };
     if (filterName) {
       handleClose();
@@ -108,7 +108,7 @@ function UserFilter() {
       handleClose();
       filterParsed = {
         ...filterParsed,
-        estimated_delivery_date: new Date(filterDeliveryDate),
+        estimated_delivery_date: parseISO(filterDeliveryDate),
       };
 
       reset(filterParsed);
@@ -149,7 +149,6 @@ function UserFilter() {
           <form
             onSubmit={handleSubmit(
               (data) => {
-                console.log(data);
                 const searchParams = new URLSearchParams(
                   window.location.search
                 );
@@ -167,10 +166,7 @@ function UserFilter() {
                   searchParams.set("customer_id", roleFilter);
                 }
                 if (data.estimated_delivery_date) {
-                  const formattedDate = formatDate(
-                    data.estimated_delivery_date,
-                    "yyyy-MM-dd'T'HH:mm:ssXX"
-                  );
+                  const formattedDate = formatISO(data.estimated_delivery_date);
                   searchParams.set("estimated_delivery_date", formattedDate);
                 }
 
@@ -185,7 +181,7 @@ function UserFilter() {
           >
             <Grid container spacing={2} mb={3} mt={3}>
               <Grid item xs={12}>
-                <FormDatePickerInput
+                <FormDateTimePickerInput
                   name="estimated_delivery_date"
                   label={"Fech. est. entrega"}
                 />
