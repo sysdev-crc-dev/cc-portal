@@ -17,7 +17,8 @@
     "column-materials": "Materiales",
     "column-supplies": "Insumos",
     "column-processes": "Procesos",
-    "column-notes": "Observaciones"
+    "column-notes": "Observaciones",
+    "column-assigned-machine": "Maquina asignada"
   },
   "actions": {
     "add": "Añadir",
@@ -104,6 +105,12 @@
     "qa": "quality_assurance_note",
     "in_progress": "in_processing_note",
     "ready_for_cutting": "cutting_note"
+  },
+  "assigned_machine": {
+    "red": "Roja",
+    "white": "Blanca",
+    "fiber": "Fibra",
+    "null": "Sin asignar"
   },
   "filter": {
     "actions": {

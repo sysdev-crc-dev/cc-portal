@@ -56,12 +56,31 @@ import { format, parseISO } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { es } from "date-fns/locale/es";
 import ButtonGroup from "@mui/material/ButtonGroup";
+import classNames from "classnames";
 
 type UsersKeys = keyof Project;
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
   padding: 0,
 }));
+
+function TableAssignedMachine({ entity }: { entity: Project }) {
+  const { t: tProjects } = useTranslation("admin-panel-projects");
+
+  const redClass = classNames({
+    red: entity?.assigned_machine === "red",
+    white: entity?.assigned_machine === "white",
+    fiber: entity?.assigned_machine === "fiber",
+  });
+
+  return (
+    <span className={redClass}>
+      {tProjects(
+        `admin-panel-projects:assigned_machine.${entity?.assigned_machine}`
+      )}
+    </span>
+  );
+}
 
 function TableSortCellWrapper(
   props: PropsWithChildren<{
@@ -947,6 +966,11 @@ function Projects() {
                     {tProjects("admin-panel-projects:table.column-operator")}
                   </TableCell>
                   <TableCell style={{ width: 80 }}>
+                    {tProjects(
+                      "admin-panel-projects:table.column-assigned-machine"
+                    )}
+                  </TableCell>
+                  <TableCell style={{ width: 80 }}>
                     {tProjects("admin-panel-projects:table.column-package")}
                   </TableCell>
                   <TableCell style={{ minWidth: 120 }}>
@@ -1061,6 +1085,9 @@ function Projects() {
                 </TableCell>
                 <TableCell style={{ width: 80 }}>
                   {`${entity?.operator?.name} ${entity?.operator?.last_name}`}
+                </TableCell>
+                <TableCell style={{ width: 80 }}>
+                  <TableAssignedMachine entity={entity} />
                 </TableCell>
                 <TableCell style={{ width: 80 }}>
                   {tProjects(

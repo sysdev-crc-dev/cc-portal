@@ -16,6 +16,7 @@ export interface Project {
   started_date?: Date;
   delivery_type: ProjectDeliveryType;
   package_type: ProjectPackageType;
+  assigned_machine: ProjectMachineType | null;
   estimated_delivery_date: string;
   actual_cutting_time: number;
   status: ProjectStatus;
@@ -64,4 +65,10 @@ export enum ProjectMaterialProvidedBy {
 export enum ProjectPackageType {
   Basic = "basic",
   Custom = "custom",
+}
+
+export enum ProjectMachineType {
+  Red = "red",
+  White = "white",
+  Fiber = "fiber",
 }

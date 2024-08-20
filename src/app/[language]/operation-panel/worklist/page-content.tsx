@@ -49,8 +49,27 @@ import {
 import ButtonGroup from "@mui/material/ButtonGroup";
 import { InfinityPaginationType } from "../../../../services/api/types/infinity-pagination";
 import { toZonedTime } from "date-fns-tz";
+import classNames from "classnames";
 
 type UsersKeys = keyof Project;
+
+function TableAssignedMachine({ entity }: { entity: Project }) {
+  const { t: tProjects } = useTranslation("operation-panel-projects");
+
+  const redClass = classNames({
+    red: entity?.assigned_machine === "red",
+    white: entity?.assigned_machine === "white",
+    fiber: entity?.assigned_machine === "fiber",
+  });
+
+  return (
+    <span className={redClass}>
+      {tProjects(
+        `admin-panel-projects:assigned_machine.${entity?.assigned_machine}`
+      )}
+    </span>
+  );
+}
 
 const TableCellLoadingContainer = styled(TableCell)(() => ({
   padding: 0,
@@ -426,6 +445,11 @@ function Projects() {
                   >
                     {tProjects("operation-panel-projects:table.column-id")}
                   </TableSortCellWrapper>
+                  <TableCell style={{ minWidth: 100 }}>
+                    {tProjects(
+                      "operation-panel-projects:table.column-assigned-machine"
+                    )}
+                  </TableCell>
                   <TableCell style={{ minWidth: 200 }}>
                     {tProjects("operation-panel-projects:table.column-name")}
                   </TableCell>
@@ -530,6 +554,14 @@ function Projects() {
                   }}
                 >
                   <Actions entity={entity} /> {entity?.id}
+                </TableCell>
+                <TableCell
+                  style={{
+                    minWidth: 100,
+                    ...colorByDate(entity.estimated_delivery_date),
+                  }}
+                >
+                  <TableAssignedMachine entity={entity} />
                 </TableCell>
                 <TableCell
                   style={{

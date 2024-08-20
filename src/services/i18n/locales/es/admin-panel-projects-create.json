@@ -101,6 +101,9 @@
       "validation": {
         "required": "Campo requerido"
       }
+    },
+    "assigned_machine": {
+      "label": "Maquina asignada"
     }
   },
   "alerts": {

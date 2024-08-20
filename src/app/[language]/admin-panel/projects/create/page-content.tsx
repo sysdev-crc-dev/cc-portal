@@ -18,6 +18,7 @@ import { useTranslation } from "@/services/i18n/client";
 import { usePostProjectService } from "@/services/api/services/projects";
 import {
   ProjectDeliveryType,
+  ProjectMachineType,
   ProjectMaterialProvidedBy,
   ProjectPackageType,
 } from "../../../../../services/api/types/project";
@@ -67,6 +68,7 @@ type CreateProjectFormData = {
   customer: SelectOption<number>;
   employee: SelectOption<number>;
   operator: SelectOption<number>;
+  assigned_machine?: SelectOption<ProjectMachineType>;
   package_type: SelectOption<ProjectPackageType>;
   material_provided_by: SelectOption<ProjectMaterialProvidedBy>;
   delivery_type: SelectOption<ProjectDeliveryType>;
@@ -365,6 +367,7 @@ function FormCreateEmployee() {
         employee_in_charge_id: formData.employee.id,
         operator_id: formData.operator.id,
         est_cutting_time_in_hours: Number(formData.est_cutting_time_in_hours),
+        assigned_machine: formData?.assigned_machine?.id ?? null,
         est_dimensions: formData.est_dimensions,
         est_man_hours: formData.est_man_hours,
         material_provided_by: formData.material_provided_by.id,
@@ -478,6 +481,37 @@ function FormCreateEmployee() {
                 label={t(
                   "admin-panel-projects-create:inputs.est_dimensions.label"
                 )}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              <FormSelectInput<
+                CreateProjectFormData,
+                SelectOption<ProjectMachineType>
+              >
+                name="assigned_machine"
+                testId="customer_id"
+                label={t(
+                  "admin-panel-projects-create:inputs.assigned_machine.label"
+                )}
+                options={[
+                  {
+                    id: ProjectMachineType.Red,
+                    name: "Roja",
+                  },
+                  {
+                    id: ProjectMachineType.White,
+                    name: "Blanca",
+                  },
+                  {
+                    id: ProjectMachineType.Fiber,
+                    name: "Fibra",
+                  },
+                ]}
+                keyValue="id"
+                renderOption={(option: SelectOption<ProjectMachineType>) => {
+                  return option.name;
+                }}
               />
             </Grid>
 

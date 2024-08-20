@@ -21,6 +21,7 @@ import {
 } from "@/services/api/services/projects";
 import {
   ProjectDeliveryType,
+  ProjectMachineType,
   ProjectMaterialProvidedBy,
   ProjectPackageType,
 } from "../../../../../../services/api/types/project";
@@ -62,12 +63,13 @@ type SelectOption<T> = {
   name: string;
 };
 
-type CreateProjectFormData = {
+type EditProjectFormData = {
   name: string;
   file: string;
   est_cutting_time_in_hours: string;
   est_dimensions: string;
   estimated_delivery_date: Date | null;
+  assigned_machine: SelectOption<ProjectMachineType>;
   est_man_hours: number;
   customer: SelectOption<number>;
   employee: SelectOption<number>;
@@ -322,7 +324,7 @@ function FormEditProject() {
 
   const { enqueueSnackbar } = useSnackbar();
 
-  const methods = useForm<CreateProjectFormData>({
+  const methods = useForm<EditProjectFormData>({
     // @ts-expect-error ts(2322)
     resolver: yupResolver(validationSchema),
     defaultValues: {
@@ -356,6 +358,21 @@ function FormEditProject() {
 
   useEffect(() => {
     const fetchProjectInfo = async () => {
+      const machineTypeOptions = [
+        {
+          id: ProjectMachineType.Red,
+          name: "Roja",
+        },
+        {
+          id: ProjectMachineType.White,
+          name: "Blanca",
+        },
+        {
+          id: ProjectMachineType.Fiber,
+          name: "Fibra/Azul",
+        },
+      ];
+
       const deliveryTypeOptions = [
         {
           id: ProjectDeliveryType.Home,
@@ -401,6 +418,12 @@ function FormEditProject() {
           est_dimensions: res.data.est_dimensions,
           estimated_delivery_date: parseISO(res.data.estimated_delivery_date),
           est_man_hours: res.data.est_man_hours,
+          assigned_machine:
+            machineTypeOptions[
+              machineTypeOptions.findIndex(
+                (value) => value.id === res.data.assigned_machine
+              )
+            ],
           delivery_type:
             deliveryTypeOptions[
               deliveryTypeOptions.findIndex(
@@ -456,6 +479,7 @@ function FormEditProject() {
           file: formData.file,
           customer_id: formData.customer.id,
           employee_in_charge_id: formData.employee.id,
+          assigned_machine: formData?.assigned_machine?.id ?? null,
           operator_id: formData.operator.id,
           est_cutting_time_in_hours: Number(formData.est_cutting_time_in_hours),
           est_dimensions: formData.est_dimensions,
@@ -515,7 +539,7 @@ function FormEditProject() {
             </Grid>
 
             <Grid item xs={12} md={4}>
-              <FormTextInput<CreateProjectFormData>
+              <FormTextInput<EditProjectFormData>
                 name="name"
                 testId="new-user-email"
                 autoComplete="new-user-email"
@@ -524,7 +548,7 @@ function FormEditProject() {
             </Grid>
 
             <Grid item xs={12} md={4}>
-              <FormTextInput<CreateProjectFormData>
+              <FormTextInput<EditProjectFormData>
                 name="file"
                 testId="new-user-email"
                 autoComplete="new-user-email"
@@ -532,7 +556,7 @@ function FormEditProject() {
               />
             </Grid>
             <Grid item xs={12} md={4}>
-              <FormTextInput<CreateProjectFormData>
+              <FormTextInput<EditProjectFormData>
                 name="est_cutting_time_in_hours"
                 type="number"
                 testId="new-user-email"
@@ -543,7 +567,7 @@ function FormEditProject() {
               />
             </Grid>
             <Grid item xs={12} md={4}>
-              <FormTextInput<CreateProjectFormData>
+              <FormTextInput<EditProjectFormData>
                 name="est_man_hours"
                 type="number"
                 testId="new-user-email"
@@ -554,7 +578,7 @@ function FormEditProject() {
               />
             </Grid>
             <Grid item xs={12} md={4}>
-              <FormTextInput<CreateProjectFormData>
+              <FormTextInput<EditProjectFormData>
                 name="est_man_hours"
                 type="number"
                 testId="new-user-email"
@@ -567,7 +591,37 @@ function FormEditProject() {
 
             <Grid item xs={12} md={4}>
               <FormSelectInput<
-                CreateProjectFormData,
+                EditProjectFormData,
+                SelectOption<ProjectMachineType>
+              >
+                name="assigned_machine"
+                testId="customer_id"
+                label={t(
+                  "admin-panel-projects-edit:inputs.assigned_machine.label"
+                )}
+                options={[
+                  {
+                    id: ProjectMachineType.Red,
+                    name: "Roja",
+                  },
+                  {
+                    id: ProjectMachineType.White,
+                    name: "Blanca",
+                  },
+                  {
+                    id: ProjectMachineType.Fiber,
+                    name: "Fibra",
+                  },
+                ]}
+                keyValue="id"
+                renderOption={(option: SelectOption<ProjectMachineType>) => {
+                  return option.name;
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <FormSelectInput<
+                EditProjectFormData,
                 SelectOption<ProjectMaterialProvidedBy>
               >
                 name="material_provided_by"
@@ -595,7 +649,7 @@ function FormEditProject() {
             </Grid>
             <Grid item xs={12} md={4}>
               <FormSelectInput<
-                CreateProjectFormData,
+                EditProjectFormData,
                 SelectOption<ProjectPackageType>
               >
                 name="package_type"
@@ -619,7 +673,7 @@ function FormEditProject() {
             </Grid>
             <Grid item xs={12} md={4}>
               <FormSelectInput<
-                CreateProjectFormData,
+                EditProjectFormData,
                 SelectOption<ProjectDeliveryType>
               >
                 name="delivery_type"
@@ -649,7 +703,7 @@ function FormEditProject() {
             </Grid>
             <Grid item xs={12} md={4}>
               <FormSelectInput<
-                CreateProjectFormData,
+                EditProjectFormData,
                 Pick<Customer, "id" | "name">
               >
                 name="customer"
@@ -664,7 +718,7 @@ function FormEditProject() {
             </Grid>
             <Grid item xs={12} md={4}>
               <FormSelectInput<
-                CreateProjectFormData,
+                EditProjectFormData,
                 Pick<Employee, "id" | "name">
               >
                 name="employee"
@@ -679,7 +733,7 @@ function FormEditProject() {
             </Grid>
             <Grid item xs={12} md={4}>
               <FormSelectInput<
-                CreateProjectFormData,
+                EditProjectFormData,
                 Pick<Customer, "id" | "name">
               >
                 name="operator"
@@ -695,7 +749,7 @@ function FormEditProject() {
 
             <Grid item xs={12} md={4}>
               <FormMultipleSelectInput<
-                CreateProjectFormData,
+                EditProjectFormData,
                 Pick<Material, "id" | "name">
               >
                 name="materials"
@@ -717,7 +771,7 @@ function FormEditProject() {
             </Grid>
             <Grid item xs={12} md={4}>
               <FormMultipleSelectInput<
-                CreateProjectFormData,
+                EditProjectFormData,
                 Pick<Supply, "id" | "name">
               >
                 name="supplies"
@@ -739,7 +793,7 @@ function FormEditProject() {
             </Grid>
             <Grid item xs={12} md={4}>
               <FormMultipleSelectInput<
-                CreateProjectFormData,
+                EditProjectFormData,
                 Pick<Process, "id" | "name">
               >
                 name="processes"
