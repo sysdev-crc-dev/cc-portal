@@ -65,7 +65,7 @@ function TableAssignedMachine({ entity }: { entity: Project }) {
   return (
     <span className={redClass}>
       {tProjects(
-        `admin-panel-projects:assigned_machine.${entity?.assigned_machine}`
+        `operation-panel-projects:assigned_machine.${entity?.assigned_machine}`
       )}
     </span>
   );
