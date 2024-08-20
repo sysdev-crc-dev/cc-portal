@@ -412,9 +412,6 @@ function FormEditProject() {
       ];
       const { status, res } = await fetchGetProject({ id: projectId });
       if (status === HTTP_CODES_ENUM.OK) {
-        console.log(
-          toZonedTime(parseISO(res.data.estimated_delivery_date), "UTC")
-        );
         reset({
           name: res.data.name,
           file: res.data.file,
