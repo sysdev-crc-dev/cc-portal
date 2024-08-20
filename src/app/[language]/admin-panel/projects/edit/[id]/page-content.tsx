@@ -57,6 +57,8 @@ import { SortEnum } from "../../../../../../services/api/types/sort-type";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { parseISO } from "date-fns";
+import FormDateTimePickerInput from "../../../../../../components/form/date-pickers/date-time-picker";
+import { toZonedTime } from "date-fns-tz";
 
 type SelectOption<T> = {
   id: T;
@@ -410,13 +412,19 @@ function FormEditProject() {
       ];
       const { status, res } = await fetchGetProject({ id: projectId });
       if (status === HTTP_CODES_ENUM.OK) {
+        console.log(
+          toZonedTime(parseISO(res.data.estimated_delivery_date), "UTC")
+        );
         reset({
           name: res.data.name,
           file: res.data.file,
           est_cutting_time_in_hours:
             res.data.est_cutting_time_in_hours.toString(),
           est_dimensions: res.data.est_dimensions,
-          estimated_delivery_date: parseISO(res.data.estimated_delivery_date),
+          estimated_delivery_date: toZonedTime(
+            parseISO(res.data.estimated_delivery_date),
+            "UTC"
+          ),
           est_man_hours: res.data.est_man_hours,
           assigned_machine:
             machineTypeOptions[
@@ -544,6 +552,14 @@ function FormEditProject() {
                 testId="new-user-email"
                 autoComplete="new-user-email"
                 label={t("admin-panel-projects-edit:inputs.name.label")}
+              />
+            </Grid>
+
+            <Grid item xs={12} md={4}>
+              <FormDateTimePickerInput<EditProjectFormData>
+                name="estimated_delivery_date"
+                testId="new-user-email"
+                label="Fecha de Entrega Estimado"
               />
             </Grid>
 
