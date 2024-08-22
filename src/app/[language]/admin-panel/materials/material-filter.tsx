@@ -135,26 +135,26 @@ function UserFilter() {
           <form
             onSubmit={handleSubmit((data) => {
               const searchParams = new URLSearchParams(window.location.search);
-              if (data.name) {
-                const roleFilter = data.name;
-                searchParams.set("name", roleFilter);
+              searchParams.set("name", data.name);
+              searchParams.set("prefix", data.prefix);
+              searchParams.set("provider_id", data.provider_id);
+              searchParams.set("id", data.id);
+              searchParams.set("project_id", data.project_id);
+              if (!data.name) {
+                searchParams.delete("name");
               }
 
-              if (data.prefix) {
-                const roleFilter = data.prefix;
-                searchParams.set("prefix", roleFilter);
+              if (!data.prefix) {
+                searchParams.delete("prefix");
               }
-              if (data.provider_id) {
-                const roleFilter = data.provider_id;
-                searchParams.set("provider_id", roleFilter);
+              if (!data.provider_id) {
+                searchParams.delete("provider_id");
               }
-              if (data.id) {
-                const roleFilter = data.id;
-                searchParams.set("id", roleFilter);
+              if (!data.id) {
+                searchParams.delete("id");
               }
-              if (data.project_id) {
-                const roleFilter = data.project_id;
-                searchParams.set("project_id", roleFilter);
+              if (!data.project_id) {
+                searchParams.delete("project_id");
               }
 
               router.push(
@@ -193,6 +193,14 @@ function UserFilter() {
                   name="provider_id"
                   testId="new-user-password-confirmation"
                   label={"Id Provedor"}
+                  type="text"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormTextInput<MaterialFilterType>
+                  name="project_id"
+                  testId="new-user-password-confirmation"
+                  label={"Id Proyecto"}
                   type="text"
                 />
               </Grid>

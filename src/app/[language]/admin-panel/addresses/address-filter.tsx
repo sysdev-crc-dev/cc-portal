@@ -22,6 +22,8 @@ function AddressFilter() {
     defaultValues: {
       customer_id: "",
       provider_id: "",
+      street: "",
+      postal_code: "",
     },
   });
 
@@ -41,7 +43,7 @@ function AddressFilter() {
   const id = open ? "user-filter-popover" : undefined;
 
   const handleReset = () => {
-    reset({ customer_id: "", provider_id: "" });
+    reset({ customer_id: "", provider_id: "", street: "", postal_code: "" });
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.delete("name");
 
@@ -51,9 +53,13 @@ function AddressFilter() {
   useEffect(() => {
     const filterCustomerId = searchParams.get("customer_id");
     const filterProviderId = searchParams.get("provider_id");
+    const filterStreet = searchParams.get("street");
+    const filterPostalCode = searchParams.get("postal_code");
     let filterParsed: AddressFilterType = {
       customer_id: "",
       provider_id: "",
+      street: "",
+      postal_code: "",
     };
     if (filterCustomerId) {
       handleClose();
@@ -69,6 +75,24 @@ function AddressFilter() {
       filterParsed = {
         ...filterParsed,
         provider_id: filterProviderId,
+      };
+
+      reset(filterParsed);
+    }
+    if (filterStreet) {
+      handleClose();
+      filterParsed = {
+        ...filterParsed,
+        street: filterStreet,
+      };
+
+      reset(filterParsed);
+    }
+    if (filterPostalCode) {
+      handleClose();
+      filterParsed = {
+        ...filterParsed,
+        postal_code: filterPostalCode,
       };
 
       reset(filterParsed);
@@ -97,13 +121,21 @@ function AddressFilter() {
           <form
             onSubmit={handleSubmit((data) => {
               const searchParams = new URLSearchParams(window.location.search);
-              if (data.customer_id) {
-                const roleFilter = data.customer_id;
-                searchParams.set("customer_id", roleFilter);
+              searchParams.set("provider_id", data.provider_id);
+              searchParams.set("customer_id", data.customer_id);
+              searchParams.set("street", data.street);
+              searchParams.set("postal_code", data.postal_code);
+              if (!data.customer_id) {
+                searchParams.delete("customer_id");
               }
-              if (data.provider_id) {
-                const roleFilter = data.provider_id;
-                searchParams.set("provider_id", roleFilter);
+              if (!data.provider_id) {
+                searchParams.delete("provider_id");
+              }
+              if (!data.street) {
+                searchParams.delete("street");
+              }
+              if (!data.postal_code) {
+                searchParams.delete("postal_code");
               }
 
               router.push(
@@ -125,6 +157,23 @@ function AddressFilter() {
                   name="provider_id"
                   testId="provider_id"
                   label={"Id Provedor"}
+                  type="text"
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormTextInput<AddressFilterType>
+                  name="street"
+                  testId="street"
+                  label={"Calle"}
+                  type="text"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <FormTextInput<AddressFilterType>
+                  name="postal_code"
+                  testId="postal_code"
+                  label={"Codigo Postal"}
                   type="text"
                 />
               </Grid>

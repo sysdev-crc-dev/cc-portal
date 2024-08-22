@@ -14,11 +14,11 @@ import { ProcessType } from "../../../../services/api/types/process";
 import FormSelectInput from "../../../../components/form/select/form-select";
 
 type FilterFormData = Pick<ProcessFilterType, "id" | "name" | "project_id"> & {
-  type: SelectOption | null;
+  type: SelectOption;
 };
 
 type SelectOption = {
-  id: ProcessType;
+  id: ProcessType | null;
   name: string;
 };
 
@@ -27,6 +27,7 @@ function UserFilter() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const typeOptions: SelectOption[] = [
+    { id: null, name: "Quitar" },
     { id: ProcessType.Internal, name: "Interno" },
     { id: ProcessType.External, name: "Externo" },
   ];
@@ -34,7 +35,7 @@ function UserFilter() {
     defaultValues: {
       name: "",
       id: "",
-      type: null,
+      type: typeOptions[0],
       project_id: "",
     },
   });
@@ -55,10 +56,12 @@ function UserFilter() {
   const id = open ? "user-filter-popover" : undefined;
 
   const handleReset = () => {
-    reset({ name: "", id: "", project_id: "" });
+    reset({ name: "", id: "", project_id: "", type: typeOptions[0] });
     const searchParams = new URLSearchParams(window.location.search);
     searchParams.delete("name");
-    searchParams.delete("last_name");
+    searchParams.delete("id");
+    searchParams.delete("type");
+    searchParams.delete("project_id");
 
     router.push(window.location.pathname);
   };
@@ -77,7 +80,7 @@ function UserFilter() {
     let filterParsed: FilterFormData = {
       name: "",
       id: "",
-      type: null,
+      type: typeOptions[0],
       project_id: "",
     };
     if (filterName) {
@@ -145,23 +148,23 @@ function UserFilter() {
           <form
             onSubmit={handleSubmit((data) => {
               const searchParams = new URLSearchParams(window.location.search);
-              if (data.name) {
-                const roleFilter = data.name;
-                searchParams.set("name", roleFilter);
+              searchParams.set("type", data.type.id ? data.type.id : "");
+              searchParams.set("name", data.name);
+              searchParams.set("id", data.id);
+              searchParams.set("project_id", data.project_id);
+              if (!data.name) {
+                searchParams.delete("name");
               }
 
-              if (data.id) {
-                const roleFilter = data.id;
-                searchParams.set("id", roleFilter);
+              if (!data.id) {
+                searchParams.delete("id");
               }
 
-              if (data.type) {
-                const roleFilter = data.type;
-                searchParams.set("type", roleFilter.id);
+              if (!data.type.id) {
+                searchParams.delete("type");
               }
-              if (data.project_id) {
-                const roleFilter = data.project_id;
-                searchParams.set("project_id", roleFilter);
+              if (!data.project_id) {
+                searchParams.delete("project_id");
               }
 
               router.push(
@@ -180,21 +183,21 @@ function UserFilter() {
               </Grid>
 
               <Grid item xs={12}>
-                <FormTextInput<ProcessFilterType>
-                  name="id"
-                  testId="new-user-password-confirmation"
-                  label={"Id Proceso"}
-                  type="text"
-                />
-              </Grid>
-
-              <Grid item xs={12}>
                 <FormSelectInput
                   name="type"
                   options={typeOptions}
                   label={"Tipo"}
                   keyValue="id"
                   renderOption={(option: SelectOption) => option.name}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <FormTextInput<ProcessFilterType>
+                  name="id"
+                  testId="new-user-password-confirmation"
+                  label={"Id Proceso"}
+                  type="text"
                 />
               </Grid>
 

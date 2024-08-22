@@ -269,12 +269,20 @@ function Addresses() {
   const filter = useMemo<Partial<AddressFilterType | undefined>>(() => {
     const filterCustomerId = searchParams.get("customer_id");
     const filterProviderId = searchParams.get("provider_id");
+    const filterStreet = searchParams.get("street");
+    const filterPostalCode = searchParams.get("postal_code");
     const filter: Partial<AddressFilterType> = {};
     if (filterCustomerId) {
       filter.customer_id = filterCustomerId;
     }
     if (filterProviderId) {
       filter.provider_id = filterProviderId;
+    }
+    if (filterStreet) {
+      filter.street = filterStreet;
+    }
+    if (filterPostalCode) {
+      filter.postal_code = filterPostalCode;
     }
 
     return isObjectEmpty(filter) ? undefined : filter;

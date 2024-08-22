@@ -4,6 +4,8 @@ import { Address } from "@/services/api/types/address";
 export type AddressFilterType = {
   customer_id: string;
   provider_id: string;
+  postal_code: string;
+  street: string;
 };
 
 export type AddressSortType = {

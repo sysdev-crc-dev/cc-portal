@@ -112,21 +112,23 @@ function UserFilter() {
         >
           <form
             onSubmit={handleSubmit((data) => {
+              console.log(data);
               const searchParams = new URLSearchParams(window.location.search);
-              if (data.name) {
-                const roleFilter = data.name;
-                searchParams.set("name", roleFilter);
-                searchParams.set("name", roleFilter);
+              searchParams.set("name", data.name);
+
+              searchParams.set("last_name", data.last_name);
+
+              searchParams.set("cell_phone", data.cell_phone);
+
+              if (!data.name) {
+                searchParams.delete("name");
               }
 
-              if (data.last_name) {
-                const roleFilter = data.last_name;
-                searchParams.set("last_name", roleFilter);
+              if (!data.last_name) {
+                searchParams.delete("last_name");
               }
-
-              if (data.cell_phone) {
-                const roleFilter = data.cell_phone;
-                searchParams.set("cell_phone", roleFilter);
+              if (!data.cell_phone) {
+                searchParams.delete("cell_phone");
               }
 
               router.push(

@@ -32,7 +32,7 @@ export function useGetMaterialsService() {
       requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         if (data.filters.name) {
-          requestUrl.searchParams.append("name", `~${data.filters.name}`);
+          requestUrl.searchParams.append("name", `${data.filters.name}`);
         }
 
         if (data.filters.id) {
@@ -54,7 +54,7 @@ export function useGetMaterialsService() {
         }
 
         if (data.filters.prefix) {
-          requestUrl.searchParams.append("prefix", `~${data.filters.prefix}`);
+          requestUrl.searchParams.append("prefix", `${data.filters.prefix}`);
         }
       }
       if (data.sort) {

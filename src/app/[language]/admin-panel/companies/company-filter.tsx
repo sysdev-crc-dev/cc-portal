@@ -99,15 +99,15 @@ function UserFilter() {
           <form
             onSubmit={handleSubmit((data) => {
               const searchParams = new URLSearchParams(window.location.search);
-              if (data.name) {
-                const roleFilter = data.name;
-                searchParams.set("name", roleFilter);
+              searchParams.set("name", data.name);
+
+              searchParams.set("type", data.type);
+
+              if (!data.name) {
+                searchParams.delete("name");
               }
 
-              if (data.type) {
-                const roleFilter = data.type;
-                searchParams.set("type", roleFilter);
-              }
+              if (!data.type) [searchParams.delete("type")];
 
               router.push(
                 window.location.pathname + "?" + searchParams.toString()
@@ -118,7 +118,6 @@ function UserFilter() {
               <Grid item xs={12}>
                 <FormTextInput<CompanyFilterType>
                   name="name"
-                  testId="new-user-password-confirmation"
                   label={"Nombre"}
                   type="text"
                 />
@@ -127,8 +126,7 @@ function UserFilter() {
               <Grid item xs={12}>
                 <FormTextInput<CompanyFilterType>
                   name="type"
-                  testId="new-user-password-confirmation"
-                  label={"Apellido"}
+                  label={"Tipo de Compañia"}
                   type="text"
                 />
               </Grid>

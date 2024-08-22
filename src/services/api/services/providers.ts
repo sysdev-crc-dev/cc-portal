@@ -32,11 +32,11 @@ export function useGetProvidersService() {
       requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         if (data.filters.name) {
-          requestUrl.searchParams.append("name", `~${data.filters.name}`);
+          requestUrl.searchParams.append("name", `${data.filters.name}`);
         }
         if (data.filters.address_id) {
           requestUrl.searchParams.append(
-            ".address_id",
+            "address_id",
             `${data.filters.address_id}`
           );
         }
@@ -44,12 +44,12 @@ export function useGetProvidersService() {
           requestUrl.searchParams.append("id", `${data.filters.id}`);
         }
         if (data.filters.tag) {
-          requestUrl.searchParams.append("tag", `~${data.filters.tag}`);
+          requestUrl.searchParams.append("tag", `${data.filters.tag}`);
         }
         if (data.filters.material_id) {
           requestUrl.searchParams.append(
-            "ma.material_id",
-            `~{data.filters.material_id}`
+            "material_id",
+            `${data.filters.material_id}`
           );
         }
       }

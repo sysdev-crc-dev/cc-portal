@@ -40,6 +40,7 @@ type EditInvoiceFormData = {
   email: string;
   invoice_use: string;
   customer_id: SelectOption;
+  fiscal_regimen: SelectOption;
 };
 
 const useValidationEditInvoiceSchema = () => {
@@ -87,6 +88,16 @@ const useValidationEditInvoiceSchema = () => {
         .required(
           t("admin-panel-invoices-edit:inputs.customer.validation.required")
         ),
+      fiscal_regimen: yup
+        .object()
+        .shape({
+          id: yup.number().defined(),
+          name: yup.string().defined(),
+        })
+        .default(undefined)
+        .required(
+          t("admin-panel-invoices-create:inputs.customer.validation.required")
+        ),
     },
     [["tel", "tel"]]
   );
@@ -118,7 +129,64 @@ function FormEditInvoice() {
   const { t } = useTranslation("admin-panel-invoices-edit");
   const validationSchema = useValidationEditInvoiceSchema();
   const invoiceId = Number(Array.isArray(params.id) ? params.id[0] : params.id);
-
+  const fiscalRegimenOptions: SelectOption[] = [
+    {
+      id: 605,
+      name: "Sueldos y Salarios e Ingresos Asimilados a Salarios",
+    },
+    {
+      id: 606,
+      name: "Arrendamiento",
+    },
+    {
+      id: 607,
+      name: "Regimen de Enajenacion o Adquisicion de Bienes",
+    },
+    {
+      id: 608,
+      name: "Demás ingreso",
+    },
+    {
+      id: 610,
+      name: "Residentes en el Extranjero sin Establecimiento Permanente en México",
+    },
+    {
+      id: 610,
+      name: "Residentes en el Extranjero sin Establecimiento Permanente en México",
+    },
+    {
+      id: 611,
+      name: "Ingresos por Dividendos (socios y accionistas)",
+    },
+    {
+      id: 612,
+      name: "Personas Físicas con Actividades Empresariales y Profesionales",
+    },
+    {
+      id: 614,
+      name: "Ingresos por intereses",
+    },
+    {
+      id: 615,
+      name: "Régimen de los ingresos por obtención de premios",
+    },
+    {
+      id: 616,
+      name: "Sin obligaciones fiscales",
+    },
+    {
+      id: 621,
+      name: "Incorporación Fiscal",
+    },
+    {
+      id: 625,
+      name: "Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas",
+    },
+    {
+      id: 626,
+      name: "Régimen Simplificado de Confiaza",
+    },
+  ];
   useEffect(() => {
     const fetchCustomersInfo = async () => {
       const { res } = await fetchCustomers({
@@ -147,6 +215,7 @@ function FormEditInvoice() {
       name: "",
       email: "",
       customer_id: undefined,
+      fiscal_regimen: undefined,
       invoice_use: "",
       postal_code: "",
       rfc: "",
@@ -165,6 +234,7 @@ function FormEditInvoice() {
         invoice_use: formData.invoice_use,
         email: formData.email,
         customer_id: formData.customer_id.id,
+        fiscal_regimen: formData.fiscal_regimen.id.toString(),
       },
     });
     if (status !== HTTP_CODES_ENUM.OK) {
@@ -198,12 +268,18 @@ function FormEditInvoice() {
             customersData[
               customersData.findIndex((opt) => opt.id === res.data.customer_id)
             ],
+          fiscal_regimen:
+            fiscalRegimenOptions[
+              fiscalRegimenOptions.findIndex(
+                (opt) => opt.id === res.data.customer_id
+              )
+            ],
         });
       }
     };
 
     getInitialDataForEdit();
-  }, [invoiceId, reset, fetchGetInvoice, customersData]);
+  }, [invoiceId, reset, fetchGetInvoice, customersData, fiscalRegimenOptions]);
 
   return (
     <FormProvider {...methods}>
@@ -268,6 +344,21 @@ function FormEditInvoice() {
                 keyValue="id"
                 renderOption={(option: SelectOption) => {
                   return option.name;
+                }}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <FormSelectInput<EditInvoiceFormData, SelectOption>
+                name="fiscal_regimen"
+                testId="fiscal_regimen"
+                label={t(
+                  "admin-panel-invoices-edit:inputs.fiscal_regimen.label"
+                )}
+                options={fiscalRegimenOptions}
+                keyValue="id"
+                renderOption={(option: SelectOption) => {
+                  return `${option.id} - ${option.name}`;
                 }}
               />
             </Grid>

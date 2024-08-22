@@ -43,6 +43,15 @@ export function useGetAddressesService() {
             `${data.filters.provider_id}`
           );
         }
+        if (data.filters.street) {
+          requestUrl.searchParams.append("street", `${data.filters.street}`);
+        }
+        if (data.filters.postal_code) {
+          requestUrl.searchParams.append(
+            "postal_code",
+            `${data.filters.postal_code}`
+          );
+        }
       }
       if (data.sort) {
         const sortString = data.sort

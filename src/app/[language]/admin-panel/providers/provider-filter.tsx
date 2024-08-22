@@ -144,26 +144,26 @@ function UserFilter() {
           <form
             onSubmit={handleSubmit((data) => {
               const searchParams = new URLSearchParams(window.location.search);
-              if (data.name) {
-                const roleFilter = data.name;
-                searchParams.set("name", roleFilter);
+              searchParams.set("name", data.name);
+              searchParams.set("tag", data.tag);
+              searchParams.set("id", data.id);
+              searchParams.set("address_id", data.address_id);
+              searchParams.set("material_id", data.material_id);
+              if (!data.name) {
+                searchParams.delete("name");
               }
 
-              if (data.tag) {
-                const roleFilter = data.tag;
-                searchParams.set("tag", roleFilter);
+              if (!data.tag) {
+                searchParams.delete("tag");
               }
-              if (data.id) {
-                const roleFilter = data.id;
-                searchParams.set("id", roleFilter);
+              if (!data.id) {
+                searchParams.delete("id");
               }
-              if (data.address_id) {
-                const roleFilter = data.address_id;
-                searchParams.set("address_id", roleFilter);
+              if (!data.address_id) {
+                searchParams.delete("address_id");
               }
-              if (data.material_id) {
-                const roleFilter = data.material_id;
-                searchParams.set("material_id", roleFilter);
+              if (!data.material_id) {
+                searchParams.delete("material_id");
               }
 
               router.push(

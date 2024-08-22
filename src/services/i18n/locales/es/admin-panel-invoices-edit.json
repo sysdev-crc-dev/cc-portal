@@ -45,6 +45,12 @@
       "validation": {
         "required": "Los datos deben estar ligados a un cliente"
       }
+    },
+    "fiscal_regimen": {
+      "label": "Regimen Fiscal",
+      "validation": {
+        "required": "Los datos deben estar ligados a un cliente"
+      }
     }
   },
   "alerts": {

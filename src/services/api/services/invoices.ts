@@ -106,7 +106,13 @@ export type InvoiceEditRequest = {
   data: Partial<
     Pick<
       Invoice,
-      "name" | "rfc" | "postal_code" | "customer_id" | "email" | "invoice_use"
+      | "name"
+      | "rfc"
+      | "postal_code"
+      | "customer_id"
+      | "email"
+      | "invoice_use"
+      | "fiscal_regimen"
     >
   >;
 };

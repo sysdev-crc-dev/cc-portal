@@ -98,7 +98,7 @@ function UserFilter() {
       handleClose();
       filterParsed = {
         ...filterParsed,
-        cell_phone: filterEmail,
+        email: filterEmail,
       };
 
       reset(filterParsed);
@@ -125,32 +125,40 @@ function UserFilter() {
           }}
         >
           <form
-            onSubmit={handleSubmit((data) => {
-              const searchParams = new URLSearchParams(window.location.search);
-              if (data.name) {
-                const roleFilter = data.name;
-                searchParams.set("name", roleFilter);
-              }
+            onSubmit={handleSubmit(
+              (data) => {
+                const searchParams = new URLSearchParams(
+                  window.location.search
+                );
+                searchParams.set("name", data.name);
+                searchParams.set("last_name", data.last_name);
+                searchParams.set("cell_phone", data.cell_phone);
+                searchParams.set("email", data.email);
 
-              if (data.last_name) {
-                const roleFilter = data.last_name;
-                searchParams.set("last_name", roleFilter);
-              }
+                if (!data.name) {
+                  searchParams.delete("name");
+                }
 
-              if (data.cell_phone) {
-                const roleFilter = data.cell_phone;
-                searchParams.set("cell_phone", roleFilter);
-              }
+                if (!data.last_name) {
+                  searchParams.delete("last_name");
+                }
 
-              if (data.email) {
-                const roleFilter = data.email;
-                searchParams.set("email", roleFilter);
-              }
+                if (!data.cell_phone) {
+                  searchParams.delete("cell_phone");
+                }
 
-              router.push(
-                window.location.pathname + "?" + searchParams.toString()
-              );
-            })}
+                if (!data.email) {
+                  searchParams.delete("email");
+                }
+
+                router.push(
+                  window.location.pathname + "?" + searchParams.toString()
+                );
+              },
+              (errors) => {
+                console.error(errors);
+              }
+            )}
           >
             <Grid container spacing={2} mb={3} mt={3}>
               <Grid item xs={12}>

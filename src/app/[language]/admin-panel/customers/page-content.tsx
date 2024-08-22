@@ -270,6 +270,7 @@ function Customers() {
     const filterName = searchParams.get("name");
     const filterLastName = searchParams.get("last_name");
     const filterCellphone = searchParams.get("cell_phone");
+    const filterEmail = searchParams.get("email");
     const filter: Partial<CustomerFilterType> = {};
     if (filterName) {
       filter.name = filterName;
@@ -281,6 +282,10 @@ function Customers() {
 
     if (filterCellphone) {
       filter.cell_phone = filterCellphone;
+    }
+
+    if (filterEmail) {
+      filter.email = filterEmail;
     }
 
     return isObjectEmpty(filter) ? undefined : filter;
@@ -302,7 +307,7 @@ function Customers() {
   }, [data]);
 
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="lg">
       <Grid container spacing={3} pt={3}>
         <Grid container item spacing={3} xs={12}>
           <Grid item xs>

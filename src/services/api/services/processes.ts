@@ -32,7 +32,7 @@ export function useGetProcessesService() {
       requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         if (data.filters.name) {
-          requestUrl.searchParams.append("name", `~${data.filters.name}`);
+          requestUrl.searchParams.append("name", `${data.filters.name}`);
         }
 
         if (data.filters.id) {

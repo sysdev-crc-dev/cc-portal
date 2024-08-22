@@ -32,18 +32,18 @@ export function useGetEmployeesService() {
       requestUrl.searchParams.append("pageSize", data.pageSize.toString());
       if (data.filters) {
         if (data.filters.name) {
-          requestUrl.searchParams.append("name", `~${data.filters.name}`);
+          requestUrl.searchParams.append("name", `${data.filters.name}`);
         }
         if (data.filters.last_name) {
           requestUrl.searchParams.append(
             "last_name",
-            `~${data.filters.last_name}`
+            `${data.filters.last_name}`
           );
         }
         if (data.filters.cell_phone) {
           requestUrl.searchParams.append(
             "cell_phone",
-            `~${data.filters.cell_phone}`
+            `${data.filters.cell_phone}`
           );
         }
       }
