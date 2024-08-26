@@ -58,7 +58,7 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { parseISO } from "date-fns";
 import FormDateTimePickerInput from "../../../../../../components/form/date-pickers/date-time-picker";
-import { toZonedTime } from "date-fns-tz";
+import { toZonedTime, fromZonedTime } from "date-fns-tz";
 
 type SelectOption<T> = {
   id: T;
@@ -490,7 +490,10 @@ function FormEditProject() {
           est_dimensions: formData.est_dimensions,
           est_man_hours: formData.est_man_hours,
           estimated_delivery_date: formData.estimated_delivery_date
-            ? formData.estimated_delivery_date.toLocaleString("MX")
+            ? fromZonedTime(
+                formData.estimated_delivery_date,
+                "UTC"
+              ).toISOString()
             : "",
           material_provided_by: formData.material_provided_by.id,
           package_type: formData.package_type.id,

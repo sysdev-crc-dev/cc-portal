@@ -52,6 +52,7 @@ import {
 import { Process } from "../../../../../services/api/types/process";
 import { SortEnum } from "../../../../../services/api/types/sort-type";
 import FormDateTimePickerInput from "../../../../../components/form/date-pickers/date-time-picker";
+import { fromZonedTime } from "date-fns-tz";
 
 type SelectOption<T> = {
   id: T;
@@ -372,7 +373,7 @@ function FormCreateEmployee() {
         est_man_hours: formData.est_man_hours,
         material_provided_by: formData.material_provided_by.id,
         estimated_delivery_date: formData.estimated_delivery_date
-          ? formData.estimated_delivery_date.toLocaleString("MX")
+          ? fromZonedTime(formData.estimated_delivery_date, "UTC").toISOString()
           : "",
         package_type: formData.package_type.id,
         delivery_type: formData.delivery_type.id,
