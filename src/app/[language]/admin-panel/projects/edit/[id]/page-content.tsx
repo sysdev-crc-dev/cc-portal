@@ -235,7 +235,7 @@ function FormEditProject() {
         res as MaterialsResponse
       ).data.items.map((value) => ({
         id: value.id,
-        name: `${value.id} - ${value.name} - Provedor: ${value.provider.name}`,
+        name: `${value.id} - ${value.name} - Provedor: ${value.provider ? value.provider.name : "N/A"}`,
       }));
 
       setMaterials(data);
