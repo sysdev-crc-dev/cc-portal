@@ -184,6 +184,7 @@ function UserFilter() {
                 <FormDateTimePickerInput
                   name="estimated_delivery_date"
                   label={"Fech. est. entrega"}
+                  readOnly
                 />
               </Grid>
               <Grid item xs={12}>

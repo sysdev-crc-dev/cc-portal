@@ -440,6 +440,7 @@ function FormCreateEmployee() {
                 name="estimated_delivery_date"
                 testId="new-user-email"
                 label="Fecha de Entrega Estimado"
+                readOnly
               />
             </Grid>
 
