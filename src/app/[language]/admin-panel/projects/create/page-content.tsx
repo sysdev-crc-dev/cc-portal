@@ -409,7 +409,7 @@ function FormCreateEmployee() {
 
   return (
     <FormProvider {...methods}>
-      <Container maxWidth="lg">
+      <Container maxWidth={false}>
         <form onSubmit={onSubmit} autoComplete="create-new-user">
           <Grid
             container

@@ -9,7 +9,7 @@ import FormTextInput from "@/components/form/text-input/form-text-input";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import withPageRequiredAuth from "@/services/auth/with-page-required-auth";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSnackbar } from "notistack";
 import Link from "@/components/link";
 import useLeavePage from "@/services/leave-page/use-leave-page";
@@ -129,64 +129,67 @@ function FormEditInvoice() {
   const { t } = useTranslation("admin-panel-invoices-edit");
   const validationSchema = useValidationEditInvoiceSchema();
   const invoiceId = Number(Array.isArray(params.id) ? params.id[0] : params.id);
-  const fiscalRegimenOptions: SelectOption[] = [
-    {
-      id: 605,
-      name: "Sueldos y Salarios e Ingresos Asimilados a Salarios",
-    },
-    {
-      id: 606,
-      name: "Arrendamiento",
-    },
-    {
-      id: 607,
-      name: "Regimen de Enajenacion o Adquisicion de Bienes",
-    },
-    {
-      id: 608,
-      name: "Demás ingreso",
-    },
-    {
-      id: 610,
-      name: "Residentes en el Extranjero sin Establecimiento Permanente en México",
-    },
-    {
-      id: 610,
-      name: "Residentes en el Extranjero sin Establecimiento Permanente en México",
-    },
-    {
-      id: 611,
-      name: "Ingresos por Dividendos (socios y accionistas)",
-    },
-    {
-      id: 612,
-      name: "Personas Físicas con Actividades Empresariales y Profesionales",
-    },
-    {
-      id: 614,
-      name: "Ingresos por intereses",
-    },
-    {
-      id: 615,
-      name: "Régimen de los ingresos por obtención de premios",
-    },
-    {
-      id: 616,
-      name: "Sin obligaciones fiscales",
-    },
-    {
-      id: 621,
-      name: "Incorporación Fiscal",
-    },
-    {
-      id: 625,
-      name: "Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas",
-    },
-    {
-      id: 626,
-      name: "Régimen Simplificado de Confiaza",
-    },
-  ];
+  const fiscalRegimenOptions: SelectOption[] = useMemo(
+    () => [
+      {
+        id: 605,
+        name: "Sueldos y Salarios e Ingresos Asimilados a Salarios",
+      },
+      {
+        id: 606,
+        name: "Arrendamiento",
+      },
+      {
+        id: 607,
+        name: "Regimen de Enajenacion o Adquisicion de Bienes",
+      },
+      {
+        id: 608,
+        name: "Demás ingreso",
+      },
+      {
+        id: 610,
+        name: "Residentes en el Extranjero sin Establecimiento Permanente en México",
+      },
+      {
+        id: 610,
+        name: "Residentes en el Extranjero sin Establecimiento Permanente en México",
+      },
+      {
+        id: 611,
+        name: "Ingresos por Dividendos (socios y accionistas)",
+      },
+      {
+        id: 612,
+        name: "Personas Físicas con Actividades Empresariales y Profesionales",
+      },
+      {
+        id: 614,
+        name: "Ingresos por intereses",
+      },
+      {
+        id: 615,
+        name: "Régimen de los ingresos por obtención de premios",
+      },
+      {
+        id: 616,
+        name: "Sin obligaciones fiscales",
+      },
+      {
+        id: 621,
+        name: "Incorporación Fiscal",
+      },
+      {
+        id: 625,
+        name: "Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas",
+      },
+      {
+        id: 626,
+        name: "Régimen Simplificado de Confiaza",
+      },
+    ],
+    []
+  );
   useEffect(() => {
     const fetchCustomersInfo = async () => {
       const { res } = await fetchCustomers({

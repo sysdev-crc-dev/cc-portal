@@ -313,7 +313,7 @@ function Materials() {
   }, [data]);
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth={false}>
       <Grid container spacing={3} pt={3}>
         <Grid container item spacing={3} xs={12}>
           <Grid item xs>
@@ -342,7 +342,7 @@ function Materials() {
 
         <Grid item xs={12} mb={2}>
           <TableVirtuoso
-            style={{ height: 500 }}
+            style={{ height: "90%", minHeight: 750 }}
             data={result}
             components={TableComponents}
             endReached={handleScroll}
